@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+tasks:
+  build-example:
+    cmds:
+      - bun run --filter examples build
+
+  release-example:
+    cmds:
+      - cp -r examples/.next/standalone/examples .example-release
+      - cp -r examples/.next/static .example-release/.next/static
+      # - cp -r examples/public .example-release/public
+      - rm -rf .example-release/node_modules
+      - cp -r examples/.next/standalone/node_modules .example-release/
+      - cd .example-release/node_modules && ln -sF .bun/next@*/node_modules/next
+
+    deps:
+      - build-example

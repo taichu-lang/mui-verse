@@ -1,0 +1,29 @@
+{
+  "name": "mui-verse",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "example": "bun run --filter examples dev",
+    "clean-all": "rm -rf examples/node_modules examples/.next bun.lock node_modules ui/node_modules"
+  },
+  "workspaces": [
+    "examples",
+    "ui"
+  ],
+  "catalog": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "next": "^16.2.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.9",
+    "@emotion/cache": "^11.14.0",
+    "@mui/material-nextjs": "^7.3.9",
+    "zustand": "^5.0.12",
+    "next-intl": "^4.9.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2"
+  }
+}

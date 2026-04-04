@@ -1,0 +1,61 @@
+{
+  "name": "@mui-verse/ui",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./verse.css": "./src/verse.css",
+    "./components/*": "./src/components/*.tsx",
+    "./theme/*": "./src/theme/*.tsx",
+    "./hooks/*": "./src/hooks/*.tsx"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "@emotion/react": "catalog:",
+    "@emotion/styled": "catalog:",
+    "@mui/material": "catalog:",
+    "@emotion/cache": "catalog:",
+    "@mui/material-nextjs": "catalog:",
+    "zustand": "catalog:",
+    "next-intl": "catalog:",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "next": "^16.2.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.9",
+    "@emotion/cache": "^11.14.0",
+    "@mui/material-nextjs": "^7.3.9",
+    "zustand": "^5.0.12",
+    "next-intl": "^4.9.0"
+  },
+  "ignoreScripts": [
+    "sharp",
+    "unrs-resolver"
+  ],
+  "trustedDependencies": [
+    "sharp",
+    "unrs-resolver"
+  ],
+  "dependencies": {
+    "lucide-react": "^1.7.0"
+  }
+}
