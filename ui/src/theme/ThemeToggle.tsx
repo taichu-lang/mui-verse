@@ -1,9 +1,9 @@
 "use client";
 
-import { useThemeMode } from "@mui-verse/ui/hooks/useThemeMode";
 import { IconButton, Tooltip } from "@mui/material";
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useTheme } from "./useTheme";
 
 const FALLBACK_LABELS = {
   switchToLight: "Switch to light mode",
@@ -11,7 +11,7 @@ const FALLBACK_LABELS = {
 } as const;
 
 export function ThemeToggle() {
-  const { isDark, toggleTheme } = useThemeMode();
+  const { isDark, toggleTheme } = useTheme();
 
   let label: string;
   try {

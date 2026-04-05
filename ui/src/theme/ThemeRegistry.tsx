@@ -1,17 +1,17 @@
 "use client";
 
-import { useThemeMode } from "@mui-verse/ui/hooks/useThemeMode";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { ReactNode, useMemo } from "react";
 import { darkTheme, lightTheme } from "./theme";
+import { useTheme } from "./useTheme";
 
 interface ThemeRegistryProps {
   children: ReactNode;
 }
 
 function ThemedContent({ children }: ThemeRegistryProps) {
-  const { isDark } = useThemeMode();
+  const { isDark } = useTheme();
   const theme = useMemo(() => (isDark ? darkTheme : lightTheme), [isDark]);
 
   return (
