@@ -71,6 +71,7 @@ function DesktopMenu({ title, icon, href }: MenuData) {
   const isActive = path === href || path.startsWith(`${href}/`);
 
   const { isDark } = useTheme();
+  const { collapsed } = useSidebar();
 
   const classes = {
     active: isDark ? "bg-gray-50" : "bg-gray-950 text-gray-50",
@@ -80,17 +81,24 @@ function DesktopMenu({ title, icon, href }: MenuData) {
   return (
     <Tooltip title={title} placement="right">
       <CardActionArea
-        className={`${isActive ? classes.active : classes.inactive} aspect-square rounded-lg`}
+        className={` ${isActive ? classes.active : classes.inactive} ${collapsed ? "aspect-square" : "w-full px-3 py-2"} rounded-lg`}
         onClick={() => {
           router.push(href);
         }}
       >
-        <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
-          {icon}
-          <Typography variant="caption" textAlign={"center"}>
-            {title}
-          </Typography>
-        </Box>
+        {collapsed ? (
+          <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+            {icon}
+            <Typography variant="caption" textAlign={"center"}>
+              {title}
+            </Typography>
+          </Box>
+        ) : (
+          <Box display={"flex"} alignItems={"center"} gap={1.5} px={2}>
+            {icon}
+            <Typography variant="body1">{title}</Typography>
+          </Box>
+        )}
       </CardActionArea>
     </Tooltip>
   );
@@ -110,9 +118,9 @@ function MobileMenu({ title, icon, href }: MenuData) {
         setCollapsed(true);
       }}
     >
-      <Box display="flex" alignItems="center" gap={1.5}>
+      <Box display="flex" alignItems="center" gap={1.5} px={2}>
         {icon}
-        <Typography variant="body2">{title}</Typography>
+        <Typography variant="body1">{title}</Typography>
       </Box>
     </CardActionArea>
   );
@@ -120,7 +128,6 @@ function MobileMenu({ title, icon, href }: MenuData) {
 
 export function Menu(props: MenuData) {
   const isMobile = useMobile();
-
   if (isMobile) {
     return <MobileMenu {...props} />;
   }

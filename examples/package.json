@@ -9,13 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "catalog:",
-    "react": "catalog:",
-    "react-dom": "catalog:",
-    "@mui-verse/ui": "workspace:*",
     "@emotion/react": "catalog:",
     "@emotion/styled": "catalog:",
-    "@mui/material": "catalog:"
+    "@mui-verse/ui": "workspace:*",
+    "@mui/material": "catalog:",
+    "lucide-react": "^1.7.0",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

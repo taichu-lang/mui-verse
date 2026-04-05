@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@mui-verse/ui/theme/ThemeProvider";
 import type { Metadata } from "next";
+import AppLayout from "./_components/AppLayout";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,10 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased`}>
+    <html lang="en" className={`antialiased`}>
       <body>
         <ThemeProvider>
-          <div className="w-full">{children}</div>
+          <AppLayout>{children}</AppLayout>
         </ThemeProvider>
       </body>
     </html>
