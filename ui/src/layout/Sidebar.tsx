@@ -3,30 +3,23 @@
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { Drawer, IconButton, useTheme } from "@mui/material";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { useEffect } from "react";
 import { useSidebar } from "./useSidebar";
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
-  const { collapsed, toggleCollapsed, setCollapsed } = useSidebar();
+  const { collapsed, toggleCollapsed } = useSidebar();
   const isMobile = useMobile();
   const theme = useTheme();
 
-  const width = isMobile ? "80vw" : theme.spacing(8);
+  const width = isMobile ? "80vw" : collapsed ? theme.spacing(8) : "16rem";
 
-  useEffect(() => {
-    if (isMobile) {
-      setCollapsed(true);
-    }
-  }, [isMobile, setCollapsed]);
-
-  if (collapsed) {
+  if (isMobile && collapsed) {
     return <></>;
   }
 
   return (
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
-      open={!collapsed}
+      open={isMobile ? !collapsed : true}
       onClose={toggleCollapsed}
       sx={{
         width: width,
@@ -73,6 +66,12 @@ export function MenuList({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function SidebarFooter({ children }: { children: React.ReactNode }) {
-  return <div className="mt-auto flex pb-2">{children}</div>;
+export function SidebarFooter({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={`mt-auto flex pb-2 ${className}`}>{children}</div>;
 }

@@ -6,7 +6,8 @@
     "./verse.css": "./src/verse.css",
     "./components/*": "./src/components/*.tsx",
     "./theme/*": "./src/theme/*.tsx",
-    "./hooks/*": "./src/hooks/*.tsx"
+    "./hooks/*": "./src/hooks/*.tsx",
+    "./layout/*": "./src/layout/*.tsx"
   },
   "scripts": {
     "dev": "next dev",
