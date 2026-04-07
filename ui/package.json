@@ -6,6 +6,7 @@
     "./verse.css": "./src/verse.css",
     "./components/*": "./src/components/*.tsx",
     "./theme/*": "./src/theme/*.tsx",
+    "./utils/*": "./src/utils/*.ts",
     "./hooks/*": "./src/hooks/*.tsx",
     "./layout/*": "./src/layout/*.tsx"
   },
@@ -57,6 +58,8 @@
     "unrs-resolver"
   ],
   "dependencies": {
-    "lucide-react": "^1.7.0"
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.7.0",
+    "tailwind-merge": "^3.5.0"
   }
 }
