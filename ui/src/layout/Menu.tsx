@@ -81,7 +81,7 @@ function DesktopMenu({ title, icon, href }: MenuData) {
   return (
     <Tooltip title={title} placement="right">
       <CardActionArea
-        className={` ${isActive ? classes.active : classes.inactive} ${collapsed ? "aspect-square" : "w-full px-3 py-2"} rounded-lg`}
+        className={`${isActive ? classes.active : classes.inactive} ${collapsed ? "aspect-square" : "w-full px-3 py-2"} rounded-lg`}
         onClick={() => {
           router.push(href);
         }}

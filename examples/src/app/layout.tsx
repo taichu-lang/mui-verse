@@ -1,6 +1,5 @@
 import { ThemeProvider } from "@mui-verse/ui/theme/ThemeProvider";
 import type { Metadata } from "next";
-import AppLayout from "./_components/AppLayout";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +16,7 @@ export default function RootLayout({
     <html lang="en" className={`antialiased`}>
       <body>
         <ThemeProvider>
-          <AppLayout>{children}</AppLayout>
+          <div className="flex h-screen w-full">{children}</div>
         </ThemeProvider>
       </body>
     </html>

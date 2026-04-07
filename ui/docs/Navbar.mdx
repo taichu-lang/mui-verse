@@ -1,0 +1,175 @@
+# Navbar
+
+响应式导航栏组件，同时适配 landing page 和 dashboard 两种场景。
+
+- `Navbar` 作为主区域的滚动容器
+- `NavbarContent` 是 sticky 在顶部的 AppBar，滚动时自动切换为毛玻璃悬浮效果
+- `NavbarLink` 导航链接
+- `NavbarMobileMenu` 移动端下拉菜单（基于 DropdownMenu）
+
+## 引入
+
+```tsx
+import {
+  Navbar,
+  NavbarContent,
+  NavbarLink,
+  NavbarMobileMenu,
+} from "@mui-verse/ui/layout/Navbar";
+```
+
+## Landing Page 场景
+
+设置 `landing` 后，NavbarContent 内部会添加 `max-width` 约束并居中，适合独立的营销/落地页。
+
+```tsx
+<div className="flex h-screen w-full">
+  <Navbar>
+    <NavbarContent landing>
+      <Logo />
+      <div className="flex-1" />
+      <NavbarLink href="/features">Features</NavbarLink>
+      <NavbarLink href="/pricing" active>Pricing</NavbarLink>
+      <NavbarLink href="/docs">Docs</NavbarLink>
+    </NavbarContent>
+    <main>{/* 页面内容 */}</main>
+  </Navbar>
+</div>
+```
+
+可通过 `className` 覆盖默认的最大宽度：
+
+```tsx
+<NavbarContent landing className="max-w-screen-xl">
+  {/* ... */}
+</NavbarContent>
+```
+
+## Dashboard 场景（非 Landing）
+
+不传 `landing` 时，NavbarContent 占满父容器宽度，适合放在 Sidebar 右侧。
+
+```tsx
+<div className="flex h-screen w-full overflow-hidden">
+  <AppSidebar />
+  <div className="min-w-0 flex-1">
+    <Navbar>
+      <NavbarContent>
+        <SidebarToggle />
+        <Typography variant="h6">Dashboard</Typography>
+      </NavbarContent>
+      <main>{/* 页面内容 */}</main>
+    </Navbar>
+  </div>
+</div>
+```
+
+## 移动端菜单 (NavbarMobileMenu)
+
+`NavbarMobileMenu` 是一个自包含的移动端下拉菜单，内部基于 `DropdownMenu` 实现，点击汉堡按钮后展开全屏宽的面板。
+
+> **重要：** `NavbarMobileMenu` 内部的可点击或跳转元素必须用 `DropdownMenuItem` 包裹。
+> 因为 `NavbarMobileMenu` 基于 `DropdownMenu`，只有 `DropdownMenuItem` 会在点击时自动关闭菜单。
+> 如果直接放置 `NavbarLink` 或其他元素，点击后菜单不会关闭。
+
+```tsx
+import { DropdownMenuItem } from "@mui-verse/ui/components/DropdownMenu";
+```
+
+### Landing 场景 — 移动端适配
+
+在 landing page 中，PC 端直接展示 `NavbarLink`，移动端通过 `NavbarMobileMenu` 收纳导航项：
+
+```tsx
+<Navbar>
+  <NavbarContent landing>
+    <Logo />
+    <div className="flex-1" />
+
+    {/* PC 端导航 */}
+    <div className="hidden md:flex items-center gap-1">
+      <NavbarLink href="/features">Features</NavbarLink>
+      <NavbarLink href="/pricing">Pricing</NavbarLink>
+      <NavbarLink href="/docs">Docs</NavbarLink>
+    </div>
+
+    {/* 移动端菜单 */}
+    <div className="md:hidden">
+      <NavbarMobileMenu>
+        <DropdownMenuItem onClick={() => router.push("/features")}>
+          Features
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/pricing")}>
+          Pricing
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/docs")}>
+          Docs
+        </DropdownMenuItem>
+      </NavbarMobileMenu>
+    </div>
+  </NavbarContent>
+  <main>{/* 页面内容 */}</main>
+</Navbar>
+```
+
+### Dashboard 场景 — 移动端适配
+
+在 dashboard 中，移动端可以用 `NavbarMobileMenu` 放置用户操作入口：
+
+```tsx
+<div className="flex h-screen w-full overflow-hidden">
+  <AppSidebar />
+  <div className="min-w-0 flex-1">
+    <Navbar>
+      <NavbarContent>
+        <SidebarToggle />
+        <div className="flex-1" />
+        <div className="md:hidden">
+          <NavbarMobileMenu>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/settings")}>
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
+              Log out
+            </DropdownMenuItem>
+          </NavbarMobileMenu>
+        </div>
+      </NavbarContent>
+      <main>{/* 页面内容 */}</main>
+    </Navbar>
+  </div>
+</div>
+```
+
+## API
+
+### Navbar
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `className` | `string` | 自定义滚动容器样式 |
+| `children` | `ReactNode` | NavbarContent + 页面内容 |
+
+### NavbarContent
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `landing` | `boolean` | `false` | 是否为 landing 模式（启用 max-width 居中） |
+| `className` | `string` | `"max-w-screen-lg"` | 自定义样式，landing 模式下可覆盖默认最大宽度 |
+
+### NavbarLink
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `href` | `string` | `""` | 链接地址 |
+| `active` | `boolean` | `false` | 是否为当前激活状态 |
+| `onClick` | `() => void` | - | 点击回调 |
+
+### NavbarMobileMenu
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `children` | `ReactNode` | 菜单内容，应使用 `DropdownMenuItem` 包裹可点击元素 |
