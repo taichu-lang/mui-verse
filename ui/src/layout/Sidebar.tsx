@@ -1,6 +1,7 @@
 "use client";
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
+import { cn } from "@mui-verse/ui/utils/cn";
 import { Drawer, IconButton, useTheme } from "@mui/material";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useSidebar } from "./useSidebar";
@@ -73,5 +74,5 @@ export function SidebarFooter({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={`mt-auto flex pb-2 ${className}`}>{children}</div>;
+  return <div className={cn("mt-auto flex pb-2", className)}>{children}</div>;
 }

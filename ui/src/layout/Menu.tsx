@@ -2,6 +2,7 @@
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { useTheme } from "@mui-verse/ui/theme/useTheme";
+import { cn } from "@mui-verse/ui/utils/cn";
 import {
   Box,
   CardActionArea,
@@ -81,7 +82,11 @@ function DesktopMenu({ title, icon, href }: MenuData) {
   return (
     <Tooltip title={title} placement="right">
       <CardActionArea
-        className={`${isActive ? classes.active : classes.inactive} ${collapsed ? "aspect-square" : "w-full px-3 py-2"} rounded-lg`}
+        className={cn(
+          "rounded-lg",
+          isActive ? classes.active : classes.inactive,
+          collapsed ? "aspect-square" : "w-full px-3 py-2",
+        )}
         onClick={() => {
           router.push(href);
         }}
@@ -112,7 +117,10 @@ function MobileMenu({ title, icon, href }: MenuData) {
 
   return (
     <CardActionArea
-      className={`${isActive && "bg-gray-950 text-white"} w-full rounded-lg px-3 py-2`}
+      className={cn(
+        "w-full rounded-lg px-3 py-2",
+        isActive && "bg-gray-950 text-white",
+      )}
       onClick={() => {
         router.push(href);
         setCollapsed(true);

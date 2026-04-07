@@ -5,6 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@mui-verse/ui/components/DropdownMenu";
+import { cn } from "@mui-verse/ui/utils/cn";
 import {
   AppBar,
   IconButton,
@@ -31,7 +32,7 @@ export function Navbar({ children, className }: NavbarProps) {
   return (
     <div
       ref={setScrollEl}
-      className={`h-full w-full overflow-y-auto ${className}`}
+      className={cn("h-full w-full overflow-y-auto", className)}
     >
       <NavbarScrollContext.Provider value={scrollEl}>
         {children}
@@ -86,11 +87,11 @@ export function NavbarContent({
     >
       <Toolbar
         disableGutters
-        className={
-          landing
-            ? `mx-auto w-full px-4 md:px-6 ${className ?? "max-w-screen-lg"}`
-            : "w-full px-4 md:px-6"
-        }
+        className={cn(
+          "w-full px-4 md:px-6",
+          landing && "mx-auto max-w-screen-lg",
+          className,
+        )}
         sx={{
           minHeight: { xs: 56, md: 64 },
           gap: 2,
@@ -120,11 +121,12 @@ export function NavbarLink({
       <button
         type="button"
         onClick={onClick}
-        className={`cursor-pointer rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-gray-500/10 ${
+        className={cn(
+          "cursor-pointer rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-gray-500/10",
           active
             ? "text-primary-500 font-semibold"
-            : "font-medium opacity-70 hover:opacity-100"
-        }`}
+            : "font-medium opacity-70 hover:opacity-100",
+        )}
       >
         {children}
       </button>
