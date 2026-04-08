@@ -5,6 +5,7 @@
   "exports": {
     "./verse.css": "./src/verse.css",
     "./components/*": "./src/components/*.tsx",
+    "./components/inputs": "./src/components/inputs/index.ts",
     "./theme/*": "./src/theme/*.tsx",
     "./utils/*": "./src/utils/*.ts",
     "./hooks/*": "./src/hooks/*.tsx",
