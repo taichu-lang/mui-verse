@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`antialiased`}>
+    <html lang="en" className={`antialiased`} suppressHydrationWarning>
       <body>
         <ThemeProvider>
           <div className="flex h-screen w-full">{children}</div>
