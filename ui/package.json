@@ -12,9 +12,7 @@
     "./layout/*": "./src/layout/*.tsx"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "tsc",
     "lint": "eslint"
   },
   "devDependencies": {

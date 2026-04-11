@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "example": "bun run --filter examples dev",
-    "clean-all": "rm -rf examples/node_modules examples/.next bun.lock node_modules ui/node_modules"
+    "example": "bun run --cwd examples dev",
+    "build": "bun run --filter './ui' --filter './payment' build"
   },
   "workspaces": [
     "examples",
-    "ui"
+    "ui",
+    "payment"
   ],
   "catalog": {
     "react": "^19.2.4",

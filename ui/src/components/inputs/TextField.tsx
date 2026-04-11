@@ -5,7 +5,7 @@ import {
   TextField as MuiTextField,
   TextFieldProps as MuiTextProps,
 } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // Refer to ValidityState.
 //
@@ -40,6 +40,11 @@ export interface TextValidator {
   rules?: Partial<Record<TextValidationState, string>>;
 }
 
+interface InputError {
+  hasError: boolean;
+  message: string | null;
+}
+
 export type TextFieldProps = MuiTextProps & {
   onValueChange?: (value: string) => void;
   validator?: TextValidator;
@@ -59,19 +64,18 @@ export function TextField(props: TextFieldProps) {
     label,
     slotProps,
     value,
-    defaultValue, // 'defaultValue' is uncontrolled component in react, discard it.
+    type,
     ...otherProps
   } = props;
 
-  const [errorMsg, setErrorMsg] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>((value as string) ?? "");
+  // Might be changed during each change event.
+  const lastValidationResult = useRef<InputError | null>(null);
+  // Re-render ui on blur.
+  const [validation, setValidation] = useState<InputError | null>(null);
 
-  if (defaultValue && defaultValue != inputValue) {
-    setInputValue(defaultValue as string);
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let error = null;
+  const doValidate = (e: React.ChangeEvent<HTMLInputElement>): InputError => {
+    let message = null;
     let hasError = false;
 
     // Get HTML5 constraint validation.
@@ -81,28 +85,64 @@ export function TextField(props: TextFieldProps) {
         (key) => key !== "valid" && input.validity[key as keyof ValidityState],
       );
       if (invalidKey) {
+        console.log(invalidKey);
         hasError = true;
-        error = validator?.rules?.[invalidKey as TextValidationState];
+        message = validator?.rules?.[invalidKey as TextValidationState] || null;
       }
     }
 
     const value = e.target.value;
-    if (!error) {
-      error = validator?.fn?.(value) || null;
+    if (!message) {
+      const error = validator?.fn?.(value);
+      if (error) {
+        message = error;
+        hasError = true;
+      }
     }
 
-    if (hasError) {
-      setErrorMsg(error || "");
-      // Notify user about the value is invalid.
+    return {
+      hasError,
+      message,
+    };
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (validation) {
+      setValidation(null);
+    }
+
+    const result = doValidate(e);
+    lastValidationResult.current = result;
+
+    const value = e.target.value;
+    if (result.hasError) {
+      // Reset the value that user owned to clear the error input.
       onValueChange?.("");
     } else {
-      // Clear the error if the value is valid.
-      setErrorMsg("");
       onValueChange?.(value);
     }
 
     // No matter whether the value is valid or not, update the display.
     setInputValue(value);
+  };
+
+  const handleBlur = () => {
+    if (lastValidationResult.current?.hasError) {
+      setValidation(lastValidationResult.current);
+    } else {
+      // If the input type is number, we should convert the input to Number to
+      // trim the trailing zeros. Ex:
+      //
+      // - "01" => 1
+      // - "1.0" => 1
+      // - "-01" => -1
+      //
+      // Note that this conversation can not be done during change event.
+      if (type === "number") {
+        const num = Number(inputValue);
+        setInputValue(num.toString());
+      }
+    }
   };
 
   const buildLabel = () => {
@@ -122,14 +162,9 @@ export function TextField(props: TextFieldProps) {
     input = {
       ...input,
       className: "rounded-[8px]",
+      ...(type === "number" && { inputMode: "numeric", type: "number" }),
+      ...(readonly && { readOnly: true }),
     };
-
-    if (readonly) {
-      input = {
-        ...input,
-        readOnly: true,
-      };
-    }
 
     if (startIcon) {
       input = {
@@ -159,9 +194,11 @@ export function TextField(props: TextFieldProps) {
       name={otherProps.id} // Using for the field name in FormData.
       value={inputValue}
       onChange={handleChange}
-      error={!!errorMsg}
-      helperText={errorMsg || helperText}
+      onBlur={handleBlur}
+      error={validation?.hasError}
+      helperText={validation?.message || helperText}
       label={buildLabel()}
+      type={type === "number" ? "text" : type}
       slotProps={buildSlotProps()}
     />
   );
