@@ -1,35 +1,39 @@
 {
-  "name": "examples",
+  "name": "@mui-verse/payment",
   "version": "0.1.0",
   "private": true,
+  "exports": {
+    "./types": "./src/types.ts",
+    "./airwallex": "./src/airwallex/index.ts"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "tsc",
     "lint": "eslint"
   },
   "dependencies": {
-    "@emotion/react": "catalog:",
-    "@emotion/styled": "catalog:",
+    "@airwallex/components-sdk": "^1.28.4",
     "@mui-verse/ui": "workspace:*",
-    "@mui-verse/payment": "workspace:*",
-    "@mui/material": "catalog:",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.7.0",
-    "next": "catalog:",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "lucide-react": "^1.7.0"
   },
   "devDependencies": {
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "@mui/material": "catalog:",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "16.2.3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "next": "^16.2.2"
   },
   "ignoreScripts": [
     "sharp",

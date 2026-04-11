@@ -1,2 +1,3 @@
 @import "@mui-verse/ui/verse.css";
 @source "../../node_modules/@mui-verse/ui/src";
+@source "../../node_modules/@mui-verse/payment/src";
