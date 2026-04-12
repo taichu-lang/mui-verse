@@ -1,11 +1,10 @@
 "use client";
 
 import { Loading } from "@mui-verse/ui/components/effects";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useAuth, type AuthStore, type createAuthStore } from "./store";
 import type { BaseSession } from "./types";
-import { useLocale } from "next-intl";
 
 export interface AuthGuardProps<T extends BaseSession = BaseSession> {
   children: ReactNode;
@@ -29,8 +28,6 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
   store = useAuth as ReturnType<typeof createAuthStore<T>>,
   fallback = <Loading />,
 }: AuthGuardProps<T>) {
-  const locale = useLocale();
-
   const authStore = store() as AuthStore<T>;
   const {
     isLoading,
@@ -54,18 +51,16 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
     return unsubscribe;
   }, [loadSession, _initializeCrossTabSync]);
 
-  const pathname = usePathname();
   const router = useRouter();
-  const redirectTo = `/${locale}${redirectUrl}?redirect_uri=${encodeURIComponent(pathname)}`;
 
   // Handle unauthenticated state
   useEffect(() => {
     if (isLoading || !hasHydrated) return;
 
     if (!hasAuthorization()) {
-      router.replace(redirectTo);
+      router.replace(redirectUrl);
     }
-  }, [hasAuthorization, isLoading, hasHydrated, router, redirectTo]);
+  }, [hasAuthorization, isLoading, hasHydrated, router, redirectUrl]);
 
   // Loading state
   if (isLoading) {

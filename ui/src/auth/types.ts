@@ -4,5 +4,5 @@
  */
 export interface BaseSession {
   token: string;
-  expires_at: number; // Unix timestamp in milliseconds
+  expires_at: number; // Unix timestamp in seconds
 }
