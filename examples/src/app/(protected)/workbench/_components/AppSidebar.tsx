@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@mui-verse/ui/auth";
+import { useAuth } from "@/auth/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
