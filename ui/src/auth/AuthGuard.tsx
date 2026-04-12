@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useAuth, type AuthStore, type createAuthStore } from "./store";
 import type { BaseSession } from "./types";
+import { useLocale } from "next-intl";
 
 export interface AuthGuardProps<T extends BaseSession = BaseSession> {
   children: ReactNode;
@@ -28,7 +29,16 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
   store = useAuth as ReturnType<typeof createAuthStore<T>>,
   fallback = <Loading />,
 }: AuthGuardProps<T>) {
-  const { isLoading, hasHydrated, hasAuthorization } = store() as AuthStore<T>;
+  const locale = useLocale();
+
+  const authStore = store() as AuthStore<T>;
+  const {
+    isLoading,
+    hasHydrated,
+    hasAuthorization,
+    loadSession,
+    _initializeCrossTabSync,
+  } = authStore;
   const initializedRef = useRef(false);
 
   // Initialize session from cookie and setup cross-tab sync (once on mount)
@@ -36,19 +46,17 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
     if (initializedRef.current) return;
     initializedRef.current = true;
 
-    const { loadSession, _initializeCrossTabSync } =
-      store.getState() as AuthStore<T>;
     loadSession();
 
     // Setup cross-tab synchronization
     const unsubscribe = _initializeCrossTabSync();
 
     return unsubscribe;
-  }, [store]);
+  }, [loadSession, _initializeCrossTabSync]);
 
   const pathname = usePathname();
   const router = useRouter();
-  const redirectTo = `${redirectUrl}?redirect_uri=${encodeURIComponent(pathname)}`;
+  const redirectTo = `/${locale}${redirectUrl}?redirect_uri=${encodeURIComponent(pathname)}`;
 
   // Handle unauthenticated state
   useEffect(() => {
