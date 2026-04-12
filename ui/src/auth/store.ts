@@ -134,6 +134,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
           partialize: (state) => ({
             // session will be loaded from cookie or server action.
             error: state.error,
+            session: state.session,
           }),
           onRehydrateStorage: () => (state) => {
             if (state) {
