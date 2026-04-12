@@ -1,4 +1,5 @@
+export { ClipboardButton } from "./ClipboardButton";
 export { FormError } from "./FormError";
-export { NumberField } from "./NumberField";
+export { NumberField, type NumberFieldProps } from "./NumberField";
 export { PasswordField } from "./PasswordField";
-export { TextField } from "./TextField";
+export { TextField, type TextFieldProps } from "./TextField";
