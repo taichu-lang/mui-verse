@@ -4,4 +4,4 @@ export interface User extends BaseSession {
   email: string;
 }
 
-export const useAuth = createAuthStore({ cookieName: "x-example-verse" });
+export const useAuth = createAuthStore<User>({ cookieName: "x-example-verse" });
