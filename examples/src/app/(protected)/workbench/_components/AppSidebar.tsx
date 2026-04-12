@@ -1,10 +1,13 @@
+"use client";
+
+import { useAuth } from "@mui-verse/ui/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@mui-verse/ui/components/DropdownMenu";
+} from "@mui-verse/ui/components/navigation";
 import { Menu } from "@mui-verse/ui/layout/Menu";
 import {
   MenuList,
@@ -15,8 +18,17 @@ import {
 import { ThemeToggle } from "@mui-verse/ui/theme/ThemeToggle";
 import { Avatar, Typography } from "@mui/material";
 import { Biohazard, Home, LogOut, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AppSidebar() {
+  const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -39,7 +51,7 @@ export default function AppSidebar() {
                 <Typography>Profile</Typography>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="text-error-500 h-4 w-4" />
                 <Typography>Logout</Typography>
               </DropdownMenuItem>

@@ -4,7 +4,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@mui-verse/ui/components/DropdownMenu";
+} from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
 import {
   AppBar,

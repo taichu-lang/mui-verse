@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@mui-verse/ui/components/DropdownMenu";
+} from "@mui-verse/ui/components/navigation";
 import { NumberField, TextField } from "@mui-verse/ui/components/inputs";
 import { AirwallexCard } from "@mui-verse/payment/airwallex";
 import { Box, Button, Typography } from "@mui/material";

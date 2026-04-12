@@ -1,6 +1,6 @@
 "use client";
 
-import { DropdownMenuItem } from "@mui-verse/ui/components/DropdownMenu";
+import { DropdownMenuItem } from "@mui-verse/ui/components/navigation";
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import {
   Navbar,

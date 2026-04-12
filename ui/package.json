@@ -4,12 +4,15 @@
   "private": true,
   "exports": {
     "./verse.css": "./src/verse.css",
-    "./components/*": "./src/components/*.tsx",
+    "./components/navigation": "./src/components/navigation/index.ts",
     "./components/inputs": "./src/components/inputs/index.ts",
+    "./components/data": "./src/components/data/index.ts",
     "./theme/*": "./src/theme/*.tsx",
     "./utils/*": "./src/utils/*.ts",
     "./hooks/*": "./src/hooks/*.tsx",
-    "./layout/*": "./src/layout/*.tsx"
+    "./layout/*": "./src/layout/*.tsx",
+    "./types": "./src/types/index.ts",
+    "./auth": "./src/auth/index.ts"
   },
   "scripts": {
     "build": "tsc",
@@ -59,6 +62,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^1.7.0",
+    "pino": "^10.3.1",
     "tailwind-merge": "^3.5.0"
   }
 }
