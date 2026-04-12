@@ -1,19 +1,21 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
+import { AirwallexCard } from "@mui-verse/payment/airwallex";
+import { NumberField, TextField } from "@mui-verse/ui/components/inputs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@mui-verse/ui/components/navigation";
-import { NumberField, TextField } from "@mui-verse/ui/components/inputs";
-import { AirwallexCard } from "@mui-verse/payment/airwallex";
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 
 export default function Home() {
   const [value, setValue] = useState<string>("");
   const [num, setNum] = useState<number>(0);
+  const { session } = useAuth();
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -22,7 +24,7 @@ export default function Home() {
       </Typography>
       <DropdownMenu side="bottom">
         <DropdownMenuTrigger>
-          <Button>adonia12@126.com</Button>
+          <Button>{session?.email}</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>Profile</DropdownMenuItem>

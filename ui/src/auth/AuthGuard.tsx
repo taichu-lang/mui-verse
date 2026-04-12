@@ -1,15 +1,16 @@
 "use client";
 
+import { Loading } from "@mui-verse/ui/components/effects";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
-import { useAuth, type AuthStore } from "./store";
+import { useAuth, type AuthStore, type createAuthStore } from "./store";
 import type { BaseSession } from "./types";
 
-export interface AuthGuardProps {
+export interface AuthGuardProps<T extends BaseSession = BaseSession> {
   children: ReactNode;
   fallback?: ReactNode;
   redirectUrl?: string;
-  store?: typeof useAuth;
+  store?: ReturnType<typeof createAuthStore<T>>;
 }
 
 /**
@@ -21,14 +22,13 @@ export interface AuthGuardProps {
  *   <Dashboard />
  * </AuthGuard>
  */
-export function AuthGuard({
+export function AuthGuard<T extends BaseSession = BaseSession>({
   children,
-  fallback = <div>Loading...</div>,
   redirectUrl = "/login",
-  store = useAuth,
-}: AuthGuardProps) {
-  const { isLoading, hasHydrated, hasAuthorization } =
-    store() as AuthStore<BaseSession>;
+  store = useAuth as ReturnType<typeof createAuthStore<T>>,
+  fallback = <Loading />,
+}: AuthGuardProps<T>) {
+  const { isLoading, hasHydrated, hasAuthorization } = store() as AuthStore<T>;
   const initializedRef = useRef(false);
 
   // Initialize session from cookie and setup cross-tab sync (once on mount)
@@ -37,7 +37,7 @@ export function AuthGuard({
     initializedRef.current = true;
 
     const { loadSession, _initializeCrossTabSync } =
-      store.getState() as AuthStore<BaseSession>;
+      store.getState() as AuthStore<T>;
     loadSession();
 
     // Setup cross-tab synchronization
