@@ -11,6 +11,5 @@ export const useSidebar = create<SidebarState>()((set) => ({
   collapsed: true,
 
   toggleCollapsed: () => set((state) => ({ collapsed: !state.collapsed })),
-
   setCollapsed: (collapsed: boolean) => set({ collapsed }),
 }));

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
-import { useTheme } from "@mui-verse/ui/theme/useTheme";
+import { useTheme } from "@mui-verse/ui/theme";
 import { cn } from "@mui-verse/ui/utils/cn";
 import {
   Box,

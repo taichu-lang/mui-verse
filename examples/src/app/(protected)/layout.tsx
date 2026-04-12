@@ -1,3 +1,6 @@
+"use client";
+
+import { useAuth } from "@/auth/auth";
 import { AuthGuard } from "@mui-verse/ui/auth";
 
 export default function ProtectedLayout({
@@ -5,5 +8,5 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AuthGuard>{children}</AuthGuard>;
+  return <AuthGuard store={useAuth}>{children}</AuthGuard>;
 }

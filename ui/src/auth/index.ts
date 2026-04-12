@@ -1,3 +1,3 @@
 export { AuthGuard, type AuthGuardProps } from "./AuthGuard";
-export { useAuth } from "./store";
+export { useAuth, createAuthStore } from "./store";
 export type { BaseSession } from "./types";

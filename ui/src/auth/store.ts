@@ -9,6 +9,7 @@ import {
 import type { BaseSession } from "./types";
 
 const SESSION_SYNC_KEY = "__mv_session_sync_event__";
+const DEFAULT_COOKIE_NAME = "x-verse-auth-token";
 
 interface AuthState<T extends BaseSession = BaseSession> {
   session: T | null;
@@ -19,22 +20,22 @@ interface AuthState<T extends BaseSession = BaseSession> {
 
 interface AuthActions<T extends BaseSession = BaseSession> {
   setSession: (session: T) => Promise<void>;
-
   loadSession: () => Promise<void>;
-
   logout: () => Promise<void>;
-
   hasAuthorization: () => boolean;
-
   _initializeCrossTabSync: () => () => void;
 }
 
 export type AuthStore<T extends BaseSession = BaseSession> = AuthState<T> &
   AuthActions<T>;
 
-export function createAuthStore<T extends BaseSession = BaseSession>(
-  storeName: string = "auth",
-) {
+export function createAuthStore<T extends BaseSession = BaseSession>({
+  storeName = "auth",
+  cookieName = DEFAULT_COOKIE_NAME,
+}: {
+  storeName?: string;
+  cookieName?: string;
+}) {
   return create<AuthStore<T>>()(
     devtools(
       persist(
@@ -46,7 +47,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>(
 
           setSession: async (session) => {
             set({ session, error: null });
-            await setSessionCookie(session);
+            await setSessionCookie(session, cookieName);
 
             // Notify other tabs about the session change.
             if (typeof localStorage !== "undefined") {
@@ -63,7 +64,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>(
           loadSession: async () => {
             set({ isLoading: true });
             try {
-              const session = await getSessionCookie<T>();
+              const session = await getSessionCookie<T>(cookieName);
               if (session) {
                 set({ session, isLoading: false });
               } else {
@@ -82,7 +83,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>(
 
           logout: async () => {
             set({ session: null, error: null });
-            await removeSessionCookie();
+            await removeSessionCookie(cookieName);
 
             // Notify other tabs about the session change.
             if (typeof localStorage !== "undefined") {
@@ -98,8 +99,6 @@ export function createAuthStore<T extends BaseSession = BaseSession>(
 
           hasAuthorization: () => {
             const { session } = get();
-            console.log(">>> session: ", session);
-
             if (!session) {
               return false;
             }
@@ -152,4 +151,4 @@ export function createAuthStore<T extends BaseSession = BaseSession>(
  * For most apps, you can use this directly
  * For custom session types, create your own store with createAuthStore<T>()
  */
-export const useAuth = createAuthStore<BaseSession>();
+export const useAuth = createAuthStore<BaseSession>({});

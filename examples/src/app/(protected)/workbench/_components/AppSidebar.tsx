@@ -15,7 +15,7 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@mui-verse/ui/layout/Sidebar";
-import { ThemeToggle } from "@mui-verse/ui/theme/ThemeToggle";
+import { ThemeToggle } from "@mui-verse/ui/theme";
 import { Avatar, Typography } from "@mui/material";
 import { Biohazard, Home, LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
