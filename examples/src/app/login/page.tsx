@@ -1,12 +1,8 @@
 "use client";
 
-import { BaseSession, useAuth } from "@mui-verse/ui/auth";
+import { useAuth, User } from "@/auth/auth";
 import { Button } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-
-interface User extends BaseSession {
-  email: string;
-}
 
 export default function LoginPage() {
   const { setSession } = useAuth();

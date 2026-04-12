@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@mui-verse/ui/theme/ThemeProvider";
+import { ThemeProvider } from "@mui-verse/ui/theme";
 import type { Metadata } from "next";
 import "./globals.css";
 
