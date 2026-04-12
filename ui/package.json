@@ -7,7 +7,7 @@
     "./components/navigation": "./src/components/navigation/index.ts",
     "./components/inputs": "./src/components/inputs/index.ts",
     "./components/data": "./src/components/data/index.ts",
-    "./theme/*": "./src/theme/*.tsx",
+    "./theme": "./src/theme/index.ts",
     "./utils/*": "./src/utils/*.ts",
     "./hooks/*": "./src/hooks/*.tsx",
     "./layout/*": "./src/layout/*.tsx",
