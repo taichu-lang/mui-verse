@@ -25,5 +25,3 @@ export interface PaymentResponse {
   external?: ExternalCheckout;
   embedded?: EmbeddedCheckout;
 }
-
-export type CreatePaymentFn = (req: PaymentRequest) => Promise<PaymentResponse>;
