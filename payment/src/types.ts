@@ -1,10 +1,11 @@
 export type PaymentProviderType = "dukpay" | "airwallex";
-export type PaymentMethodType = "BANK_CARD" | "SBP" | "card";
+export type DukpayMethodType = "card" | "yoomoney";
+export type AirwallexMethodType = "card";
 
 export interface PaymentRequest {
   amount: number;
   currency: string;
-  payment_method: PaymentMethodType;
+  payment_method: DukpayMethodType | AirwallexMethodType;
   payment_provider: PaymentProviderType;
 }
 
