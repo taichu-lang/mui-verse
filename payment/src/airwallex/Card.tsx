@@ -21,6 +21,11 @@ import { CreditCard } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { initPayments } from "./util";
 
+interface PaymentError {
+  code: string;
+  message: string;
+}
+
 type CardContextValue = {
   numberElement: ElementTypes["cardNumber"] | null;
   numberElementComplete: boolean;
@@ -60,6 +65,8 @@ function CardElement<T extends keyof ElementOptionsTypes>({
   const id = `${type}-element`;
 
   useEffect(() => {
+    let element: ElementTypes[T] | null = null;
+
     const onReady = (event: CustomEvent) => {
       console.log(`${event.detail} is mounted.`);
       setLoading(false);
@@ -95,12 +102,9 @@ function CardElement<T extends keyof ElementOptionsTypes>({
 
     const initElement = async () => {
       const option = {
-        allowedCardNetworks: ["mastercard"],
+        allowedCardNetworks: ["mastercard", "visa"],
       };
-      const element = await createElement(
-        type,
-        option as ElementOptionsTypes[T],
-      );
+      element = await createElement(type, option as ElementOptionsTypes[T]);
       if (!element) return;
 
       if (type === "cardNumber") {
@@ -120,6 +124,18 @@ function CardElement<T extends keyof ElementOptionsTypes>({
     };
 
     initElement();
+
+    return () => {
+      if (element) {
+        element.unmount();
+        element.destroy();
+      }
+      const dom = document.getElementById(id);
+      dom?.removeEventListener("onReady", onReady as EventListener);
+      dom?.removeEventListener("onChange", onChange as EventListener);
+      dom?.removeEventListener("onBlur", onBlur as EventListener);
+      dom?.removeEventListener("onFocus", onFocus);
+    };
   }, [id, type, setValue]);
 
   return (
@@ -140,13 +156,23 @@ function CardElement<T extends keyof ElementOptionsTypes>({
 }
 
 // Refer to: https://www.airwallex.com/docs/payments/online-payments/embedded-elements/split-card-element/guest-user-checkout
-export function AirwallexCard({ order }: { order: PaymentResponse }) {
+export function AirwallexCard({
+  order,
+  locale = "en",
+  onSucceed,
+  onError,
+}: {
+  order: PaymentResponse;
+  locale: "zh" | "en" | "ru";
+  onSucceed?: () => void;
+  onError?: (message: string) => void;
+}) {
   const [loading, setLoading] = useState(true);
   const [value, setValue] = useState<CardContextValue>(initialCardContext);
 
   useEffect(() => {
-    initPayments().then(() => setLoading(false));
-  }, []);
+    initPayments(locale).then(() => setLoading(false));
+  }, [locale]);
 
   const handlePay = async () => {
     const {
@@ -171,9 +197,20 @@ export function AirwallexCard({ order }: { order: PaymentResponse }) {
         intent_id: order.payment_id,
         client_secret: order.embedded!.client_secret,
       });
+
+      // status: "SUCCEEDED"
       console.log("payment result: ", response);
+      onSucceed?.();
     } catch (err) {
+      // code: "3ds_cancel_success", details: undefined, message: "您已取消支付验证。请重试或选择其他支付方式。"
+      // code: "authentication_declined", message: "您未能成功验证付款。请重试，如果重试失败，请联系您的发卡行或切换至其他支付方式。"
       console.log("payment error: ", err);
+      const pe = err as PaymentError;
+      if (pe.code === "3ds_cancel_success") {
+        return;
+      }
+
+      onError?.(pe.message);
     }
   };
 
@@ -208,7 +245,6 @@ export function AirwallexCard({ order }: { order: PaymentResponse }) {
           <Button onClick={handlePay}>Pay</Button>
         </CardContent>
       </Card>
-      <div id="airwallex-3d-secure" />
     </CardContext.Provider>
   );
 }
