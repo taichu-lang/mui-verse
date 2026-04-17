@@ -65,6 +65,10 @@ export function TextField(props: TextFieldProps) {
     slotProps,
     value,
     type,
+    autoCapitalize = "none",
+    autoComplete = "off",
+    autoCorrect = "off",
+    spellCheck = "false",
     ...otherProps
   } = props;
 
@@ -182,9 +186,19 @@ export function TextField(props: TextFieldProps) {
       };
     }
 
+    let htmlInput = slotProps?.htmlInput ?? {};
+    htmlInput = {
+      ...htmlInput,
+      autoCapitalize,
+      autoComplete,
+      autoCorrect,
+      spellCheck,
+    };
+
     return {
       ...slotProps,
       input,
+      htmlInput,
     };
   };
 
