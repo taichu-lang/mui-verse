@@ -213,14 +213,6 @@ const createBaseTheme = (palette: PaletteOptions) =>
         defaultProps: {
           size: "small",
           margin: "dense",
-          slotProps: {
-            htmlInput: {
-              autoCapitalize: "none",
-              autoComplete: "off",
-              autoCorrect: "off",
-              spellCheck: "false",
-            },
-          },
         },
       },
       MuiInputLabel: {
