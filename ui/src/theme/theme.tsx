@@ -7,17 +7,17 @@ import { lightPalette } from "./light";
 // Refer to: https://www.radix-ui.com/themes/docs/theme/spacing
 const spaces = [0, 4, 8, 12, 16, 24, 32, 40, 48, 64];
 
-// Font stacks — Latin/Cyrillic fonts first, then CJK fallback
+// Font stacks — CSS variables are set by next/font/local (fonts.ts) on <html>
 const displayFont = [
-  '"DM Sans"',
-  '"Manrope"',
-  '"Alibaba PuHuiTi"',
+  "var(--font-dm-sans)",
+  "var(--font-manrope)",
+  "var(--font-alibaba-puhuiti)",
   "sans-serif",
 ].join(",");
 
 const bodyFont = [
-  '"Manrope"',
-  '"Noto Sans SC"',
+  "var(--font-manrope)",
+  "var(--font-noto-sans-sc)",
   '"PingFang SC"',
   '"Microsoft YaHei"',
   "sans-serif",
