@@ -19,7 +19,12 @@ import {
 } from "@mui/material";
 import { CreditCard } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { initPayments } from "./util";
+import { AirwallexLocale, initPayments } from "./util";
+
+interface PaymentError {
+  code: string;
+  message: string;
+}
 
 interface PaymentError {
   code: string;
@@ -163,7 +168,7 @@ export function AirwallexCard({
   onError,
 }: {
   order: PaymentResponse;
-  locale: "zh" | "en" | "ru";
+  locale: AirwallexLocale;
   onSucceed?: () => void;
   onError?: (message: string) => void;
 }) {

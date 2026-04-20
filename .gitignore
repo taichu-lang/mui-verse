@@ -39,3 +39,5 @@ next-env.d.ts
 
 ui/node_modules
 ui/next-env.d.ts
+
+.example-release/
