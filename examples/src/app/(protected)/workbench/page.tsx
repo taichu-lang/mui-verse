@@ -52,6 +52,7 @@ export default function Home() {
         {num}
         <NumberField onValueChange={setNum} />
         <AirwallexCard
+          locale="en"
           order={{
             order_id: "1",
             payment_id: "123",

@@ -2,11 +2,10 @@ import { logger } from "@mui-verse/ui/utils/logger";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import {
-  getSessionCookie,
-  removeSessionCookie,
-  setSessionCookie,
-} from "./cookies";
-import type { BaseSession } from "./types";
+  noopAdapter,
+  type AuthStorageAdapter,
+  type BaseSession,
+} from "./types";
 
 const SESSION_SYNC_KEY = "__mv_session_sync_event__";
 const DEFAULT_COOKIE_NAME = "x-verse-auth-token";
@@ -32,9 +31,11 @@ export type AuthStore<T extends BaseSession = BaseSession> = AuthState<T> &
 export function createAuthStore<T extends BaseSession = BaseSession>({
   storeName = "auth",
   cookieName = DEFAULT_COOKIE_NAME,
+  adapter = noopAdapter,
 }: {
   storeName?: string;
   cookieName?: string;
+  adapter?: AuthStorageAdapter;
 }) {
   return create<AuthStore<T>>()(
     devtools(
@@ -47,7 +48,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
 
           setSession: async (session) => {
             set({ session, error: null });
-            await setSessionCookie(session, cookieName);
+            await adapter.store<T>(cookieName, session);
 
             // Notify other tabs about the session change.
             if (typeof localStorage !== "undefined") {
@@ -64,7 +65,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
           loadSession: async () => {
             set({ isLoading: true });
             try {
-              const session = await getSessionCookie<T>(cookieName);
+              const session = await adapter.load<T>(cookieName);
               if (session) {
                 set({ session, isLoading: false });
               } else {
@@ -83,7 +84,7 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
 
           logout: async () => {
             set({ session: null, error: null });
-            await removeSessionCookie(cookieName);
+            await adapter.remove(cookieName);
 
             // Notify other tabs about the session change.
             if (typeof localStorage !== "undefined") {
@@ -146,10 +147,3 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
     ),
   );
 }
-
-/**
- * Default auth store instance
- * For most apps, you can use this directly
- * For custom session types, create your own store with createAuthStore<T>()
- */
-export const useAuth = createAuthStore<BaseSession>({});

@@ -5,16 +5,13 @@ version: "3"
 tasks:
   build-example:
     cmds:
-      - bun run --filter examples build
+      - bun run --cwd examples build
 
-  release-example:
+  package-example:
     cmds:
-      - cp -r examples/.next/standalone/examples .example-release
-      - cp -r examples/.next/static .example-release/.next/static
-      # - cp -r examples/public .example-release/public
-      - rm -rf .example-release/node_modules
-      - cp -r examples/.next/standalone/node_modules .example-release/
-      - cd .example-release/node_modules && ln -sF .bun/next@*/node_modules/next
+      - cp -r examples/.next/standalone/ .example-release
+      - cp -r examples/.next/static .example-release/examples/.next/static
+      # - cp -r examples/public .example-release/examples/
 
     deps:
       - build-example

@@ -1,6 +1,8 @@
 import { init } from "@airwallex/components-sdk";
 
-export async function initPayments(locale: "zh" | "en" | "ru") {
+export type AirwallexLocale = "zh" | "en" | "ru";
+
+export async function initPayments(locale: AirwallexLocale) {
   await init({
     enabledElements: ["payments"],
     env: "demo",

@@ -13,7 +13,9 @@
     "./hooks/*": "./src/hooks/*.tsx",
     "./layout/*": "./src/layout/*.tsx",
     "./types": "./src/types/index.ts",
-    "./auth": "./src/auth/index.ts"
+    "./auth": "./src/auth/index.ts",
+    "./server": "./src/platform/server/index.ts",
+    "./client": "./src/platform/client/index.ts"
   },
   "scripts": {
     "build": "tsc",
