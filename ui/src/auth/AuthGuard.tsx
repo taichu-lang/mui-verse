@@ -3,14 +3,14 @@
 import { Loading } from "@mui-verse/ui/components/effects";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
-import { useAuth, type AuthStore, type createAuthStore } from "./store";
+import { type AuthStore, type createAuthStore } from "./store";
 import type { BaseSession } from "./types";
 
 export interface AuthGuardProps<T extends BaseSession = BaseSession> {
   children: ReactNode;
+  store: ReturnType<typeof createAuthStore<T>>;
   fallback?: ReactNode;
   redirectUrl?: string;
-  store?: ReturnType<typeof createAuthStore<T>>;
 }
 
 /**
@@ -24,8 +24,8 @@ export interface AuthGuardProps<T extends BaseSession = BaseSession> {
  */
 export function AuthGuard<T extends BaseSession = BaseSession>({
   children,
+  store,
   redirectUrl = "/login",
-  store = useAuth as ReturnType<typeof createAuthStore<T>>,
   fallback = <Loading />,
 }: AuthGuardProps<T>) {
   const authStore = store() as AuthStore<T>;
