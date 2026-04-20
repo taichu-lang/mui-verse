@@ -1,5 +1,7 @@
-import { ThemeProvider } from "@mui-verse/ui/theme";
+import { Loading } from "@mui-verse/ui/components/effects";
+import { fontVariables, ThemeProvider } from "@mui-verse/ui/theme";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,10 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`antialiased`} suppressHydrationWarning>
+    <html lang="en" className={fontVariables} suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <div className="flex h-screen w-full">{children}</div>
+          <div className="flex h-screen w-full">
+            <Suspense fallback={<Loading />}>
+              {children}
+            </Suspense>
+          </div>
         </ThemeProvider>
       </body>
     </html>
