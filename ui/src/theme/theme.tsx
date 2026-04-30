@@ -107,15 +107,15 @@ const createBaseTheme = (palette: PaletteOptions) =>
         letterSpacing: "0em",
       },
       body1: {
-        fontSize: "14px",
+        fontSize: "16px",
         fontWeight: 400,
-        lineHeight: "20px",
+        lineHeight: "24px",
         letterSpacing: "0em",
       },
       body2: {
-        fontSize: "12px",
+        fontSize: "14px",
         fontWeight: 400,
-        lineHeight: "18px",
+        lineHeight: "20px",
         letterSpacing: "0.0025em",
       },
 
@@ -237,6 +237,14 @@ const createBaseTheme = (palette: PaletteOptions) =>
             fontSize: "14px",
             letterSpacing: 0,
             lineHeight: "20px",
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        // Default variant of TextField.
+        styleOverrides: {
+          input: {
+            padding: "12px 14px",
           },
         },
       },
