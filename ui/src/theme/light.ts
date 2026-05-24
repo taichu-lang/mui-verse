@@ -2,138 +2,151 @@ import { PaletteOptions } from "@mui/material";
 
 export const lightPalette: PaletteOptions = {
   mode: "light",
+
   // teal
   primary: {
-    50: "#F0FDFA",
-    100: "#CCFBF1",
-    200: "#99F6E4",
-    300: "#5EEAD4",
-    400: "#2DD4BF",
-    500: "#14B8A6",
-    600: "#0D9488",
-    700: "#0F766E",
-    800: "#115E59",
-    900: "#134E4A",
-    light: "#5EEAD4", // 300
-    main: "#14B8A6", // 500 (Radix Teal 6)
-    dark: "#0F766E", // 700
-    contrastText: "#FFFFFF",
+    50: "oklch(0.98 0.02 185)",
+    100: "oklch(0.94 0.05 185)",
+    200: "oklch(0.90 0.09 185)",
+    300: "oklch(0.85 0.13 185)",
+    400: "oklch(0.78 0.15 185)",
+    500: "oklch(0.70 0.14 185)",
+    600: "oklch(0.60 0.12 185)",
+    700: "oklch(0.50 0.10 188)",
+    800: "oklch(0.43 0.08 188)",
+    900: "oklch(0.38 0.06 188)",
+    light: "oklch(0.85 0.13 185)",
+    main: "oklch(0.70 0.14 185)",
+    dark: "oklch(0.50 0.10 188)",
+    contrastText: "oklch(1 0 0)",
   },
 
   // violet
   secondary: {
-    50: "#F5F3FF",
-    100: "#EDE9FE",
-    200: "#DDD6FE",
-    300: "#C4B5FD",
-    400: "#A78BFA",
-    500: "#8B5CF6",
-    600: "#7C3AED",
-    700: "#6D28D9",
-    800: "#5B21B6",
-    900: "#4C1D95",
-    light: "#C4B5FD",
-    main: "#8B5CF6",
-    dark: "#6D28D9",
-    contrastText: "#FFFFFF",
+    50: "oklch(0.97 0.02 293)",
+    100: "oklch(0.94 0.03 293)",
+    200: "oklch(0.89 0.06 293)",
+    300: "oklch(0.81 0.11 293)",
+    400: "oklch(0.70 0.18 293)",
+    500: "oklch(0.61 0.25 293)",
+    600: "oklch(0.54 0.28 293)",
+    700: "oklch(0.49 0.27 293)",
+    800: "oklch(0.43 0.23 293)",
+    900: "oklch(0.38 0.19 293)",
+    light: "oklch(0.81 0.11 293)",
+    main: "oklch(0.61 0.25 293)",
+    dark: "oklch(0.49 0.27 293)",
+    contrastText: "oklch(1 0 0)",
   },
 
+  // muted teal-cyan
   info: {
-    50: "#F5FBFC",
-    100: "#E8F6F8",
-    200: "#D0EEF2",
-    300: "#A8E0E8",
-    400: "#7ACDD8",
-    500: "#4A8B9C",
-    600: "#3A7B8C",
-    700: "#2A6B7C",
-    800: "#1A5B6C",
-    900: "#0A4B5C",
-    light: "#A8E0E8",
-    main: "#4A8B9C",
-    dark: "#2A6B7C",
-    contrastText: "#FFFFFF",
+    50: "oklch(0.98 0.012 220)",
+    100: "oklch(0.96 0.020 220)",
+    200: "oklch(0.92 0.030 220)",
+    300: "oklch(0.85 0.045 220)",
+    400: "oklch(0.78 0.060 220)",
+    500: "oklch(0.58 0.050 220)",
+    600: "oklch(0.51 0.048 220)",
+    700: "oklch(0.44 0.045 220)",
+    800: "oklch(0.37 0.040 220)",
+    900: "oklch(0.30 0.035 220)",
+    light: "oklch(0.85 0.045 220)",
+    main: "oklch(0.58 0.050 220)",
+    dark: "oklch(0.44 0.045 220)",
+    contrastText: "oklch(1 0 0)",
   },
 
   success: {
-    50: "#F8FCF9",
-    100: "#E6F7EB",
-    200: "#CCEFD8",
-    300: "#A8E2BF",
-    400: "#85D5A6",
-    500: "#5CB88C",
-    600: "#4C9A74",
-    700: "#3C7C5C",
-    800: "#2C5E44",
-    900: "#1C402C",
-    light: "#A8E2BF", // 300
-    main: "#5CB88C", // 500
-    dark: "#3C7C5C", // 700
-    contrastText: "#FFFFFF",
+    50: "oklch(0.98 0.012 150)",
+    100: "oklch(0.96 0.025 150)",
+    200: "oklch(0.92 0.045 150)",
+    300: "oklch(0.86 0.075 150)",
+    400: "oklch(0.80 0.100 150)",
+    500: "oklch(0.70 0.100 150)",
+    600: "oklch(0.62 0.090 150)",
+    700: "oklch(0.52 0.080 150)",
+    800: "oklch(0.42 0.070 150)",
+    900: "oklch(0.32 0.060 150)",
+    light: "oklch(0.86 0.075 150)",
+    main: "oklch(0.70 0.100 150)",
+    dark: "oklch(0.52 0.080 150)",
+    contrastText: "oklch(1 0 0)",
   },
 
+  // amber
   warning: {
-    50: "#FFFDF7",
-    100: "#FEF9E6",
-    200: "#FDF5D5",
-    300: "#FCE9A0", // light
-    400: "#FBD56A",
-    500: "#FBBF24", // main
-    600: "#F9A825",
-    700: "#EAB308", // dark
-    800: "#CA8A04",
-    900: "#B45309",
-    light: "#FCE9A0",
-    main: "#FBBF24",
-    dark: "#EAB308",
-    contrastText: "#57441C",
+    50: "oklch(0.99 0.02 95)",
+    100: "oklch(0.98 0.05 95)",
+    200: "oklch(0.96 0.08 95)",
+    300: "oklch(0.92 0.12 92)",
+    400: "oklch(0.88 0.15 88)",
+    500: "oklch(0.84 0.17 86)",
+    600: "oklch(0.77 0.16 80)",
+    700: "oklch(0.72 0.15 76)",
+    800: "oklch(0.65 0.14 72)",
+    900: "oklch(0.55 0.13 68)",
+    light: "oklch(0.92 0.12 92)",
+    main: "oklch(0.84 0.17 86)",
+    dark: "oklch(0.72 0.15 76)",
+    contrastText: "oklch(0.30 0.05 70)",
   },
 
+  // rose
   error: {
-    50: "#FEF2F7",
-    100: "#FCE7ED",
-    200: "#FACDD6",
-    300: "#F6A8B8", // light
-    400: "#F07D95",
-    500: "#E0526C", // main
-    600: "#C53F5D", // Radix Ruby 7
-    700: "#A12C45", // dark
-    800: "#881337", // Radix Pink 9
-    900: "#701A2D",
-    light: "#F6A8B8",
-    main: "#E0526C",
-    dark: "#A12C45",
-    contrastText: "#FFFFFF",
+    50: "oklch(0.98 0.012 15)",
+    100: "oklch(0.95 0.025 15)",
+    200: "oklch(0.90 0.045 15)",
+    300: "oklch(0.80 0.080 15)",
+    400: "oklch(0.72 0.130 15)",
+    500: "oklch(0.64 0.170 15)",
+    600: "oklch(0.55 0.160 13)",
+    700: "oklch(0.46 0.140 12)",
+    800: "oklch(0.38 0.120 12)",
+    900: "oklch(0.32 0.100 12)",
+    light: "oklch(0.80 0.080 15)",
+    main: "oklch(0.64 0.170 15)",
+    dark: "oklch(0.46 0.140 12)",
+    contrastText: "oklch(1 0 0)",
   },
 
   // Apple System Gray scale
   grey: {
-    50: "#F9F9F9",
-    100: "#F2F2F7",
-    200: "#E5E5EA",
-    300: "#D1D1D6",
-    400: "#C7C7CC",
-    500: "#AEAEB2",
-    600: "#8E8E93",
-    700: "#636366",
-    800: "#48484A",
-    900: "#3A3A3C",
-    A100: "#F2F2F7",
-    A200: "#E5E5EA",
-    A400: "#AEAEB2",
-    A700: "#636366",
+    50: "oklch(0.98 0 0)",
+    100: "oklch(0.96 0.003 280)",
+    200: "oklch(0.92 0.003 280)",
+    300: "oklch(0.86 0.004 280)",
+    400: "oklch(0.82 0.004 280)",
+    500: "oklch(0.74 0.004 280)",
+    600: "oklch(0.62 0.005 280)",
+    700: "oklch(0.46 0.005 280)",
+    800: "oklch(0.36 0.004 280)",
+    900: "oklch(0.30 0.004 280)",
+    A100: "oklch(0.96 0.003 280)",
+    A200: "oklch(0.92 0.003 280)",
+    A400: "oklch(0.74 0.004 280)",
+    A700: "oklch(0.46 0.005 280)",
+  },
+
+  // Near-black surface for the `color="dark"` button variant — mirrors dark.ts
+  // so the dark-on-light contained button reads consistently across schemes.
+  dark: {
+    main: "oklch(0.20 0.008 260)",
+    light: "oklch(0.28 0.008 260)",
+    dark: "oklch(0.16 0.005 260)",
+    contrastText: "oklch(0.96 0.005 260)",
   },
 
   text: {
-    primary: "#000000",
-    secondary: "#3C3C4399", // 60% opacity
-    disabled: "#3C3C434D", // 30% opacity
+    primary: "oklch(0 0 0)",
+    secondary: "oklch(0.30 0.004 280 / 0.60)",
+    disabled: "oklch(0.30 0.004 280 / 0.30)",
   },
 
   background: {
-    default: "#F2F2F7", // Apple grouped background
-    paper: "#FFFFFF",
+    default: "oklch(97.73% 0.002 165.08)",
+    paper: "oklch(1 0 0)",
   },
 
-  divider: "#3C3C434A", // ~29% opacity
+  divider: "oklch(0.30 0.004 280 / 0.29)",
 };

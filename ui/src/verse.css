@@ -1,6 +1,77 @@
 @layer theme, base, mui, components, utilities;
 @import "tailwindcss";
 
+/* Base font stack — emitted as a real CSS variable in :root so MUI can
+   reference it via var(--font-sans). Kept out of `@theme inline` because
+   inline tokens are not written to :root. */
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI (Custom)", Roboto, "Noto Sans",
+    system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/*
+ * Shadow tokens — scheme-scoped.
+ *
+ * Dark scheme uses inset white highlights + outer dark shadows for an
+ * embossed/recessed Metal-FX feel on near-black surfaces. Light scheme
+ * uses softer drop shadows (no inset highlights — they'd be invisible on
+ * white) and a thin inset wash on inputs to suggest a recessed field.
+ *
+ * MUI's `cssVariables: true` mode emits palette CSS variables at :root and
+ * tags the document with `data-mui-color-scheme="dark"|"light"` so we can
+ * scheme-scope additional design tokens like these.
+ */
+[data-mui-color-scheme="dark"] {
+  --mui-shadow-inset:
+    inset 0 1px 2px rgb(0 0 0 / 0.4), inset 0 -1px 0 rgb(255 255 255 / 0.04);
+
+  --mui-shadow-button:
+    inset 0 1px 0 rgb(255 255 255 / 0.1), 0 1px 2px rgb(0 0 0 / 0.5),
+    0 2px 6px rgb(0 0 0 / 0.25);
+
+  --mui-shadow-button-hover:
+    inset 0 1px 0 rgb(255 255 255 / 0.16), 0 2px 4px rgb(0 0 0 / 0.55),
+    0 4px 12px rgb(0 0 0 / 0.32);
+
+  --mui-shadow-surface-xs:
+    inset 0 1px 0 rgb(255 255 255 / 0.04), 0 1px 1px rgb(0 0 0 / 0.4),
+    0 1px 2px rgb(0 0 0 / 0.18);
+
+  --mui-shadow-surface-sm:
+    inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.45),
+    0 2px 4px rgb(0 0 0 / 0.22);
+
+  --mui-shadow-surface-md:
+    inset 0 1px 0 rgb(255 255 255 / 0.1), 0 2px 4px rgb(0 0 0 / 0.55),
+    0 4px 8px rgb(0 0 0 / 0.28);
+
+  --mui-shadow-surface-lg:
+    inset 0 1px 0 rgb(255 255 255 / 0.14), 0 4px 8px rgb(0 0 0 / 0.65),
+    0 8px 18px rgb(0 0 0 / 0.35);
+}
+
+[data-mui-color-scheme="light"] {
+  --mui-shadow-inset:
+    inset 0 1px 2px rgb(0 0 0 / 0.06), inset 0 -1px 0 rgb(255 255 255 / 0.6);
+
+  --mui-shadow-button: 0 1px 1px rgb(0 0 0 / 0.04), 0 1px 3px rgb(0 0 0 / 0.08);
+
+  --mui-shadow-button-hover:
+    0 2px 4px rgb(0 0 0 / 0.06), 0 4px 10px rgb(0 0 0 / 0.1);
+
+  --mui-shadow-surface-xs:
+    0 1px 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.04);
+
+  --mui-shadow-surface-sm:
+    0 1px 2px rgb(0 0 0 / 0.05), 0 2px 4px rgb(0 0 0 / 0.04);
+
+  --mui-shadow-surface-md:
+    0 2px 4px rgb(0 0 0 / 0.06), 0 4px 8px rgb(0 0 0 / 0.05);
+
+  --mui-shadow-surface-lg:
+    0 4px 8px rgb(0 0 0 / 0.08), 0 8px 18px rgb(0 0 0 / 0.06);
+}
 
 @theme inline {
   /* Material UI typography */
@@ -32,11 +103,19 @@
   --breakpoint-xl: 96rem; /* 1536px */
   --breakpoint-2xl: 120rem; /* 1920px */
 
-  /* Material UI theme colors */
-  --color-primary: rgb(var(--mui-palette-primary-mainChannel));
-  --color-primary-light: rgb(var(--mui-palette-primary-lightChannel));
-  --color-primary-dark: rgb(var(--mui-palette-primary-darkChannel));
-  --color-primary-contrast: rgb(var(--mui-palette-primary-contrastTextChannel));
+  /*
+   * Material UI theme colors.
+   *
+   * NOTE: palette values are authored in OKLCH (see theme/dark.ts), so we
+   * consume them directly via `var(--mui-palette-*-main)` rather than the
+   * old `rgb(var(--*Channel))` pattern. Tailwind v4 opacity modifiers
+   * (`bg-primary/50`) work through `color-mix(in oklab, ...)` and accept
+   * OKLCH literals natively.
+   */
+  --color-primary: var(--mui-palette-primary-main);
+  --color-primary-light: var(--mui-palette-primary-light);
+  --color-primary-dark: var(--mui-palette-primary-dark);
+  --color-primary-contrast: var(--mui-palette-primary-contrastText);
   --color-primary-50: var(--mui-palette-primary-50);
   --color-primary-100: var(--mui-palette-primary-100);
   --color-primary-200: var(--mui-palette-primary-200);
@@ -48,12 +127,10 @@
   --color-primary-800: var(--mui-palette-primary-800);
   --color-primary-900: var(--mui-palette-primary-900);
 
-  --color-secondary: rgb(var(--mui-palette-secondary-mainChannel));
-  --color-secondary-light: rgb(var(--mui-palette-secondary-lightChannel));
-  --color-secondary-dark: rgb(var(--mui-palette-secondary-darkChannel));
-  --color-secondary-contrast: rgb(
-    var(--mui-palette-secondary-contrastTextChannel)
-  );
+  --color-secondary: var(--mui-palette-secondary-main);
+  --color-secondary-light: var(--mui-palette-secondary-light);
+  --color-secondary-dark: var(--mui-palette-secondary-dark);
+  --color-secondary-contrast: var(--mui-palette-secondary-contrastText);
   --color-secondary-50: var(--mui-palette-secondary-50);
   --color-secondary-100: var(--mui-palette-secondary-100);
   --color-secondary-200: var(--mui-palette-secondary-200);
@@ -66,10 +143,10 @@
   --color-secondary-900: var(--mui-palette-secondary-900);
 
   /* Material UI status colors */
-  --color-info: rgb(var(--mui-palette-info-mainChannel));
-  --color-info-light: rgb(var(--mui-palette-info-lightChannel));
-  --color-info-dark: rgb(var(--mui-palette-info-darkChannel));
-  --color-info-contrast: rgb(var(--mui-palette-info-contrastTextChannel));
+  --color-info: var(--mui-palette-info-main);
+  --color-info-light: var(--mui-palette-info-light);
+  --color-info-dark: var(--mui-palette-info-dark);
+  --color-info-contrast: var(--mui-palette-info-contrastText);
   --color-info-50: var(--mui-palette-info-50);
   --color-info-100: var(--mui-palette-info-100);
   --color-info-200: var(--mui-palette-info-200);
@@ -81,10 +158,10 @@
   --color-info-800: var(--mui-palette-info-800);
   --color-info-900: var(--mui-palette-info-900);
 
-  --color-error: rgb(var(--mui-palette-error-mainChannel));
-  --color-error-light: rgb(var(--mui-palette-error-lightChannel));
-  --color-error-dark: rgb(var(--mui-palette-error-darkChannel));
-  --color-error-contrast: rgb(var(--mui-palette-error-contrastTextChannel));
+  --color-error: var(--mui-palette-error-main);
+  --color-error-light: var(--mui-palette-error-light);
+  --color-error-dark: var(--mui-palette-error-dark);
+  --color-error-contrast: var(--mui-palette-error-contrastText);
   --color-error-50: var(--mui-palette-error-50);
   --color-error-100: var(--mui-palette-error-100);
   --color-error-200: var(--mui-palette-error-200);
@@ -96,10 +173,10 @@
   --color-error-800: var(--mui-palette-error-800);
   --color-error-900: var(--mui-palette-error-900);
 
-  --color-success: rgb(var(--mui-palette-success-mainChannel));
-  --color-success-light: rgb(var(--mui-palette-success-lightChannel));
-  --color-success-dark: rgb(var(--mui-palette-success-darkChannel));
-  --color-success-contrast: rgb(var(--mui-palette-success-contrastTextChannel));
+  --color-success: var(--mui-palette-success-main);
+  --color-success-light: var(--mui-palette-success-light);
+  --color-success-dark: var(--mui-palette-success-dark);
+  --color-success-contrast: var(--mui-palette-success-contrastText);
   --color-success-50: var(--mui-palette-success-50);
   --color-success-100: var(--mui-palette-success-100);
   --color-success-200: var(--mui-palette-success-200);
@@ -111,10 +188,10 @@
   --color-success-800: var(--mui-palette-success-800);
   --color-success-900: var(--mui-palette-success-900);
 
-  --color-warning: rgb(var(--mui-palette-warning-mainChannel));
-  --color-warning-light: rgb(var(--mui-palette-warning-lightChannel));
-  --color-warning-dark: rgb(var(--mui-palette-warning-darkChannel));
-  --color-warning-contrast: rgb(var(--mui-palette-warning-contrastTextChannel));
+  --color-warning: var(--mui-palette-warning-main);
+  --color-warning-light: var(--mui-palette-warning-light);
+  --color-warning-dark: var(--mui-palette-warning-dark);
+  --color-warning-contrast: var(--mui-palette-warning-contrastText);
   --color-warning-50: var(--mui-palette-warning-50);
   --color-warning-100: var(--mui-palette-warning-100);
   --color-warning-200: var(--mui-palette-warning-200);
@@ -127,16 +204,16 @@
   --color-warning-900: var(--mui-palette-warning-900);
 
   /* Material UI text & common colors */
-  --color-text-primary: rgb(var(--mui-palette-text-primaryChannel));
-  --color-text-secondary: rgb(var(--mui-palette-text-secondaryChannel));
+  --color-text-primary: var(--mui-palette-text-primary);
+  --color-text-secondary: var(--mui-palette-text-secondary);
   --color-text-disabled: var(--mui-palette-text-disabled);
   --color-common-background: var(--mui-palette-common-background);
   --color-common-onBackground: var(--mui-palette-common-onBackground);
   --color-divider: var(--mui-palette-divider);
 
   /* Material UI background colors */
-  --color-background-default: rgb(var(--mui-palette-background-defaultChannel));
-  --color-background-paper: rgb(var(--mui-palette-background-paperChannel));
+  --color-background-default: var(--mui-palette-background-default);
+  --color-background-paper: var(--mui-palette-background-paper);
 
   /* Material UI action colors */
   --color-action-active: var(--mui-palette-action-active);
@@ -265,6 +342,15 @@
 
   /* Tooltip */
   --color-Tooltip-bg: var(--mui-palette-Tooltip-bg);
+
+  /* Metal-FX shadow tokens (scheme-scoped — see [data-mui-color-scheme="*"] above) */
+  --shadow-inset: var(--mui-shadow-inset);
+  --shadow-button: var(--mui-shadow-button);
+  --shadow-button-hover: var(--mui-shadow-button-hover);
+  --shadow-surface-xs: var(--mui-shadow-surface-xs);
+  --shadow-surface-sm: var(--mui-shadow-surface-sm);
+  --shadow-surface-md: var(--mui-shadow-surface-md);
+  --shadow-surface-lg: var(--mui-shadow-surface-lg);
 
   /* Material UI shadows */
   --shadow-1: var(--mui-shadows-1);
