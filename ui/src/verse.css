@@ -564,4 +564,37 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--mui-palette-text-secondary);
   }
+
+  .transition-cubic {
+    --transition-cubic-duration: 0.5s;
+    --transition-cubic-timing: cubic-bezier(0.65, 0, 0.35, 1);
+    position: relative;
+    isolation: isolate;
+    transition:
+      scale var(--transition-cubic-duration) var(--transition-cubic-timing),
+      transform var(--transition-cubic-duration) var(--transition-cubic-timing),
+      border-radius var(--transition-cubic-duration)
+        var(--transition-cubic-timing),
+      opacity var(--transition-cubic-duration) var(--transition-cubic-timing),
+      border-color var(--transition-cubic-duration)
+        var(--transition-cubic-timing),
+      box-shadow var(--transition-cubic-duration)
+        var(--transition-cubic-timing);
+  }
+
+  .transition-cubic::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--transition-cubic-bg, transparent);
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path var(--transition-cubic-duration)
+      var(--transition-cubic-timing);
+  }
+
+  .transition-cubic:hover::before {
+    clip-path: circle(100% at 50% 50%);
+  }
 }

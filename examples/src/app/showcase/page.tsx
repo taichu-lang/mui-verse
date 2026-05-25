@@ -248,6 +248,19 @@ export default function ShowcasePage() {
             </Typography>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader title="Transition" />
+          <CardContent className="flex gap-2">
+            <div className="transition-cubic w-fit rounded-2xl border border-transparent px-4 py-2 [--transition-cubic-bg:var(--mui-palette-primary-main)] hover:border-white">
+              Button
+            </div>
+
+            <div className="transition-cubic w-fit rounded-2xl px-4 py-2 ring-1 ring-transparent [--transition-cubic-bg:var(--mui-palette-primary-main)] hover:ring-white">
+              Button
+            </div>
+          </CardContent>
+        </Card>
       </Box>
     </Box>
   );
