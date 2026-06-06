@@ -9,6 +9,7 @@
     "./components/data": "./src/components/data/index.ts",
     "./components/effects": "./src/components/effects/index.ts",
     "./components/icons": "./src/components/icons/index.ts",
+    "./components/buttons": "./src/components/buttons/index.ts",
     "./theme": "./src/theme/index.ts",
     "./utils/*": "./src/utils/*.ts",
     "./hooks/*": "./src/hooks/*.tsx",

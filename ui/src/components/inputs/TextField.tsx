@@ -174,7 +174,9 @@ export function TextField(props: TextFieldProps) {
       input = {
         ...input,
         startAdornment: (
-          <InputAdornment position="start">{startIcon}</InputAdornment>
+          <InputAdornment position="start" sx={{ p: 0, m: 0 }}>
+            {startIcon}
+          </InputAdornment>
         ),
       };
     }
@@ -182,7 +184,11 @@ export function TextField(props: TextFieldProps) {
     if (endIcon) {
       input = {
         ...input,
-        endAdornment: <InputAdornment position="end">{endIcon}</InputAdornment>,
+        endAdornment: (
+          <InputAdornment position="end" sx={{ p: 0, m: 0 }}>
+            {endIcon}
+          </InputAdornment>
+        ),
       };
     }
 

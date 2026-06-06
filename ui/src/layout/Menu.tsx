@@ -96,7 +96,7 @@ export function DesktopMenu({ title, icon, href, path }: MenuData) {
         ) : (
           <Box display={"flex"} alignItems={"center"} gap={1.5} px={2}>
             {icon}
-            <Typography variant="body1">{title}</Typography>
+            <Typography variant="body2">{title}</Typography>
           </Box>
         )}
       </CardActionArea>
@@ -119,7 +119,7 @@ export function MobileMenu({ title, icon, href, path }: MenuData) {
     >
       <Box display="flex" alignItems="center" gap={1.5} px={2}>
         {icon}
-        <Typography variant="body1">{title}</Typography>
+        <Typography variant="body2">{title}</Typography>
       </Box>
     </CardActionArea>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { IconTextButton } from "@mui-verse/ui/components/buttons";
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Drawer, IconButton, useTheme } from "@mui/material";
@@ -43,13 +44,20 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function SidebarToggle() {
+export function SidebarToggle({
+  className,
+  variant = "text",
+}: {
+  className?: string;
+  variant?: "contained" | "text";
+}) {
   const { collapsed, toggleCollapsed } = useSidebar();
+  const Comp = variant === "text" ? IconTextButton : IconButton;
 
   return (
-    <IconButton onClick={toggleCollapsed} sx={{ color: "text.primary" }}>
-      {collapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
-    </IconButton>
+    <Comp onClick={toggleCollapsed} className={className}>
+      {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+    </Comp>
   );
 }
 
@@ -61,12 +69,7 @@ export function SidebarHeader({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "flex h-14 flex-col items-center justify-center",
-        className,
-      )}
-    >
+    <div className={cn("flex h-14 items-center justify-center", className)}>
       {children}
     </div>
   );
