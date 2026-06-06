@@ -1,7 +1,6 @@
 "use client";
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
-import { useTheme } from "@mui-verse/ui/theme";
 import { cn } from "@mui-verse/ui/utils/cn";
 import {
   Box,
@@ -60,32 +59,28 @@ export const MenuGroup = (props: MenuGroupProps) => {
   );
 };
 
-export type MenuData = {
+export interface MenuProps {
   title: string;
   icon: React.ReactNode;
   href: string;
-};
+}
 
-function DesktopMenu({ title, icon, href }: MenuData) {
-  const path = usePathname();
+export interface MenuData extends MenuProps {
+  path: string;
+}
+
+export function DesktopMenu({ title, icon, href, path }: MenuData) {
   const router = useRouter();
   const isActive = path === href || path.startsWith(`${href}/`);
 
-  const { isDark } = useTheme();
   const { collapsed } = useSidebar();
-
-  const classes = {
-    active: isDark ? "bg-gray-50" : "bg-gray-950 text-gray-50",
-    inactive: "hover:bg-gray-A700 hover:text-gray-50",
-  };
 
   return (
     <Tooltip title={title} placement="right">
       <CardActionArea
         className={cn(
-          "rounded-lg",
-          isActive ? classes.active : classes.inactive,
-          collapsed ? "aspect-square" : "w-full px-3 py-2",
+          isActive ? "bg-gray-200" : "hover:bg-gray-200",
+          collapsed ? "aspect-square rounded-lg" : "w-full rounded-lg py-1.25",
         )}
         onClick={() => {
           router.push(href);
@@ -109,18 +104,14 @@ function DesktopMenu({ title, icon, href }: MenuData) {
   );
 }
 
-function MobileMenu({ title, icon, href }: MenuData) {
-  const path = usePathname();
+export function MobileMenu({ title, icon, href, path }: MenuData) {
   const router = useRouter();
   const isActive = path === href || path.startsWith(`${href}/`);
   const { setCollapsed } = useSidebar();
 
   return (
     <CardActionArea
-      className={cn(
-        "w-full rounded-lg px-3 py-2",
-        isActive && "bg-gray-950 text-white",
-      )}
+      className={cn("w-full rounded-lg py-1.25", isActive && "bg-gray-200")}
       onClick={() => {
         router.push(href);
         setCollapsed(true);
@@ -134,11 +125,12 @@ function MobileMenu({ title, icon, href }: MenuData) {
   );
 }
 
-export function Menu(props: MenuData) {
+export function Menu(props: MenuProps) {
   const isMobile = useMobile();
+  const path = usePathname();
   if (isMobile) {
-    return <MobileMenu {...props} />;
+    return <MobileMenu {...props} path={path} />;
   }
 
-  return <DesktopMenu {...props} />;
+  return <DesktopMenu {...props} path={path} />;
 }
