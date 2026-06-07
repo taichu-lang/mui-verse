@@ -61,19 +61,35 @@ export const MenuGroup = (props: MenuGroupProps) => {
 
 export interface MenuProps {
   title: string;
-  icon: React.ReactNode;
-  href: string;
+  icon?: React.ReactNode;
+  href?: string;
 }
 
 export interface MenuData extends MenuProps {
   path: string;
+  controlled?: {
+    onClick?: () => void;
+    active: boolean;
+  };
 }
 
-export function DesktopMenu({ title, icon, href, path }: MenuData) {
+export function DesktopMenu({ title, icon, href, path, controlled }: MenuData) {
   const router = useRouter();
-  const isActive = path === href || path.startsWith(`${href}/`);
-
   const { collapsed } = useSidebar();
+
+  const isActive = controlled
+    ? controlled.active
+    : path === href || path.startsWith(`${href}/`);
+  const handleClick = () => {
+    if (controlled) {
+      controlled.onClick?.();
+      return;
+    }
+
+    if (href) {
+      router.push(href);
+    }
+  };
 
   return (
     <Tooltip title={title} placement="right">
@@ -82,9 +98,7 @@ export function DesktopMenu({ title, icon, href, path }: MenuData) {
           isActive ? "bg-gray-200" : "hover:bg-gray-200",
           collapsed ? "aspect-square rounded-lg" : "w-full rounded-lg py-1.25",
         )}
-        onClick={() => {
-          router.push(href);
-        }}
+        onClick={handleClick}
       >
         {collapsed ? (
           <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
@@ -104,18 +118,24 @@ export function DesktopMenu({ title, icon, href, path }: MenuData) {
   );
 }
 
-export function MobileMenu({ title, icon, href, path }: MenuData) {
+export function MobileMenu({ title, icon, href, path, controlled }: MenuData) {
   const router = useRouter();
-  const isActive = path === href || path.startsWith(`${href}/`);
   const { setCollapsed } = useSidebar();
+
+  const isActive = controlled
+    ? controlled.active
+    : path === href || path.startsWith(`${href}/`);
+  const handleClick = () => {
+    if (href) {
+      router.push(href);
+    }
+    setCollapsed(true);
+  };
 
   return (
     <CardActionArea
       className={cn("w-full rounded-lg py-1.25", isActive && "bg-gray-200")}
-      onClick={() => {
-        router.push(href);
-        setCollapsed(true);
-      }}
+      onClick={handleClick}
     >
       <Box display="flex" alignItems="center" gap={1.5} px={2}>
         {icon}
