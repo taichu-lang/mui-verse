@@ -9,3 +9,11 @@ export {
   type DropdownMenuProps,
   type DropdownMenuTriggerProps,
 } from "./DropdownMenu";
+
+export {
+  SwipeableMenu,
+  SwipeableMenuContent,
+  SwipeableMenuItem,
+  SwipeableMenuTrigger,
+  type SwipeableMenuItemProps,
+} from "./SwipeableMenu";
