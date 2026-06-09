@@ -1,3 +1,5 @@
+"use client";
+
 import { useTheme } from "@mui-verse/ui/theme";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { MenuItem, MenuItemProps, SwipeableDrawer } from "@mui/material";

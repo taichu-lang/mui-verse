@@ -1,13 +1,15 @@
 import { cn } from "@mui-verse/ui/utils/cn";
 
+type IconTextButtonProps = React.HTMLAttributes<HTMLDivElement> & {
+  ref?: React.Ref<HTMLDivElement>;
+};
+
 export function IconTextButton({
   ref,
   children,
   className,
   ...rest
-}: React.HTMLAttributes<HTMLDivElement> & {
-  ref?: React.Ref<HTMLDivElement>;
-}) {
+}: IconTextButtonProps) {
   return (
     <div
       ref={ref}
@@ -19,5 +21,14 @@ export function IconTextButton({
     >
       {children}
     </div>
+  );
+}
+
+export function IconSquareButton({ className, ...props }: IconTextButtonProps) {
+  return (
+    <IconTextButton
+      {...props}
+      className={cn("aspect-square rounded-lg", className)}
+    />
   );
 }

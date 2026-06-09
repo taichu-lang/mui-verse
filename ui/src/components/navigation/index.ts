@@ -17,3 +17,10 @@ export {
   SwipeableMenuTrigger,
   type SwipeableMenuItemProps,
 } from "./SwipeableMenu";
+
+export {
+  PillTab,
+  PillTabs,
+  type PillTabProps,
+  type PillTabsProps,
+} from "./PillTabs";
