@@ -2,15 +2,32 @@
 
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Tab, type TabProps, Tabs, type TabsProps } from "@mui/material";
+import { useTabContext } from "./Tabs";
 
 export type PillTabsProps = Omit<
   TabsProps,
-  "indicatorColor" | "textColor" | "variant"
+  "indicatorColor" | "textColor" | "value"
 >;
 
-export function PillTabs({ sx, slotProps, ...rest }: PillTabsProps) {
+export function PillTabs({
+  variant = "fullWidth",
+  sx,
+  slotProps,
+  onChange,
+  ...rest
+}: PillTabsProps) {
+  const { value, onValueChange } = useTabContext();
+
+  const handleChange = (event: React.SyntheticEvent, value: string) => {
+    onValueChange(value);
+    onChange?.(event, value);
+  };
+
   return (
     <Tabs
+      value={value}
+      onChange={handleChange}
+      variant={variant}
       sx={{
         display: "inline-flex",
         minHeight: 0,
@@ -52,7 +69,7 @@ export function PillTab({ sx, className, ...rest }: PillTabProps) {
         borderRadius: 9999,
         ...sx,
       }}
-      className={cn("h-7 w-16", className)}
+      className={cn("hover:text-text-primary h-7 w-16", className)}
       {...rest}
     />
   );

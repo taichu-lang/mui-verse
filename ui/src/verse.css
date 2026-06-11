@@ -578,8 +578,7 @@
       opacity var(--transition-cubic-duration) var(--transition-cubic-timing),
       border-color var(--transition-cubic-duration)
         var(--transition-cubic-timing),
-      box-shadow var(--transition-cubic-duration)
-        var(--transition-cubic-timing);
+      box-shadow var(--transition-cubic-duration) var(--transition-cubic-timing);
   }
 
   .transition-cubic::before {

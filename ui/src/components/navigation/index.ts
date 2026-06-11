@@ -24,3 +24,5 @@ export {
   type PillTabProps,
   type PillTabsProps,
 } from "./PillTabs";
+
+export { InsetTab, InsetTabs, TabContext, TabPanel } from "./Tabs";
