@@ -31,15 +31,20 @@ function useSwipeableMenu() {
 export function SwipeableMenu({
   defaultOpen = false,
   side = "bottom",
+  onClose,
   children,
 }: {
   defaultOpen?: boolean;
   side?: Side;
+  onClose?: () => void;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState<boolean>(defaultOpen);
   const onOpen = useCallback(() => setOpen(true), []);
-  const onClose = useCallback(() => setOpen(false), []);
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    onClose?.();
+  }, [onClose]);
 
   return (
     <SwipeableMenuContext.Provider
@@ -47,7 +52,7 @@ export function SwipeableMenu({
         open,
         side,
         onOpen,
-        onClose,
+        onClose: handleClose,
       }}
     >
       {children}
@@ -153,5 +158,13 @@ export function SwipeableMenuItem({
       }}
       {...props}
     />
+  );
+}
+
+export function SwipeableIndicator() {
+  return (
+    <div className="mb-2 flex h-1.25 w-full items-center justify-center">
+      <div className="h-full w-10 rounded-xl bg-gray-300"></div>
+    </div>
   );
 }

@@ -189,11 +189,10 @@ export function DropdownMenuContent({
           elevation: 0,
           sx: {
             minWidth: 160,
-            borderRadius: "8px",
-            border: "1px solid",
+            borderRadius: "10px",
+            border: "0.5px solid",
             borderColor: "divider",
-            boxShadow:
-              "0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2)",
+            boxShadow: "var(--mui-shadow-surface-lg)",
             py: 0.5,
             ...sx,
           },

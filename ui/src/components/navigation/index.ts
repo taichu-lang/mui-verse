@@ -11,6 +11,7 @@ export {
 } from "./DropdownMenu";
 
 export {
+  SwipeableIndicator,
   SwipeableMenu,
   SwipeableMenuContent,
   SwipeableMenuItem,

@@ -14,7 +14,7 @@ export function AvatarCard({
 }) {
   const { sx, ...rest } = avatar;
   return (
-    <div className={cn("flex items-center gap-1", className)}>
+    <div className={cn("flex items-center gap-2.5", className)}>
       <Avatar {...rest} sx={{ width: 36, height: 36, ...sx }}></Avatar>
       <div className="flex flex-col">
         {typeof title === "string" ? (

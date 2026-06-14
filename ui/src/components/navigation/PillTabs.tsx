@@ -31,7 +31,7 @@ export function PillTabs({
       sx={{
         display: "inline-flex",
         minHeight: 0,
-        p: 0.5,
+        p: 0.25,
         borderRadius: 9999,
         bgcolor: "background.paper",
         "& .MuiTabs-list": {
