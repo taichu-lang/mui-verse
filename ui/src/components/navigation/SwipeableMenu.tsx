@@ -163,8 +163,8 @@ export function SwipeableMenuItem({
 
 export function SwipeableIndicator() {
   return (
-    <div className="mb-2 flex h-1.25 w-full items-center justify-center">
-      <div className="h-full w-10 rounded-xl bg-gray-300"></div>
+    <div className="mb-2 flex w-full items-center justify-center">
+      <div className="h-1.25 w-10 rounded-xl bg-gray-300"></div>
     </div>
   );
 }
