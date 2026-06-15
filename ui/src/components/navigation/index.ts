@@ -16,6 +16,7 @@ export {
   SwipeableMenuContent,
   SwipeableMenuItem,
   SwipeableMenuTrigger,
+  useSwipeableMenu,
   type SwipeableMenuItemProps,
 } from "./SwipeableMenu";
 

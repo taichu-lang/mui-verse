@@ -12,19 +12,21 @@ interface SwipeableMenuContextValue {
   side: Side;
   onOpen: () => void;
   onClose: () => void;
+  close: () => void;
 }
 
 const SwipeableMenuContext = createContext<SwipeableMenuContextValue | null>(
   null,
 );
 
-function useSwipeableMenu() {
+export function useSwipeableMenu() {
   const ctx = useContext(SwipeableMenuContext);
   if (!ctx) {
     throw new Error(
       "SwipeableMenu compound components must be used within <SwipeableMenu>",
     );
   }
+
   return ctx;
 }
 
@@ -46,6 +48,10 @@ export function SwipeableMenu({
     onClose?.();
   }, [onClose]);
 
+  const close = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   return (
     <SwipeableMenuContext.Provider
       value={{
@@ -53,6 +59,7 @@ export function SwipeableMenu({
         side,
         onOpen,
         onClose: handleClose,
+        close,
       }}
     >
       {children}
