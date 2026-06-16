@@ -14,22 +14,25 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   const isMobile = useMobile();
   const theme = useTheme();
 
-  const width = isMobile ? "80vw" : collapsed ? theme.spacing(8) : "14rem";
-
-  if (collapsed) {
-    return <></>;
-  }
+  const paperWidth = isMobile ? "80vw" : "14rem";
+  const width = isMobile ? 0 : collapsed ? 0 : "14rem";
 
   return (
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
-      open={isMobile ? !collapsed : true}
+      open={!collapsed}
       onClose={toggleCollapsed}
       sx={{
-        width: width,
+        width,
         flexShrink: 0,
+        transition: theme.transitions.create("width", {
+          easing: theme.transitions.easing.sharp,
+          duration: collapsed
+            ? theme.transitions.duration.leavingScreen
+            : theme.transitions.duration.enteringScreen,
+        }),
         "& .MuiDrawer-paper": {
-          width: width,
+          width: paperWidth,
           boxSizing: "border-box",
           border: 0,
           background: isMobile ? theme.palette.background.paper : "transparent",
