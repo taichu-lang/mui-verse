@@ -7,7 +7,13 @@ import { Drawer, IconButton, useTheme } from "@mui/material";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useInitSidebar, useSidebar } from "./useSidebar";
 
-export function Sidebar({ children }: { children: React.ReactNode }) {
+export function Sidebar({
+  children,
+  inline = false,
+}: {
+  children: React.ReactNode;
+  inline?: boolean;
+}) {
   useInitSidebar();
 
   const { collapsed, toggleCollapsed } = useSidebar();
@@ -16,6 +22,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   const paperWidth = isMobile ? "80vw" : "14rem";
   const width = isMobile ? 0 : collapsed ? 0 : "14rem";
+  const useInline = inline && !isMobile;
 
   return (
     <Drawer
@@ -25,6 +32,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       sx={{
         width,
         flexShrink: 0,
+        ...(useInline && { height: "100%" }),
         transition: theme.transitions.create("width", {
           easing: theme.transitions.easing.sharp,
           duration: collapsed
@@ -36,6 +44,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           boxSizing: "border-box",
           border: 0,
           background: isMobile ? theme.palette.background.paper : "transparent",
+          ...(useInline && { position: "relative", height: "100%" }),
         },
       }}
       anchor={isMobile ? "right" : "left"}
