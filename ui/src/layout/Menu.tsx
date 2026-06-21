@@ -77,9 +77,7 @@ export function DesktopMenu({ title, icon, href, controlled }: MenuData) {
   const path = usePathname();
   const { collapsed } = useSidebar();
 
-  const isActive = controlled
-    ? controlled.active
-    : path === href || path.startsWith(`${href}/`);
+  const isActive = controlled ? controlled.active : path === href;
   const handleClick = () => {
     if (controlled) {
       controlled.onClick?.();
@@ -123,9 +121,7 @@ export function MobileMenu({ title, icon, href, controlled }: MenuData) {
   const path = usePathname();
   const { setCollapsed } = useSidebar();
 
-  const isActive = controlled
-    ? controlled.active
-    : path === href || path.startsWith(`${href}/`);
+  const isActive = controlled ? controlled.active : path === href;
   const handleClick = () => {
     if (href) {
       router.push(href);

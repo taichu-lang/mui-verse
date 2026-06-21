@@ -71,7 +71,6 @@ export function TabMenu({ title, icon, value: tabValue }: TabMenuProps) {
     <DesktopMenu
       title={title}
       icon={icon}
-      path=""
       controlled={{
         active: value === tabValue,
         onClick: handleClick,
