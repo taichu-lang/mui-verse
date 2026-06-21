@@ -66,15 +66,15 @@ export interface MenuProps {
 }
 
 export interface MenuData extends MenuProps {
-  path: string;
   controlled?: {
     onClick?: () => void;
     active: boolean;
   };
 }
 
-export function DesktopMenu({ title, icon, href, path, controlled }: MenuData) {
+export function DesktopMenu({ title, icon, href, controlled }: MenuData) {
   const router = useRouter();
+  const path = usePathname();
   const { collapsed } = useSidebar();
 
   const isActive = controlled
@@ -118,8 +118,9 @@ export function DesktopMenu({ title, icon, href, path, controlled }: MenuData) {
   );
 }
 
-export function MobileMenu({ title, icon, href, path, controlled }: MenuData) {
+export function MobileMenu({ title, icon, href, controlled }: MenuData) {
   const router = useRouter();
+  const path = usePathname();
   const { setCollapsed } = useSidebar();
 
   const isActive = controlled
@@ -147,10 +148,9 @@ export function MobileMenu({ title, icon, href, path, controlled }: MenuData) {
 
 export function Menu(props: MenuProps) {
   const isMobile = useMobile();
-  const path = usePathname();
   if (isMobile) {
-    return <MobileMenu {...props} path={path} />;
+    return <MobileMenu {...props} />;
   }
 
-  return <DesktopMenu {...props} path={path} />;
+  return <DesktopMenu {...props} />;
 }

@@ -10,6 +10,11 @@
     system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
+@theme {
+  --z-index-navbar: 50;
+  --z-index-fab: 999;
+}
+
 /*
  * Shadow tokens — scheme-scoped.
  *

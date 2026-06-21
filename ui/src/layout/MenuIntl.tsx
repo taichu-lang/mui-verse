@@ -1,18 +1,19 @@
 "use client";
 
-import { useMobile } from "../hooks/useMobile";
+import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { DesktopMenu, MenuProps, MobileMenu } from "./Menu";
 
 export function MenuIntl({
-  usePath,
+  locale,
+  href = "/",
   ...props
-}: MenuProps & { usePath: () => string }) {
+}: MenuProps & { locale: string }) {
   const isMobile = useMobile();
-  const path = usePath();
+  const _href = href === "/" ? `/${locale}` : `/${locale}${href}`;
 
   if (isMobile) {
-    return <MobileMenu {...props} path={path} />;
+    return <MobileMenu {...props} href={_href} />;
   } else {
-    return <DesktopMenu {...props} path={path} />;
+    return <DesktopMenu {...props} href={_href} />;
   }
 }

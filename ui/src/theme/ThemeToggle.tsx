@@ -1,11 +1,11 @@
 "use client";
 
+import { IconTextButton } from "@mui-verse/ui/components/buttons";
+import { cn } from "@mui-verse/ui/utils/cn";
 import { IconButton, Tooltip } from "@mui/material";
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "./useTheme";
-import { IconTextButton } from "../components/buttons";
-import { cn } from "../utils/cn";
 
 const FALLBACK_LABELS = {
   switchToLight: "Switch to light mode",
