@@ -1,6 +1,7 @@
 "use client";
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
+import { usePathname, useRouter } from "next/navigation";
 import { DesktopMenu, MenuProps, MobileMenu } from "./Menu";
 
 export function MenuIntl({
@@ -9,11 +10,27 @@ export function MenuIntl({
   ...props
 }: MenuProps & { locale: string }) {
   const isMobile = useMobile();
-  const _href = href === "/" ? `/${locale}` : `/${locale}${href}`;
+  const router = useRouter();
+
+  // with locale.
+  let path = usePathname();
+  // if current path is /en, then path is "".
+  path = path.replace(`/${locale}`, "");
+
+  const active =
+    href === "/" ? href === path || path === "" : path.startsWith(href);
+  const handleClick = () => {
+    const target = href === "/" ? `/${locale}` : `/${locale}/${href}`;
+    router.push(target);
+  };
 
   if (isMobile) {
-    return <MobileMenu {...props} href={_href} />;
+    return (
+      <MobileMenu {...props} controlled={{ active, onClick: handleClick }} />
+    );
   } else {
-    return <DesktopMenu {...props} href={_href} />;
+    return (
+      <DesktopMenu {...props} controlled={{ active, onClick: handleClick }} />
+    );
   }
 }
