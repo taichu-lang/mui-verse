@@ -357,7 +357,7 @@ const createBaseTheme = (palette: PaletteOptions) =>
             },
           },
           input: {
-            padding: "12px 14px",
+            padding: "10px 14px",
           },
         },
       },
