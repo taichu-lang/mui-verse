@@ -6,7 +6,8 @@
     "dev": "bun run --cwd packages/web dev"
   },
   "workspaces": [
-    "packages/web"
+    "packages/web",
+    "packages/mui-verse/ui"
   ],
   "catalog": {
     "react": "^19.2.4",

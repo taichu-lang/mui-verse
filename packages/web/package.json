@@ -11,10 +11,12 @@
   "dependencies": {
     "@emotion/react": "catalog:",
     "@emotion/styled": "catalog:",
+    "@mui-verse/ui": "workspace:*",
     "@mui/material": "catalog:",
     "clsx": "^2.1.1",
     "lucide-react": "^1.7.0",
     "next": "catalog:",
+    "next-intl": "^4.13.0",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
