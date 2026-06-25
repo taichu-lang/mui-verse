@@ -1,0 +1,294 @@
+# TextField
+
+基于 MUI TextField 封装的文本输入组件，提供灵活的验证机制和优化的用户体验。
+
+## 核心设计决策
+
+### 验证与反馈策略
+
+TextField 采用 **分阶段验证** 的策略：
+
+1. **onChange 阶段**：格式验证 + 数据传递
+   - 执行格式检查（如是否为有效数字、是否满足正则表达式等）
+   - 只要**格式合法**，立即调用 `onValueChange` 通知父组件
+   - 不显示错误信息，避免打断用户输入流程
+
+2. **onBlur 阶段**：完整验证 + 错误展示
+   - 执行完整的验证（包括范围检查、自定义校验等）
+   - **只在此阶段显示错误提示**，给用户完整输入的机会
+   - 如果验证失败，保留内部状态，不调用 `onValueChange`
+
+### 为什么这样设计？
+
+| 问题 | 解决方案 | 好处 |
+| --- | --- | --- |
+| 用户输入时就看到红色错误 | onChange 不显示错误 | 不打断输入流程 |
+| iOS Safari onBlur 不可靠 | onChange 时就传递 value | 规避移动端兼容性风险，数据不会丢失 |
+| 频繁验证影响性能 | 分阶段验证（快速检查 + 完整检查） | 性能最优 |
+| 提交时无法获取值 | onChange 时已通知，不依赖 onBlur | 提交逻辑简洁可靠 |
+
+### 数据通知时机
+
+```
+用户输入 → onChange 验证格式 → 格式合法？
+         ├─ 是 → 立即调用 onValueChange（通知父组件）
+         └─ 否 → 保持内部状态（不通知父组件）
+         
+用户离焦 → onBlur 完整验证 → 验证通过？
+         ├─ 是 → 显示绿色提示/无提示
+         └─ 否 → 显示红色错误信息
+```
+
+## 引入
+
+```tsx
+import { TextField, TextValidator } from "@mui-verse/ui/components/inputs";
+```
+
+## 基础用法
+
+```tsx
+import { useState } from "react";
+import { TextField } from "@mui-verse/ui/components/inputs";
+
+export function MyForm() {
+  const [email, setEmail] = useState("");
+
+  return (
+    <TextField
+      label="邮箱"
+      value={email}
+      onValueChange={setEmail}
+      validator={{
+        rules: {
+          typeMismatch: "请输入有效的邮箱地址",
+          valueMissing: "邮箱不能为空",
+        },
+      }}
+    />
+  );
+}
+```
+
+## 自定义验证
+
+### 使用 HTML5 Constraint Validation
+
+通过 `validator.rules` 定义 HTML5 约束验证的错误消息：
+
+```tsx
+<TextField
+  type="number"
+  label="年龄"
+  slotProps={{
+    input: {
+      inputProps: {
+        min: 18,
+        max: 100,
+      },
+    },
+  }}
+  validator={{
+    rules: {
+      rangeUnderflow: "年龄不能小于 18 岁",
+      rangeOverflow: "年龄不能超过 100 岁",
+    },
+  }}
+/>
+```
+
+### 使用自定义验证函数
+
+通过 `validator.fn` 实现自定义验证逻辑：
+
+```tsx
+<TextField
+  label="用户名"
+  onValueChange={setUsername}
+  validator={{
+    fn: (value) => {
+      if (value.length < 3) {
+        return "用户名至少 3 个字符";
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+        return "用户名只能包含字母、数字和下划线";
+      }
+      return null; // 验证通过
+    },
+  }}
+/>
+```
+
+### 组合验证
+
+同时使用 HTML5 验证和自定义验证：
+
+```tsx
+<TextField
+  label="密码"
+  type="password"
+  onValueChange={setPassword}
+  required
+  validator={{
+    rules: {
+      valueMissing: "密码不能为空",
+    },
+    fn: (value) => {
+      if (value.length < 8) {
+        return "密码至少 8 个字符";
+      }
+      if (!/[A-Z]/.test(value)) {
+        return "密码必须包含大写字母";
+      }
+      return null;
+    },
+  }}
+/>
+```
+
+## NumberField 示例
+
+```tsx
+import { NumberField } from "@mui-verse/ui/components/inputs";
+
+export function PriceInput() {
+  const [price, setPrice] = useState(0);
+
+  return (
+    <NumberField
+      label="价格"
+      min={0}
+      max={999999}
+      value={price}
+      onValueChange={setPrice}
+      validator={{
+        rules: {
+          rangeUnderflow: "价格不能为负数",
+          rangeOverflow: "价格超出范围",
+        },
+      }}
+    />
+  );
+}
+```
+
+## 图标和只读
+
+```tsx
+<TextField
+  label="网址"
+  startIcon={<GlobeIcon />}
+  onValueChange={setUrl}
+/>
+
+<TextField
+  label="ID"
+  value="USER_12345"
+  readonly
+/>
+```
+
+## 表单集成
+
+```tsx
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    // 使用 onValueChange 传递的状态值提交
+    submitForm({ email, username, password });
+  }}
+>
+  <TextField
+    label="邮箱"
+    value={email}
+    onValueChange={setEmail}
+  />
+  <TextField
+    label="用户名"
+    value={username}
+    onValueChange={setUsername}
+  />
+  <button type="submit">提交</button>
+</form>
+```
+
+## API
+
+### TextField Props
+
+继承 MUI `TextFieldProps`，增加以下属性：
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `onValueChange` | `(value: string) => void` | **数据通知回调**。只在 onChange 时格式合法时调用，用于通知父组件更新状态 |
+| `validator` | `TextValidator` | 验证器配置，包括 HTML5 约束验证规则和自定义验证函数 |
+| `startIcon` | `ReactNode` | 输入框左侧图标 |
+| `endIcon` | `ReactNode` | 输入框右侧图标 |
+| `readonly` | `boolean` | 是否为只读模式 |
+
+### TextValidator
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `rules` | `Partial<Record<TextValidationState, string>>` | HTML5 约束验证的错误消息映射 |
+| `fn` | `(value: string) => string \| null` | 自定义验证函数。返回错误消息或 null（表示验证通过） |
+
+### TextValidationState
+
+支持的 HTML5 验证状态：
+
+```typescript
+type TextValidationState =
+  | "valueMissing"      // 必填但为空
+  | "typeMismatch"      // 类型不匹配（如 email、url）
+  | "patternMismatch"   // 不匹配 pattern 属性
+  | "tooLong"          // 超过 maxLength
+  | "tooShort"         // 低于 minLength
+  | "rangeUnderflow"   // 低于 min（number/date）
+  | "rangeOverflow"    // 超过 max（number/date）
+  | "stepMismatch"     // 不符合 step 约束
+  | "badInput";        // 输入格式错误（如无效的数字）
+```
+
+## 最佳实践
+
+### ✅ 推荐
+
+```tsx
+// 利用分阶段验证的优势
+<TextField
+  label="价格"
+  type="number"
+  onValueChange={setPrice}
+  validator={{
+    rules: {
+      rangeUnderflow: "最低价格为 0",
+      rangeOverflow: "最高价格为 999999",
+    },
+  }}
+/>
+// onChange 时只验证格式，用户输入时不显示范围错误
+// onBlur 时才显示范围错误
+```
+
+### ❌ 避免
+
+```tsx
+// 不要在 onValueChange 回调中执行复杂的异步操作
+onValueChange={async (value) => {
+  // 这可能导致多次重复请求
+  const result = await checkUsernameAvailable(value);
+}}
+
+// 改为在提交或 onBlur 时执行
+const handleBlur = async () => {
+  const available = await checkUsernameAvailable(username);
+  // ...
+};
+```
+
+## 浏览器兼容性
+
+- ✅ Chrome、Firefox、Safari、Edge（桌面）
+- ✅ iOS Safari、Android Chrome（移动）
+- ⚠️ iOS Safari：onBlur 在某些特殊场景下可能不触发，但本组件的设计已规避此问题（value 通过 onChange 传递）
