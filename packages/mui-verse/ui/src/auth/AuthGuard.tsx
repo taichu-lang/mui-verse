@@ -1,0 +1,77 @@
+"use client";
+
+import { Loading } from "@mui-verse/ui/components/effects";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, type ReactNode } from "react";
+import { type AuthStore, type createAuthStore } from "./store";
+import type { BaseSession } from "./types";
+
+export interface AuthGuardProps<T extends BaseSession = BaseSession> {
+  children: ReactNode;
+  store: ReturnType<typeof createAuthStore<T>>;
+  fallback?: ReactNode;
+  redirectUrl?: string;
+}
+
+/**
+ * AuthGuard component - wraps content that requires authentication
+ * Handles loading state, session validation, and redirects on logout
+ *
+ * @example
+ * <AuthGuard fallback={<LoadingSpinner />}>
+ *   <Dashboard />
+ * </AuthGuard>
+ */
+export function AuthGuard<T extends BaseSession = BaseSession>({
+  children,
+  store,
+  redirectUrl = "/login",
+  fallback = <Loading />,
+}: AuthGuardProps<T>) {
+  const authStore = store() as AuthStore<T>;
+  const {
+    isLoading,
+    hasHydrated,
+    hasAuthorization,
+    loadSession,
+    _initializeCrossTabSync,
+  } = authStore;
+  const initializedRef = useRef(false);
+
+  // Initialize session from cookie and setup cross-tab sync (once on mount)
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    loadSession();
+
+    // Setup cross-tab synchronization
+    const unsubscribe = _initializeCrossTabSync();
+
+    return unsubscribe;
+  }, [loadSession, _initializeCrossTabSync]);
+
+  const router = useRouter();
+
+  // Handle unauthenticated state
+  useEffect(() => {
+    if (isLoading || !hasHydrated) return;
+
+    if (!hasAuthorization()) {
+      router.replace(redirectUrl);
+    }
+  }, [hasAuthorization, isLoading, hasHydrated, router, redirectUrl]);
+
+  // Loading state
+  if (isLoading) {
+    return fallback;
+  }
+
+  // Not authenticated
+  if (!hasAuthorization()) {
+    return fallback;
+  }
+
+  // Authenticated
+  return children;
+}
