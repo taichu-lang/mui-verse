@@ -10,7 +10,13 @@ import {
   DialogTitle as MuiDialogTitle,
 } from "@mui/material";
 import { XIcon } from "lucide-react";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 interface DialogValue {
   open: boolean;
@@ -61,6 +67,7 @@ export type DialogProps = Omit<MuiDialogProps, "open" | "onClose">;
 export function Dialog({
   fullWidth = true,
   maxWidth = "xs",
+  sx,
   ...props
 }: DialogProps) {
   const { open, setOpen } = useDialogContext();
@@ -71,6 +78,15 @@ export function Dialog({
       onClose={() => setOpen(false)}
       fullWidth={fullWidth}
       maxWidth={maxWidth}
+      slotProps={{
+        paper: {
+          elevation: 0,
+          sx: {
+            borderRadius: "18px",
+            ...sx,
+          },
+        },
+      }}
       {...props}
     ></MuiDialog>
   );
@@ -82,20 +98,34 @@ export function DialogTitle({
   useSeparator = true,
 }: {
   children: React.ReactNode;
-  enableCloseTrigger?: boolean;
+  enableCloseTrigger?:
+    | boolean
+    | React.ReactElement<TriggerProps & { children?: React.ReactNode }>;
   useSeparator?: boolean;
 }) {
   const { setOpen } = useDialogContext();
+
+  let trigger = null;
+  if (enableCloseTrigger) {
+    if (typeof enableCloseTrigger !== "boolean") {
+      trigger = cloneElement(enableCloseTrigger, {
+        onClick: () => setOpen(false),
+        children: <XIcon className="h-3 w-3" />,
+      });
+    } else {
+      trigger = (
+        <IconButton onClick={() => setOpen(false)}>
+          <XIcon className="h-3 w-3" />
+        </IconButton>
+      );
+    }
+  }
 
   return (
     <MuiDialogTitle className="flex flex-col gap-2">
       <div className="font-subtitle1 flex items-center justify-between">
         {children}
-        {enableCloseTrigger && (
-          <IconButton onClick={() => setOpen(false)}>
-            <XIcon className="h-3 w-3" />
-          </IconButton>
-        )}
+        {enableCloseTrigger && trigger}
       </div>
       {useSeparator && <Divider flexItem variant="fullWidth" />}
     </MuiDialogTitle>

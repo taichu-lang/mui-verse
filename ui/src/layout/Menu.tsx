@@ -2,17 +2,11 @@
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { cn } from "@mui-verse/ui/utils/cn";
-import {
-  Box,
-  CardActionArea,
-  Divider,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, CardActionArea, Divider, Stack, Typography } from "@mui/material";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
+import { MenuButton } from "./MenuButton";
 import { useSidebar } from "./useSidebar";
 
 export type MenuGroupProps = {
@@ -63,19 +57,22 @@ export interface MenuProps {
   title: string;
   icon?: React.ReactNode;
   href?: string;
-}
-
-export interface MenuData extends MenuProps {
   controlled?: {
     onClick?: () => void;
     active: boolean;
   };
+  actions?: React.ReactNode;
 }
 
-export function DesktopMenu({ title, icon, href, controlled }: MenuData) {
+export function DesktopMenu({
+  title,
+  icon,
+  href,
+  controlled,
+  actions,
+}: MenuProps) {
   const router = useRouter();
   const path = usePathname();
-  const { collapsed } = useSidebar();
 
   const isActive = controlled ? controlled.active : path === href;
   const handleClick = () => {
@@ -90,39 +87,28 @@ export function DesktopMenu({ title, icon, href, controlled }: MenuData) {
   };
 
   return (
-    <Tooltip title={title} placement="right">
-      <CardActionArea
-        className={cn(
-          isActive ? "bg-gray-200" : "hover:bg-gray-200",
-          collapsed ? "aspect-square rounded-lg" : "w-full rounded-lg py-1.25",
-        )}
-        onClick={handleClick}
-      >
-        {collapsed ? (
-          <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
-            {icon}
-            <Typography variant="caption" textAlign={"center"}>
-              {title}
-            </Typography>
-          </Box>
-        ) : (
-          <Box display={"flex"} alignItems={"center"} gap={1.5} px={2}>
-            {icon}
-            <Typography variant="body2">{title}</Typography>
-          </Box>
-        )}
-      </CardActionArea>
-    </Tooltip>
+    <MenuButton
+      title={title}
+      icon={icon}
+      actions={actions}
+      isActive={isActive}
+      onClick={handleClick}
+    />
   );
 }
 
-export function MobileMenu({ title, icon, href, controlled }: MenuData) {
+export function MobileMenu({ title, icon, href, controlled }: MenuProps) {
   const router = useRouter();
   const path = usePathname();
   const { setCollapsed } = useSidebar();
 
   const isActive = controlled ? controlled.active : path === href;
   const handleClick = () => {
+    if (controlled) {
+      controlled.onClick?.();
+      return;
+    }
+
     if (href) {
       router.push(href);
     }
@@ -131,13 +117,17 @@ export function MobileMenu({ title, icon, href, controlled }: MenuData) {
 
   return (
     <CardActionArea
-      className={cn("w-full rounded-lg py-1.25", isActive && "bg-gray-200")}
+      data-active={isActive || undefined}
+      className={cn(
+        "flex h-8 w-full justify-start gap-2.5 rounded-lg px-2",
+        "data-active:bg-action-hover",
+      )}
       onClick={handleClick}
     >
-      <Box display="flex" alignItems="center" gap={1.5} px={2}>
-        {icon}
-        <Typography variant="body2">{title}</Typography>
-      </Box>
+      {icon}
+      <Typography variant="body2" className="leading-4.5">
+        {title}
+      </Typography>
     </CardActionArea>
   );
 }

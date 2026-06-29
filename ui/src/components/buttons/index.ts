@@ -1,2 +1,6 @@
-export { IconSquareButton, IconTextButton } from "./IconButton";
+export {
+  IconSquareButton,
+  IconTextButton,
+  IconGhostButton,
+} from "./IconButton";
 export { SplitToggleButton } from "./ToggleButton";
