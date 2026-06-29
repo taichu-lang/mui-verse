@@ -4,6 +4,7 @@ export {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  useDropdownMenu,
   type DropdownMenuContentProps,
   type DropdownMenuItemProps,
   type DropdownMenuProps,

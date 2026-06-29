@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun run --cwd packages/web dev"
+    "dev": "rm -rf packages/web/.next && bun run --cwd packages/web dev"
   },
   "workspaces": [
     "packages/web",

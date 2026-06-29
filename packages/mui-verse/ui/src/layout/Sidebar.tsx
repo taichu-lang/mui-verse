@@ -10,9 +10,11 @@ import { useInitSidebar, useSidebar } from "./useSidebar";
 export function Sidebar({
   children,
   inline = false,
+  className,
 }: {
   children: React.ReactNode;
   inline?: boolean;
+  className?: string;
 }) {
   useInitSidebar();
 
@@ -20,36 +22,50 @@ export function Sidebar({
   const isMobile = useMobile();
   const theme = useTheme();
 
-  const paperWidth = isMobile ? "80vw" : "14rem";
-  const width = isMobile ? 0 : collapsed ? 0 : "14rem";
+  const desktopWidth = collapsed
+    ? "var(--sidebar-collapsed-width, 0px)"
+    : "var(--sidebar-width, 14rem)";
+  const paperWidth = isMobile
+    ? "var(--sidebar-mobile-width, 80vw)"
+    : desktopWidth;
+  const width = isMobile ? 0 : desktopWidth;
+
   const useInline = inline && !isMobile;
+
+  const widthTransition = theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: collapsed
+      ? theme.transitions.duration.leavingScreen
+      : theme.transitions.duration.enteringScreen,
+  });
 
   return (
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
-      open={!collapsed}
+      open={isMobile ? !collapsed : true}
       onClose={toggleCollapsed}
       sx={{
         width,
         flexShrink: 0,
         ...(useInline && { height: "100%" }),
-        transition: theme.transitions.create("width", {
-          easing: theme.transitions.easing.sharp,
-          duration: collapsed
-            ? theme.transitions.duration.leavingScreen
-            : theme.transitions.duration.enteringScreen,
-        }),
+        transition: widthTransition,
         "& .MuiDrawer-paper": {
           width: paperWidth,
           boxSizing: "border-box",
           border: 0,
           background: isMobile ? theme.palette.background.paper : "transparent",
+          transition: widthTransition,
           ...(useInline && { position: "relative", height: "100%" }),
         },
       }}
       anchor={isMobile ? "right" : "left"}
     >
-      <div className="flex h-full flex-col gap-4 overflow-hidden px-2">
+      <div
+        className={cn(
+          "flex h-full flex-col gap-4 overflow-hidden px-2",
+          className,
+        )}
+      >
         {children}
       </div>
     </Drawer>
@@ -81,7 +97,7 @@ export function SidebarHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex h-14 items-center justify-center", className)}>
+    <div className={cn("flex min-h-14 items-center justify-center", className)}>
       {children}
     </div>
   );
@@ -89,7 +105,7 @@ export function SidebarHeader({
 
 export function MenuList({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-1 flex-col items-center gap-0.5 overflow-x-hidden overflow-y-auto">
+    <div className="flex w-full flex-col items-center gap-0.5 overflow-x-hidden overflow-y-auto">
       {children}
     </div>
   );

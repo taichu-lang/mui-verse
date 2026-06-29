@@ -20,7 +20,9 @@ export default async function LocaleLayout({
       <body>
         <NextIntlClientProvider>
           <ThemeProvider>
-            <main className="h-screen overflow-hidden">{children}</main>
+            <main className="h-screen overflow-hidden bg-white">
+              {children}
+            </main>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

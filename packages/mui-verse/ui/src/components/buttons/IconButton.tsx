@@ -32,3 +32,16 @@ export function IconSquareButton({ className, ...props }: IconTextButtonProps) {
     />
   );
 }
+
+export function IconGhostButton({
+  ref,
+  children,
+  className,
+  ...rest
+}: IconTextButtonProps) {
+  return (
+    <div ref={ref} className={cn("cursor-pointer p-1.5", className)} {...rest}>
+      {children}
+    </div>
+  );
+}

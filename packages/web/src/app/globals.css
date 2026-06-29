@@ -1,2 +1,41 @@
 @import "@mui-verse/ui/verse.css";
 @source "../../node_modules/@mui-verse/ui/src";
+
+@layer components {
+  :root {
+    --sidebar-width: 17rem;
+    --sidebar-collapsed-width: 3.125rem;
+  }
+
+  .anna-sidebar-brand {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 24px;
+  }
+
+  .anna-group-title {
+    font-size: var(--text-xs);
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .anna-text-tag {
+    font-size: var(--text-sm);
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .anna-conversation {
+    font-size: var(--text-base);
+    font-weight: 400;
+    line-height: 24px;
+  }
+}
+
+@theme {
+  --color-sidebar-divider: hsla(0, 0%, 89%, 1);
+}
+
+html[data-mui-color-scheme="light"] {
+  --mui-palette-divider: hsla(0, 0%, 79%, 1);
+}

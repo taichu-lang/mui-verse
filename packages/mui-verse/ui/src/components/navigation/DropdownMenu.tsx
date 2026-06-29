@@ -26,13 +26,14 @@ const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(
   null,
 );
 
-function useDropdownMenu() {
+export function useDropdownMenu() {
   const ctx = useContext(DropdownMenuContext);
   if (!ctx) {
     throw new Error(
       "DropdownMenu compound components must be used within <DropdownMenu>",
     );
   }
+
   return ctx;
 }
 
