@@ -1,5 +1,6 @@
 "use client";
 
+import { extendClickable, TriggerProps } from "@mui-verse/ui/utils/click";
 import {
   Divider,
   Menu,
@@ -92,22 +93,17 @@ export function DropdownMenu({
 // --- Trigger ---
 
 export interface DropdownMenuTriggerProps {
-  children: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
+  children: React.ReactElement<TriggerProps>;
 }
 
 export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
   const { onOpen } = useDropdownMenu();
 
-  return (
-    <div
-      style={{ display: "inline-flex" }}
-      onClick={(e) => {
-        onOpen(e.currentTarget);
-      }}
-    >
-      {children}
-    </div>
-  );
+  const trigger = extendClickable(children, (e) => {
+    onOpen(e.currentTarget);
+  });
+
+  return trigger;
 }
 
 // --- Content ---
@@ -185,6 +181,13 @@ export function DropdownMenuContent({
       onClose={onClose}
       anchorOrigin={anchorOriginMap[side][align]}
       transformOrigin={transformOriginMap[side][align]}
+      // MUI Popover keeps the menu at least `marginThreshold` px (default 16)
+      // from every viewport edge, nudging it inward when the computed position
+      // is closer than that. For triggers near the edge (e.g. inside a sidebar
+      // flush with the viewport), this offsets the menu from the trigger and
+      // breaks left/right alignment. Disable the safeguard so the menu sits
+      // exactly where `anchorOrigin` / `transformOrigin` ask.
+      marginThreshold={0}
       slotProps={{
         paper: {
           elevation: 0,

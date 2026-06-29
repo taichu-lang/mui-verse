@@ -1,7 +1,8 @@
 "use client";
 
+import { cn } from "@mui-verse/ui/utils/cn";
+import { Slot } from "@mui-verse/ui/utils/slot";
 import { CardActionArea, Tooltip, Typography } from "@mui/material";
-import { cn } from "../utils/cn";
 import { useSidebar } from "./useSidebar";
 
 export function MenuButton({
@@ -11,6 +12,7 @@ export function MenuButton({
   isActive = false,
   onClick,
   className,
+  showTips = true,
 }: {
   title: string;
   icon?: React.ReactNode;
@@ -18,17 +20,25 @@ export function MenuButton({
   isActive?: boolean;
   onClick?: () => void;
   className?: string;
+  showTips?: boolean;
 }) {
   const { collapsed } = useSidebar();
 
   return (
     <div className="flex w-full justify-center">
-      <Tooltip title={title} placement="right">
+      <Slot
+        asChild={!showTips}
+        wrap={(c: React.ReactElement) => (
+          <Tooltip title={title} placement="right">
+            {c}
+          </Tooltip>
+        )}
+      >
         <CardActionArea
           data-active={isActive || undefined}
           data-collapsed={collapsed || undefined}
           className={cn(
-            "flex h-8 rounded-lg px-2",
+            "group flex h-8 rounded-lg px-2",
             "data-active:bg-action-hover",
             "data-collapsed:w-8",
             "not-data-collapsed:justify-start not-data-collapsed:gap-2.5",
@@ -39,15 +49,18 @@ export function MenuButton({
           {icon}
           {collapsed || (
             <>
-              <Typography variant="body2" className="truncate leading-4.5">
+              <Typography
+                variant="body2"
+                className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
+              >
                 {title}
               </Typography>
-              <div className="flex-1"></div>
+              <div className="flex-1" />
               {actions}
             </>
           )}
         </CardActionArea>
-      </Tooltip>
+      </Slot>
     </div>
   );
 }

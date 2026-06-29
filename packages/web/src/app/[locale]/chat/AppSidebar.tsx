@@ -46,7 +46,7 @@ export function AppSidebar() {
           <ChatHistory />
         </div>
       </div>
-      <SidebarFooter className={"flex-col px-2 pb-0"}>
+      <SidebarFooter className={"flex-col pb-0"}>
         <UserProfileMenu />
       </SidebarFooter>
     </Sidebar>

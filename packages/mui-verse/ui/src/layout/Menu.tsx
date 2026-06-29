@@ -62,6 +62,7 @@ export interface MenuProps {
     active: boolean;
   };
   actions?: React.ReactNode;
+  showTips?: boolean;
 }
 
 export function DesktopMenu({
@@ -70,6 +71,7 @@ export function DesktopMenu({
   href,
   controlled,
   actions,
+  showTips = true,
 }: MenuProps) {
   const router = useRouter();
   const path = usePathname();
@@ -93,6 +95,7 @@ export function DesktopMenu({
       actions={actions}
       isActive={isActive}
       onClick={handleClick}
+      showTips={showTips}
     />
   );
 }

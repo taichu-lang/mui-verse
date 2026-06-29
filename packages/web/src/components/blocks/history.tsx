@@ -2,9 +2,12 @@
 
 import { PinnerIcon } from "@/components/icons/PinnerIcon";
 import { Accordion } from "@/components/ui/Accordion";
+import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@mui-verse/ui/components/navigation";
 import { Menu } from "@mui-verse/ui/layout/Menu";
@@ -12,15 +15,58 @@ import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Typography } from "@mui/material";
-import { MessageCircleIcon } from "lucide-react";
+import {
+  EllipsisIcon,
+  MessageCircleIcon,
+  PencilLineIcon,
+  Trash2Icon,
+} from "lucide-react";
 
-function DropdownChatMenu({ title }: { title: string }) {
+function ChatAction({ pinned = false }: { pinned?: boolean }) {
   return (
-    <div className="hover:bg-action-hover flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5">
-      <MessageCircleIcon className="h-4 w-4" />
-      <Typography variant="body2" className="truncate leading-4.5">
+    <DropdownMenu side="right" align="start">
+      <DropdownMenuTrigger>
+        <IconGhostButton className="hidden group-hover:block">
+          <EllipsisIcon className="h-4 w-4" />
+        </IconGhostButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>
+          <PencilLineIcon className="h-4 w-4" />
+          Rename
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <PinnerIcon />
+          {pinned ? "Unpin chat" : "Pin Chat"}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-error-500">
+          <Trash2Icon className="h-4 w-4" />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function DropdownChatMenu({
+  title,
+  pinned = false,
+}: {
+  title: string;
+  pinned?: boolean;
+}) {
+  return (
+    <div className="hover:bg-action-hover group flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5">
+      <MessageCircleIcon className="h-4 w-4 shrink-0" />
+      <Typography
+        variant="body2"
+        className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
+      >
         {title}
       </Typography>
+      <div className="flex-1" />
+      <ChatAction pinned={pinned} />
     </div>
   );
 }
@@ -82,7 +128,12 @@ export function ChatHistory({
   return (
     <Accordion title={title} className={cn("gap-0.5", className)}>
       {history.map((chat, index) => (
-        <Menu title={chat} key={index} />
+        <Menu
+          title={chat}
+          key={index}
+          actions={<ChatAction />}
+          showTips={false}
+        />
       ))}
     </Accordion>
   );

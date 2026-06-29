@@ -38,4 +38,5 @@
 
 html[data-mui-color-scheme="light"] {
   --mui-palette-divider: hsla(0, 0%, 79%, 1);
+  --mui-palette-text-secondary: hsla(0, 0%, 46%, 1);
 }
