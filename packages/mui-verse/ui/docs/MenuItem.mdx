@@ -1,0 +1,183 @@
+# MenuItem
+
+基于 MUI `MenuItem` 封装的菜单项组件，提供 `sm` / `md` 两套尺寸预设，并通过 CSS 变量开放少量样式覆盖点，方便业务侧在不修改组件代码的前提下做局部微调。
+
+## 引入
+
+```tsx
+import { MenuItem } from "@mui-verse/ui/components/navigation";
+```
+
+## 基础用法
+
+默认使用 `sm` 变体，行高紧凑，适合大多数下拉菜单场景：
+
+```tsx
+<MenuItem onClick={() => console.log("编辑")}>编辑</MenuItem>
+```
+
+## 变体
+
+通过 `variant` 切换尺寸。
+
+```tsx
+<MenuItem variant="sm">紧凑型菜单项</MenuItem>
+<MenuItem variant="md">舒适型菜单项</MenuItem>
+```
+
+| 变体 | 字号 / 行高 | 内边距 | 适用场景 |
+| --- | --- | --- | --- |
+| `sm` | 14 / 18 | 7px 8px（高度 32px） | 下拉菜单、操作列表等常规场景 |
+| `md` | 18 / 24 | 14px 8px | 移动端 SwipeableMenu、需要更大点击区域的场景 |
+
+## 与 DropdownMenu 配合
+
+```tsx
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@mui-verse/ui/components/navigation";
+import { MenuItem } from "@mui-verse/ui/components/navigation";
+
+<DropdownMenu>
+  <DropdownMenuTrigger>
+    <Button>操作</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <MenuItem>编辑</MenuItem>
+    <MenuItem>复制</MenuItem>
+    <MenuItem>删除</MenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## 通过 CSS 变量覆盖样式
+
+组件内部使用 `var(--mv-menu-*, fallback)` 的形式书写样式，变体只负责提供 fallback 默认值。业务侧只要在父级（或 `:root`）声明同名 CSS 变量，即可在不接触组件代码的前提下覆盖部分样式。
+
+### 支持的变量
+
+| CSS 变量 | 作用 | `sm` 默认值 | `md` 默认值 |
+| --- | --- | --- | --- |
+| `--mv-menu-font-size` | 字号 | `14px` | `18px` |
+| `--mv-menu-line-height` | 行高 | `18px` | `24px` |
+| `--mv-menu-font-weight` | 字重 | `400` | `400` |
+| `--mv-menu-radius` | 圆角 | `10px` | `10px` |
+| `--mv-menu-padding` | 内边距 | `7px 8px` | `14px 8px` |
+| `--mv-menu-margin` | 外边距 | `0` | `0` |
+
+### 全局覆盖
+
+在业务工程的 `globals.css` 中声明，即可作用于整个应用的所有 `MenuItem`：
+
+```css
+/* app/globals.css */
+:root {
+  --mv-menu-font-size: 13px;
+  --mv-menu-radius: 6px;
+  --mv-menu-padding: 8px 12px;
+}
+```
+
+### 局部区域覆盖
+
+CSS 变量在 DOM 树中是**自然继承**的，所以只需在任意祖先节点上声明同名变量，作用域就被限制在该子树。这是覆盖样式最推荐的姿势。
+
+**方式一：直接写在容器上**
+
+```tsx
+<Box sx={{ "--mv-menu-padding": "12px 16px", "--mv-menu-radius": "12px" }}>
+  <DropdownMenu>
+    <DropdownMenuTrigger>
+      <Button>用户面板</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <MenuItem>个人资料</MenuItem>
+      <MenuItem>退出登录</MenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</Box>
+```
+
+> 注意：MUI 的 `Menu` / `DropdownMenuContent` 默认通过 Portal 挂到 `body` 上，写在 trigger 外层的 `Box` 不会影响弹层里的 `MenuItem`。这种情况下请改用 `disablePortal` 或下文「方式二」给 `DropdownMenuContent` 自身加 `sx`。
+
+**方式二：作用到 Content 的 Paper（推荐用于弹层菜单）**
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger>
+    <Button>用户面板</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent
+    sx={{
+      "--mv-menu-padding": "12px 16px",
+      "--mv-menu-radius": "12px",
+      "--mv-menu-font-size": "15px",
+    }}
+  >
+    <MenuItem>个人资料</MenuItem>
+    <MenuItem>退出登录</MenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+CSS 变量定义在 `Paper` 上，其下所有 `MenuItem` 自动继承。
+
+**方式三：通过 className 预设**
+
+适合多个页面/区域复用同一组样式：
+
+```css
+/* globals.css */
+.menu-preset-comfy {
+  --mv-menu-font-size: 16px;
+  --mv-menu-padding: 12px 16px;
+  --mv-menu-radius: 12px;
+}
+```
+
+```tsx
+<DropdownMenuContent className="menu-preset-comfy">
+  <MenuItem>个人资料</MenuItem>
+  <MenuItem>退出登录</MenuItem>
+</DropdownMenuContent>
+```
+
+### 单个 MenuItem 覆盖
+
+CSS 变量也可以直接写在某一项上，只影响这一项：
+
+```tsx
+<MenuItem
+  sx={{ "--mv-menu-font-weight": 600, color: "error.main" }}
+>
+  删除
+</MenuItem>
+```
+
+需要覆盖未暴露成 CSS 变量的属性时，直接用 `sx` 即可——`sx` 的优先级高于内部 styled 样式。
+
+## 自定义样式优先级
+
+```
+内联 sx > className（业务定义）> CSS 变量覆盖 > variant 默认值
+```
+
+- **想批量调整某个区域**：用方式二/方式三的 CSS 变量；
+- **想精细控制单项**：直接传 `sx`；
+- **想新增一种全局尺寸**：在组件库内扩展 `Variant` 类型与 `presets`。
+
+## API
+
+### MenuItem Props
+
+继承 MUI `MenuItemProps`，新增以下属性：
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `variant` | `"sm" \| "md"` | `"sm"` | 尺寸变体。决定字号、行高、内边距的 fallback 默认值 |
+
+其余属性（`onClick`、`disabled`、`selected`、`sx` 等）与 MUI `MenuItem` 一致，参见 [MUI MenuItem 文档](https://mui.com/material-ui/api/menu-item/)。
+
+## 设计说明
+
+- **变体 + CSS 变量的组合**：`variant` 负责锁定一套语义化的视觉规格（紧凑 / 舒适），CSS 变量负责开放给业务做局部微调。两者不冲突——variant 提供的是 `var(--x, fallback)` 中的 fallback，业务设了变量就用业务值，没设就用变体默认。
+- **为何只暴露 6 个变量**：覆盖了 90% 的业务自定义诉求（字号、行高、字重、圆角、内外边距）。其余特殊场景请用 `sx`，避免变量列表过长难以维护。
+- **变量命名前缀 `--mv-menu-`**：`mv` = mui-verse，统一前缀避免与业务自定义变量撞名。

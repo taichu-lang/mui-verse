@@ -21,7 +21,7 @@ export function Accordion({
         className="mt-2 mb-1.75 flex cursor-pointer items-center gap-4 px-2"
         onClick={() => setExpanded(!expanded)}
       >
-        <span className="anna-group-title">{title}</span>
+        <span className="text-text-secondary text-xs">{title}</span>
         {expanded ? (
           <ChevronDownIcon className="h-4 w-4" />
         ) : (

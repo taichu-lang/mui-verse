@@ -11,14 +11,23 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  MenuItem,
   useDropdownMenu,
 } from "@mui-verse/ui/components/navigation";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Typography } from "@mui/material";
+import { Drawer, Typography } from "@mui/material";
+import { ChevronDownIcon, X } from "lucide-react";
+import { useState } from "react";
 
 type ModelProvider = "openai" | "google" | "anthropic";
+
+const icons = {
+  openai: <OpenAIIcon />,
+  google: <GeminiIcon />,
+  anthropic: <AnthropicIcon />,
+};
 
 export interface Model {
   id: string;
@@ -79,46 +88,32 @@ const models: Model[] = [
   },
 ];
 
-export function ModelMenu({
+export function ModelMenuItem({
   model,
   pinned = false,
+  variant = "sm",
 }: {
   model: Model;
   pinned?: boolean;
+  variant?: "sm" | "md";
 }) {
   const { provider, name } = model;
 
-  const icon = () => {
-    switch (provider) {
-      case "anthropic":
-        return <AnthropicIcon />;
-
-      case "openai":
-        return <OpenAIIcon />;
-
-      case "google":
-        return <GeminiIcon />;
-    }
-  };
-
   return (
-    <MenuButton
-      title={name}
-      icon={icon()}
-      actions={
-        <IconGhostButton
-          className={cn("opacity-0 hover:opacity-100", {
-            "opacity-100": pinned,
-          })}
-        >
-          {pinned ? (
-            <PinnedIcon className="text-primary-500" />
-          ) : (
-            <PinnerIcon />
-          )}
-        </IconGhostButton>
-      }
-    />
+    <MenuItem className="gap-2.5" variant={variant}>
+      <div className={cn({ "mr-1 ml-2.5": variant === "md" })}>
+        {icons[provider]}
+      </div>
+      {name}
+      <div className="flex-1" />
+      <IconGhostButton
+        className={cn("p-0 opacity-0 hover:opacity-100", {
+          "opacity-100": pinned,
+        })}
+      >
+        {pinned ? <PinnedIcon className="text-primary-500" /> : <PinnerIcon />}
+      </IconGhostButton>
+    </MenuItem>
   );
 }
 
@@ -131,19 +126,6 @@ function DropDownModelMenu({
 }) {
   const { provider, name } = model;
   const { onClose } = useDropdownMenu();
-
-  const icon = () => {
-    switch (provider) {
-      case "anthropic":
-        return <AnthropicIcon />;
-
-      case "openai":
-        return <OpenAIIcon />;
-
-      case "google":
-        return <GeminiIcon />;
-    }
-  };
 
   const handleSelected = () => {
     onClose();
@@ -158,7 +140,7 @@ function DropDownModelMenu({
       className="hover:bg-action-hover flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5"
       onClick={handleSelected}
     >
-      {icon()}
+      {icons[provider]}
       <Typography variant="body2" className="leading-4.5">
         {name}
       </Typography>
@@ -185,7 +167,7 @@ export function ModelAccordion() {
           <MenuButton title="Models" icon={<ModelsIcon />} />
         </DropdownMenuTrigger>
         <DropdownMenuContent sx={{ minWidth: "230px", px: "8px" }}>
-          <p className="anna-text-tag mb-2 ml-2.5 font-semibold">Models</p>
+          <p className="mb-2 ml-2.5 text-sm font-semibold">Models</p>
           {models.map((model) => (
             <DropDownModelMenu key={model.id} model={model} />
           ))}
@@ -197,8 +179,41 @@ export function ModelAccordion() {
   return (
     <Accordion title="Models" className="mb-4">
       {models.map((model) => (
-        <ModelMenu key={model.id} model={model} pinned />
+        <ModelMenuItem key={model.id} model={model} />
       ))}
     </Accordion>
+  );
+}
+
+export function ModelSelect() {
+  const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
+  const [open, setOpen] = useState<boolean>(false);
+
+  return (
+    <>
+      <div
+        className="flex cursor-pointer items-center"
+        onClick={() => setOpen(!open)}
+      >
+        {icons[selectedModel.provider]}
+        <Typography variant="body2" className="pr-2.5 pl-1.5 leading-4.5">
+          {selectedModel.name}
+        </Typography>
+        <ChevronDownIcon className="h-4 w-4" />
+      </div>
+      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+        <div className="flex w-lg flex-col px-3">
+          <div className="mt-5 mb-3.5 ml-4.5 flex items-center justify-between">
+            <p className="text-[26px] leading-7.5 font-medium">Models</p>
+            <IconGhostButton>
+              <X className="h-4 w-4" />
+            </IconGhostButton>
+          </div>
+          {models.map((model) => (
+            <ModelMenuItem key={model.id} model={model} variant="md" />
+          ))}
+        </div>
+      </Drawer>
+    </>
   );
 }

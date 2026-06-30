@@ -13,7 +13,7 @@ function NoResult() {
   return (
     <div className="flex items-center gap-2.5">
       <SearchIcon className="h-4 w-4" />
-      <span className="anna-text-tag">No results</span>
+      <span className="text-sm">No results</span>
     </div>
   );
 }

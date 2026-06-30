@@ -100,6 +100,7 @@ export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
   const { onOpen } = useDropdownMenu();
 
   const trigger = extendClickable(children, (e) => {
+    e.stopPropagation();
     onOpen(e.currentTarget);
   });
 

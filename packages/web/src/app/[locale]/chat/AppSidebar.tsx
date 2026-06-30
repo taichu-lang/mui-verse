@@ -23,7 +23,9 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-sidebar-divider gap-0 border-r px-0">
       <SidebarHeader className={collapsed ? "" : "flex justify-between px-2"}>
-        {collapsed || <span className="anna-sidebar-brand">Anna</span>}
+        {collapsed || (
+          <span className="text-xl leading-6 font-semibold">Anna</span>
+        )}
         <SidebarToggle />
       </SidebarHeader>
       <div

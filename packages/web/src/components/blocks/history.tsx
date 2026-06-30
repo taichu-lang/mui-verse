@@ -2,7 +2,6 @@
 
 import { PinnerIcon } from "@/components/icons/PinnerIcon";
 import { Accordion } from "@/components/ui/Accordion";
-import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,9 +25,7 @@ function ChatAction({ pinned = false }: { pinned?: boolean }) {
   return (
     <DropdownMenu side="right" align="start">
       <DropdownMenuTrigger>
-        <IconGhostButton className="hidden group-hover:block">
-          <EllipsisIcon className="h-4 w-4" />
-        </IconGhostButton>
+        <EllipsisIcon className="hidden h-4 w-4 group-hover:block" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
@@ -114,7 +111,7 @@ export function ChatHistory({
             px: "8px",
           }}
         >
-          <p className="anna-text-tag mb-2 ml-2.5 font-semibold">{title}</p>
+          <p className="mb-2 ml-2.5 text-sm font-semibold">{title}</p>
           <div className="flex flex-col gap-0.5">
             {history.map((chat, index) => (
               <DropdownChatMenu key={index} title={chat} />
