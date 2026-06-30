@@ -1,5 +1,6 @@
 "use client";
 
+import { MenuItem } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Slot } from "@mui-verse/ui/utils/slot";
 import { CardActionArea, Tooltip, Typography } from "@mui/material";
@@ -34,32 +35,31 @@ export function MenuButton({
           </Tooltip>
         )}
       >
-        <CardActionArea
-          data-active={isActive || undefined}
-          data-collapsed={collapsed || undefined}
-          className={cn(
-            "group flex h-8 rounded-lg px-2",
-            "data-active:bg-action-hover",
-            "data-collapsed:w-8",
-            "not-data-collapsed:justify-start not-data-collapsed:gap-2.5",
-            className,
-          )}
-          onClick={onClick}
-        >
-          {icon}
-          {collapsed || (
-            <>
-              <Typography
-                variant="body2"
-                className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
-              >
-                {title}
-              </Typography>
-              <div className="flex-1" />
-              {actions}
-            </>
-          )}
-        </CardActionArea>
+        {/* `group` is used to bind state to icon and actions. */}
+        {collapsed ? (
+          <CardActionArea
+            className={cn("group flex h-8 w-8 rounded-[10px]", className)}
+            data-active={isActive || undefined}
+            onClick={onClick}
+          >
+            {icon}
+          </CardActionArea>
+        ) : (
+          <MenuItem
+            className={cn("group w-full gap-2.5", className)}
+            onClick={onClick}
+          >
+            {icon}
+            <Typography
+              variant="body2"
+              className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
+            >
+              {title}
+            </Typography>
+            <div className="flex-1" />
+            {actions}
+          </MenuItem>
+        )}
       </Slot>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@mui-verse/ui/theme";
+import { extendClickable } from "@mui-verse/ui/utils/click";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { MenuItem, MenuItemProps, SwipeableDrawer } from "@mui/material";
 import { createContext, useCallback, useContext, useState } from "react";
@@ -115,16 +116,11 @@ export interface SwipeableMenuTriggerProps {
 export function SwipeableMenuTrigger({ children }: SwipeableMenuTriggerProps) {
   const { onOpen } = useSwipeableMenu();
 
-  return (
-    <div
-      style={{ display: "inline-flex" }}
-      onClick={() => {
-        onOpen();
-      }}
-    >
-      {children}
-    </div>
-  );
+  const trigger = extendClickable(children, () => {
+    onOpen();
+  });
+
+  return trigger;
 }
 
 // --- Item ---

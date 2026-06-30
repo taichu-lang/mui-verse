@@ -29,3 +29,5 @@ export {
 } from "./PillTabs";
 
 export { InsetTab, InsetTabs, TabContext, TabPanel } from "./Tabs";
+
+export { MenuItem } from "./MenuItem";

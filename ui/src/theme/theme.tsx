@@ -484,13 +484,11 @@ const createBaseTheme = (palette: PaletteOptions) =>
             },
           },
           track: {
-            backgroundColor: "var(--mui-palette-action-disabledBackground)",
-            border: "1px solid var(--mui-palette-divider)",
+            backgroundColor: "var(--mui-palette-divider)",
             opacity: 1,
-            boxShadow: "var(--mui-shadow-inset)",
           },
           thumb: {
-            backgroundColor: "var(--mui-palette-text-primary)",
+            backgroundColor: "var(--mui-palette-primary-contrastText)",
             boxShadow: "var(--mui-shadow-surface-sm)",
           },
         },
