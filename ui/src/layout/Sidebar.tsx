@@ -97,7 +97,9 @@ export function SidebarHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex min-h-14 items-center justify-center", className)}>
+    <div
+      className={cn("min-h-navbar flex items-center justify-center", className)}
+    >
       {children}
     </div>
   );
