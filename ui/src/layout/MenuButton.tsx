@@ -52,7 +52,7 @@ export function MenuButton({
             {icon}
             <Typography
               variant="body2"
-              className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
+              className="text-text-primary overflow-hidden text-sm text-clip whitespace-nowrap"
             >
               {title}
             </Typography>

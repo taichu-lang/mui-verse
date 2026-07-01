@@ -598,7 +598,8 @@ const createBaseTheme = (palette: PaletteOptions) =>
       },
       MuiList: {
         defaultProps: {
-          dense: true,
+          dense: false,
+          disablePadding: true,
         },
       },
       MuiTable: {

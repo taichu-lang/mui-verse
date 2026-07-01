@@ -1,4 +1,5 @@
 import { cn } from "@mui-verse/ui/utils/cn";
+import { Typography } from "@mui/material";
 import { Streamdown } from "streamdown";
 import { Message } from "./types";
 
@@ -40,7 +41,72 @@ function BubbleAssistant({
       data-role="assistant"
       className={cn("flex w-full justify-start", className)}
     >
-      <Streamdown>{content}</Streamdown>
+      <Streamdown
+        components={{
+          h1: ({ children, ...props }) => (
+            <Typography
+              {...props}
+              variant="h4"
+              component={"h1"}
+              data-markdown="h1"
+            >
+              {children}
+            </Typography>
+          ),
+          h2: ({ children, ...props }) => (
+            <Typography
+              {...props}
+              variant="h5"
+              component={"h2"}
+              data-markdown="h2"
+            >
+              {children}
+            </Typography>
+          ),
+          h3: ({ children, ...props }) => (
+            <Typography
+              {...props}
+              variant="h6"
+              component={"h3"}
+              data-markdown="h3"
+            >
+              {children}
+            </Typography>
+          ),
+          h4: ({ children, ...props }) => (
+            <Typography
+              {...props}
+              variant="subtitle1"
+              component={"h4"}
+              data-markdown="h4"
+            >
+              {children}
+            </Typography>
+          ),
+          h5: ({ children, ...props }) => (
+            <Typography
+              {...props}
+              variant="subtitle2"
+              component={"h5"}
+              data-markdown="h5"
+            >
+              {children}
+            </Typography>
+          ),
+          p: ({ children, ...props }) => (
+            <Typography
+              {...props}
+              variant="body1"
+              component={"p"}
+              data-markdown="p"
+            >
+              {children}
+            </Typography>
+          ),
+        }}
+      >
+        {content}
+      </Streamdown>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 @layer theme, base, mui, components, utilities;
 @import "tailwindcss";
 
+@source "../node_modules/streamdown/dist/*.js";
+
 /* Base font stack — emitted as a real CSS variable in :root so MUI can
    reference it via var(--font-sans). Kept out of `@theme inline` because
    inline tokens are not written to :root. */
