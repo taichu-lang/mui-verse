@@ -1,6 +1,7 @@
 "use client";
 
-import { PinnerIcon } from "@/components/icons/PinnerIcon";
+import { ChatIcon, DeleteIcon, PencilIcon } from "@/components/icons";
+import { PinnerIcon } from "@/components/icons/Pinner";
 import { Accordion } from "@/components/ui/Accordion";
 import {
   DropdownMenu,
@@ -14,12 +15,27 @@ import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Typography } from "@mui/material";
-import {
-  EllipsisIcon,
-  MessageCircleIcon,
-  PencilLineIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { EllipsisIcon } from "lucide-react";
+
+export function ChatActionItems({ pinned = false }: { pinned?: boolean }) {
+  return (
+    <DropdownMenuContent shadow="none" sx={{ py: "14px", minWidth: "194px" }}>
+      <DropdownMenuItem className="gap-2.5">
+        <PencilIcon />
+        Rename
+      </DropdownMenuItem>
+      <DropdownMenuItem className="gap-2.5">
+        <PinnerIcon />
+        {pinned ? "Unpin chat" : "Pin Chat"}
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="text-error-500 hover:bg-error-200 gap-2.5">
+        <DeleteIcon />
+        Delete
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  );
+}
 
 function ChatAction({ pinned = false }: { pinned?: boolean }) {
   return (
@@ -27,21 +43,7 @@ function ChatAction({ pinned = false }: { pinned?: boolean }) {
       <DropdownMenuTrigger>
         <EllipsisIcon className="hidden h-4 w-4 group-hover:block" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent shadow="none" sx={{ py: "14px", minWidth: "194px" }}>
-        <DropdownMenuItem className="gap-2.5">
-          <PencilLineIcon className="h-4 w-4" />
-          Rename
-        </DropdownMenuItem>
-        <DropdownMenuItem className="gap-2.5">
-          <PinnerIcon />
-          {pinned ? "Unpin chat" : "Pin Chat"}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-error-500 gap-2.5">
-          <Trash2Icon className="h-4 w-4" />
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+      <ChatActionItems pinned={pinned} />
     </DropdownMenu>
   );
 }
@@ -55,7 +57,7 @@ function DropdownChatMenu({
 }) {
   return (
     <div className="hover:bg-action-hover group flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5">
-      <MessageCircleIcon className="h-4 w-4 shrink-0" />
+      <ChatIcon className="shrink-0" />
       <Typography
         variant="body2"
         className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
@@ -95,13 +97,7 @@ export function ChatHistory({
         <DropdownMenuTrigger>
           <MenuButton
             title="history"
-            icon={
-              pinned ? (
-                <PinnerIcon />
-              ) : (
-                <MessageCircleIcon className="h-4 w-4" />
-              )
-            }
+            icon={pinned ? <PinnerIcon /> : <ChatIcon />}
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent

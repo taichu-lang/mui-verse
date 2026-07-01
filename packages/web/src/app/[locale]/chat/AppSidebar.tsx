@@ -4,6 +4,7 @@ import { ChatHistory } from "@/components/blocks/history";
 import { ModelAccordion } from "@/components/blocks/models";
 import { UserProfileMenu } from "@/components/blocks/profile";
 import { SearchButton } from "@/components/blocks/search";
+import { CirclePlusIcon } from "@/components/icons";
 import { MenuIntl } from "@mui-verse/ui/layout/MenuIntl";
 import {
   Sidebar,
@@ -13,7 +14,6 @@ import {
 } from "@mui-verse/ui/layout/Sidebar";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { PlusCircleIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 
 export function AppSidebar() {
@@ -36,7 +36,7 @@ export function AppSidebar() {
         <MenuIntl
           href="/chat"
           title="New chat"
-          icon={<PlusCircleIcon className="h-4 w-4" />}
+          icon={<CirclePlusIcon />}
           locale={locale}
         />
         <SearchButton />

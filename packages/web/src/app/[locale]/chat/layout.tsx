@@ -1,14 +1,26 @@
 import { AppSidebar } from "./AppSidebar";
+import { Navbar } from "./Navbar";
 
 export default function ChatLayout({
+  reference,
   children,
 }: {
+  reference: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex">
+    <div className="flex h-full w-full overflow-hidden">
+      {/* left */}
       <AppSidebar />
-      <div className="flex-1">{children}</div>
+
+      {/* center */}
+      <div className="flex-1 overflow-y-auto">
+        <Navbar />
+        {children}
+      </div>
+
+      {/* right */}
+      {reference}
     </div>
   );
 }

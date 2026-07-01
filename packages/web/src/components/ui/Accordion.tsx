@@ -1,7 +1,8 @@
 "use client";
 
+import { ChevronDownIcon } from "@/components/icons";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 
 export function Accordion({

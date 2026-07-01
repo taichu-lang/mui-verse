@@ -2,6 +2,13 @@
 
 import { useAuth } from "@/auth/auth";
 import {
+  QuestionIcon,
+  SettingsIcon,
+  SignOutIcon,
+  SparklesIcon,
+  UserIcon,
+} from "@/components/icons";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuSeparator,
@@ -11,13 +18,6 @@ import { Menu } from "@mui-verse/ui/layout/Menu";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { Avatar, Button } from "@mui/material";
-import {
-  CircleUserRoundIcon,
-  LogOutIcon,
-  MessageCircleQuestionMarkIcon,
-  SettingsIcon,
-  SparklesIcon,
-} from "lucide-react";
 
 function SigninPanel() {
   const { collapsed } = useSidebar();
@@ -28,7 +28,7 @@ function SigninPanel() {
         title="Sign in"
         icon={
           <Avatar className="h-5 w-5">
-            <CircleUserRoundIcon className="h-3 w-3" />
+            <UserIcon />
           </Avatar>
         }
         className="mb-4"
@@ -38,18 +38,9 @@ function SigninPanel() {
 
   return (
     <div className="px-2">
-      <Menu
-        title={"See plans and pricing"}
-        icon={<SparklesIcon className="h-4.5 w-4.5" />}
-      />
-      <Menu
-        title={"Settings"}
-        icon={<SettingsIcon className="h-4.5 w-4.5" />}
-      />
-      <Menu
-        title={"Help"}
-        icon={<MessageCircleQuestionMarkIcon className="h-4.5 w-4.5" />}
-      />
+      <Menu title={"See plans and pricing"} icon={<SparklesIcon />} />
+      <Menu title={"Settings"} icon={<SettingsIcon />} />
+      <Menu title={"Help"} icon={<QuestionIcon />} />
       <div className="flex px-1.25 py-5">
         <Button
           className="text-text-primary rounded-2xl"
@@ -95,21 +86,12 @@ export function UserProfileMenu() {
               <span className="text-text-secondary text-sm">Free plan</span>
             </div>
             <DropdownMenuSeparator />
-            <Menu
-              title={"See plans and pricing"}
-              icon={<SparklesIcon className="h-4.5 w-4.5" />}
-            />
-            <Menu
-              title={"Settings"}
-              icon={<SettingsIcon className="h-4.5 w-4.5" />}
-            />
-            <Menu
-              title={"Help"}
-              icon={<MessageCircleQuestionMarkIcon className="h-4.5 w-4.5" />}
-            />
+            <Menu title={"See plans and pricing"} icon={<SparklesIcon />} />
+            <Menu title={"Settings"} icon={<SettingsIcon />} />
+            <Menu title={"Help"} icon={<QuestionIcon />} />
             <DropdownMenuSeparator />
             <MenuButton
-              icon={<LogOutIcon className="h-4 w-4" />}
+              icon={<SignOutIcon />}
               title="Sign out"
               className="text-error-500"
             />

@@ -15,6 +15,7 @@
 @theme {
   --z-index-navbar: 50;
   --z-index-fab: 999;
+  --spacing-navbar: 56px;
 }
 
 /*

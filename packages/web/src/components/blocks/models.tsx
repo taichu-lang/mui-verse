@@ -1,10 +1,14 @@
 "use client";
 
-import { AnthropicIcon } from "@/components/icons/AnthropicIcon";
-import { GeminiIcon } from "@/components/icons/GeminiIcon";
-import { ModelsIcon } from "@/components/icons/ModelsIcon";
-import { OpenAIIcon } from "@/components/icons/OpenAIIcon";
-import { PinnedIcon, PinnerIcon } from "@/components/icons/PinnerIcon";
+import {
+  AnthropicIcon,
+  ChevronDownIcon,
+  GeminiIcon,
+  ModelsIcon,
+  OpenAIIcon,
+  PinnedIcon,
+  PinnerIcon,
+} from "@/components/icons";
 import { Accordion } from "@/components/ui/Accordion";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import {
@@ -19,7 +23,6 @@ import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Typography } from "@mui/material";
-import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 
 type ModelProvider = "openai" | "google" | "anthropic";

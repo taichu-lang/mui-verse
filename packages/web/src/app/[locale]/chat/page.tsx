@@ -92,18 +92,19 @@ function SenderArea() {
 
 export default function ChatPage() {
   return (
-    <div className="flex h-screen w-full flex-col">
-      <ConversationProvider>
-        <div className="mx-auto flex w-3xl flex-1 flex-col">
-          <div className="flex-1">
-            <Conversation bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6" />
-          </div>
-          <SenderArea />
+    <ConversationProvider>
+      <div className="max-w-chat-area mx-auto flex min-h-[calc(100dvh-var(--spacing-navbar))] w-full flex-col">
+        <div className="mt-2 flex-1">
+          <Conversation bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6" />
         </div>
-      </ConversationProvider>
-      <div className="my-2 flex items-center justify-center text-xs">
-        AI can make mistakes. Please double-check responses.
+
+        <div className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur">
+          <SenderArea />
+          <div className="my-2 flex items-center justify-center text-xs">
+            AI can make mistakes. Please double-check responses.
+          </div>
+        </div>
       </div>
-    </div>
+    </ConversationProvider>
   );
 }
