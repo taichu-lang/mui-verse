@@ -1,14 +1,9 @@
 "use client";
 
 import { extendClickable, TriggerProps } from "@mui-verse/ui/utils/click";
-import {
-  Divider,
-  Menu,
-  MenuItem,
-  type MenuItemProps,
-  type MenuProps,
-} from "@mui/material";
+import { Divider, Menu, type MenuProps } from "@mui/material";
 import { createContext, useCallback, useContext, useState } from "react";
+import { MenuItem, MenuItemProps } from "./MenuItem";
 
 type Align = "start" | "center" | "end";
 type Side = "top" | "right" | "bottom" | "left";
@@ -161,22 +156,37 @@ const transformOriginMap: Record<
   },
 };
 
+type ShadowLevel = "none" | "xs" | "sm" | "md" | "lg";
+
 export interface DropdownMenuContentProps extends Omit<
   MenuProps,
   "open" | "anchorEl" | "onClose"
 > {
   children: React.ReactNode;
+  shadow?: ShadowLevel;
 }
 
 export function DropdownMenuContent({
   children,
+  shadow = "lg",
   sx,
-  ...menuProps
+  ...props
 }: DropdownMenuContentProps) {
   const { open, anchorEl, onClose, side, align } = useDropdownMenu();
+  const shadows: Record<ShadowLevel, string> = {
+    none: "none",
+    xs: "var(--mui-shadow-surface-xs)",
+    sm: "var(--mui-shadow-surface-sm)",
+    md: "var(--mui-shadow-surface-md)",
+    lg: "var(--mui-shadow-surface-lg)",
+  };
 
   return (
     <Menu
+      // If autoFocus is true, the first item will be focused once the menu is
+      // opened. It might be confused if the background color of selected item
+      // is same as `hover` action.
+      autoFocus={false}
       open={open}
       anchorEl={anchorEl}
       onClose={onClose}
@@ -194,16 +204,17 @@ export function DropdownMenuContent({
           elevation: 0,
           sx: {
             minWidth: 160,
-            borderRadius: "10px",
-            border: "0.5px solid",
+            borderRadius: "18px",
+            border: "1px solid",
             borderColor: "divider",
-            boxShadow: "var(--mui-shadow-surface-lg)",
-            py: 0.5,
+            boxShadow: shadows[shadow],
+            py: "8px",
+            px: "8px",
             ...sx,
           },
         },
       }}
-      {...menuProps}
+      {...props}
     >
       {children}
     </Menu>
@@ -219,7 +230,6 @@ export interface DropdownMenuItemProps extends MenuItemProps {
 export function DropdownMenuItem({
   closeOnClick = true,
   onClick,
-  sx,
   ...props
 }: DropdownMenuItemProps) {
   const { onClose } = useDropdownMenu();
@@ -230,22 +240,6 @@ export function DropdownMenuItem({
         onClick?.(e);
         if (closeOnClick) onClose();
       }}
-      sx={{
-        fontSize: "0.875rem",
-        lineHeight: 1,
-        borderRadius: "4px",
-        mx: 0.5,
-        px: 1.5,
-        py: 0.75,
-        minHeight: "unset",
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        "&:hover": {
-          backgroundColor: "action.hover",
-        },
-        ...sx,
-      }}
       {...props}
     />
   );
@@ -254,5 +248,5 @@ export function DropdownMenuItem({
 // --- Separator ---
 
 export function DropdownMenuSeparator() {
-  return <Divider sx={{ my: 0.5 }} />;
+  return <Divider flexItem />;
 }

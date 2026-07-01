@@ -5,11 +5,6 @@
   :root {
     --sidebar-width: 17rem;
     --sidebar-collapsed-width: 3.125rem;
-
-    --mui-palette-primary-main: hsla(159, 54%, 50%, 1);
-    --mui-palette-primary-500: hsla(159, 54%, 50%, 1);
-    --mui-palette-primary-dark: hsla(159, 100%, 32%, 1);
-    --mui-palette-primary-light: hsla(159, 31%, 81%, 1);
   }
 }
 
@@ -24,9 +19,6 @@
 
 @theme {
   --color-sidebar-divider: hsla(0, 0%, 89%, 1);
-  --color-text-primary: hsla(0, 0%, 14%, 1);
-  --color-text-secondary: hsla(0, 0%, 46%, 1);
-  --color-action-hover: hsla(0, 0%, 94%, 1);
 
   --text-xs--line-height: 16px;
   --text-sm--line-height: 18px;
@@ -36,6 +28,25 @@
 }
 
 html[data-mui-color-scheme="light"] {
+  --mui-palette-primary-main: hsla(159, 54%, 50%, 1);
+  --mui-palette-primary-500: hsla(159, 54%, 50%, 1);
+  --mui-palette-primary-dark: hsla(159, 100%, 32%, 1);
+  --mui-palette-primary-light: hsla(159, 31%, 81%, 1);
+
   --mui-palette-divider: hsla(0, 0%, 79%, 1);
+  --mui-palette-action-hover: hsla(0, 0%, 94%, 1);
+  --mui-palette-text-primary: hsla(0, 0%, 14%, 1);
   --mui-palette-text-secondary: hsla(0, 0%, 46%, 1);
+}
+
+[data-markdown="h1"] {
+  font-size: 22px;
+}
+
+[data-markdown="h2"] {
+  line-height: 26px;
+}
+
+[data-markdown="h3"] {
+  line-height: 24px;
 }

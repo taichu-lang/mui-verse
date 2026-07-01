@@ -1,3 +1,7 @@
 {
+  "tailwindCSS.experimental.configFile": "packages/mui-verse/ui/src/verse.css",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "cSpell.words": ["Swipeable"]
 }

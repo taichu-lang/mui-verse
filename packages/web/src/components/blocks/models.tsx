@@ -10,6 +10,7 @@ import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
   MenuItem,
   useDropdownMenu,
@@ -17,8 +18,8 @@ import {
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Drawer, Typography } from "@mui/material";
-import { ChevronDownIcon, X } from "lucide-react";
+import { Typography } from "@mui/material";
+import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 
 type ModelProvider = "openai" | "google" | "anthropic";
@@ -91,28 +92,34 @@ const models: Model[] = [
 export function ModelMenuItem({
   model,
   pinned = false,
-  variant = "sm",
 }: {
   model: Model;
   pinned?: boolean;
-  variant?: "sm" | "md";
 }) {
   const { provider, name } = model;
 
   return (
-    <MenuItem className="gap-2.5" variant={variant}>
-      <div className={cn({ "mr-1 ml-2.5": variant === "md" })}>
-        {icons[provider]}
-      </div>
+    <MenuItem
+      className="gap-2.5"
+      actions={
+        <div
+          className={cn(
+            "flex h-full w-8 items-center justify-center p-0 opacity-0 hover:opacity-100",
+            {
+              "opacity-100": pinned,
+            },
+          )}
+        >
+          {pinned ? (
+            <PinnedIcon className="text-primary-500" />
+          ) : (
+            <PinnerIcon />
+          )}
+        </div>
+      }
+    >
+      {icons[provider]}
       {name}
-      <div className="flex-1" />
-      <IconGhostButton
-        className={cn("p-0 opacity-0 hover:opacity-100", {
-          "opacity-100": pinned,
-        })}
-      >
-        {pinned ? <PinnedIcon className="text-primary-500" /> : <PinnerIcon />}
-      </IconGhostButton>
     </MenuItem>
   );
 }
@@ -187,33 +194,29 @@ export function ModelAccordion() {
 
 export function ModelSelect() {
   const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
-  const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <>
-      <div
-        className="flex cursor-pointer items-center"
-        onClick={() => setOpen(!open)}
-      >
-        {icons[selectedModel.provider]}
-        <Typography variant="body2" className="pr-2.5 pl-1.5 leading-4.5">
-          {selectedModel.name}
-        </Typography>
-        <ChevronDownIcon className="h-4 w-4" />
-      </div>
-      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
-        <div className="flex w-lg flex-col px-3">
-          <div className="mt-5 mb-3.5 ml-4.5 flex items-center justify-between">
-            <p className="text-[26px] leading-7.5 font-medium">Models</p>
-            <IconGhostButton>
-              <X className="h-4 w-4" />
-            </IconGhostButton>
-          </div>
-          {models.map((model) => (
-            <ModelMenuItem key={model.id} model={model} variant="md" />
-          ))}
+    <DropdownMenu side="top" align="start">
+      <DropdownMenuTrigger>
+        <div className="flex cursor-pointer items-center">
+          {icons[selectedModel.provider]}
+          <span className="pr-2.5 pl-1.5 text-sm">{selectedModel.name}</span>
+          <ChevronDownIcon className="h-4 w-4" />
         </div>
-      </Drawer>
-    </>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent shadow="none">
+        {models.map((model) => (
+          <DropdownMenuItem
+            key={model.id}
+            className="gap-2.5"
+            selected={selectedModel.id === model.id}
+            onClick={() => setSelectedModel(model)}
+          >
+            {icons[model.provider]}
+            {model.name}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -27,17 +27,17 @@ function ChatAction({ pinned = false }: { pinned?: boolean }) {
       <DropdownMenuTrigger>
         <EllipsisIcon className="hidden h-4 w-4 group-hover:block" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
+      <DropdownMenuContent shadow="none" sx={{ py: "14px", minWidth: "194px" }}>
+        <DropdownMenuItem className="gap-2.5">
           <PencilLineIcon className="h-4 w-4" />
           Rename
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem className="gap-2.5">
           <PinnerIcon />
           {pinned ? "Unpin chat" : "Pin Chat"}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-error-500">
+        <DropdownMenuItem className="text-error-500 gap-2.5">
           <Trash2Icon className="h-4 w-4" />
           Delete
         </DropdownMenuItem>
