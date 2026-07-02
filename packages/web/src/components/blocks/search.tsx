@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@mui-verse/ui/components/feedback";
+import { CloseXIcon } from "@mui-verse/ui/components/icons";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { DialogContent, InputBase } from "@mui/material";
 
@@ -25,7 +26,13 @@ export function SearchButton() {
         <MenuButton title="Search" icon={<SearchIcon />} />
       </DialogTrigger>
       <Dialog>
-        <DialogTitle enableCloseTrigger={<IconGhostButton />}>
+        <DialogTitle
+          enableCloseTrigger={
+            <IconGhostButton className="hover:bg-action-hover h-8 w-8">
+              <CloseXIcon />
+            </IconGhostButton>
+          }
+        >
           <InputBase fullWidth />
         </DialogTitle>
         <DialogContent>

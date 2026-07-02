@@ -1,6 +1,7 @@
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Typography } from "@mui/material";
 import { Streamdown } from "streamdown";
+import { BubbleActions, BubbleCopyAction } from "./BubbleAction";
 import { Message } from "./types";
 
 function BubbleUser({
@@ -11,16 +12,21 @@ function BubbleUser({
   className?: string;
 }) {
   return (
-    <div className="flex w-full justify-end">
-      <div
-        data-role="user"
-        className={cn(
-          "bg-action-hover max-w-[85%] rounded-2xl px-3.5 py-2.5 text-base",
-          className,
-        )}
-      >
-        {content}
+    <div className="group flex w-full flex-col gap-1 pb-1">
+      <div className="flex justify-end">
+        <div
+          data-role="user"
+          className={cn(
+            "bg-action-hover flex max-w-[85%] rounded-2xl px-3.5 py-2.5 text-base",
+            className,
+          )}
+        >
+          {content}
+        </div>
       </div>
+      <BubbleActions role="user">
+        <BubbleCopyAction />
+      </BubbleActions>
     </div>
   );
 }
@@ -28,9 +34,11 @@ function BubbleUser({
 function BubbleAssistant({
   content,
   className,
+  streaming,
 }: {
   content: string;
   className?: string;
+  streaming?: boolean;
 }) {
   if (!content) {
     return null;
@@ -39,7 +47,11 @@ function BubbleAssistant({
   return (
     <div
       data-role="assistant"
-      className={cn("flex w-full justify-start", className)}
+      className={cn(
+        "flex w-full flex-col justify-start gap-3.5",
+        streaming ? "mb-5" : "mb-14",
+        className,
+      )}
     >
       <Streamdown
         components={{
@@ -107,6 +119,11 @@ function BubbleAssistant({
       >
         {content}
       </Streamdown>
+      {streaming || (
+        <BubbleActions role="assistant">
+          <BubbleCopyAction />
+        </BubbleActions>
+      )}
     </div>
   );
 }
@@ -114,16 +131,22 @@ function BubbleAssistant({
 export function Bubble({
   message,
   className,
+  streaming,
 }: {
   message: Message;
   className?: string;
+  streaming?: boolean;
 }) {
   switch (message.role) {
     case "user":
       return <BubbleUser content={message.content} className={className} />;
     case "assistant":
       return (
-        <BubbleAssistant content={message.content} className={className} />
+        <BubbleAssistant
+          content={message.content}
+          className={className}
+          streaming={streaming}
+        />
       );
     default:
       return null;

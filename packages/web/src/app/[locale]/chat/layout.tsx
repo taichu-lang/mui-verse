@@ -1,5 +1,5 @@
-import { AppSidebar } from "./AppSidebar";
-import { Navbar } from "./Navbar";
+import { AppSidebar } from "./_components/AppSidebar";
+import { Navbar } from "./_components/Navbar";
 
 export default function ChatLayout({
   reference,

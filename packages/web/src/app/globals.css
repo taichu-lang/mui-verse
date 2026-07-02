@@ -5,6 +5,12 @@
   :root {
     --sidebar-width: 17rem;
     --sidebar-collapsed-width: 3.125rem;
+
+    /* Rough default for the floating chat sender's height. The chat page
+     * measures the real height at runtime via ResizeObserver and overrides
+     * this on the sender wrapper; the default here is only a fallback for
+     * first paint / SSR before hydration. */
+    --chat-sender-offset: 180px;
   }
 }
 

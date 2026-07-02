@@ -2,7 +2,6 @@
 
 import { ChevronDownIcon } from "@/components/icons";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 
 export function Accordion({
@@ -19,15 +18,12 @@ export function Accordion({
   return (
     <div className={cn("flex flex-col", className)}>
       <div
-        className="mt-2 mb-1.75 flex cursor-pointer items-center gap-4 px-2"
+        className="group mt-2 mb-1.75 flex cursor-pointer items-center gap-4 px-2"
         onClick={() => setExpanded(!expanded)}
+        data-collapse={expanded ? undefined : "true"}
       >
         <span className="text-text-secondary text-xs">{title}</span>
-        {expanded ? (
-          <ChevronDownIcon className="h-4 w-4" />
-        ) : (
-          <ChevronUpIcon className="h-4 w-4" />
-        )}
+        <ChevronDownIcon className="transition-transform duration-300 group-data-collapse:-rotate-90" />
       </div>
       {expanded && children}
     </div>

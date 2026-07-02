@@ -8,6 +8,7 @@ import {
   useConversationContext,
   WebSearchTool,
 } from "@mui-verse/ui/components/chat";
+import { useEffect, useRef } from "react";
 
 interface MetaEvent {
   type: "meta";
@@ -80,6 +81,8 @@ function SenderArea() {
 
   return (
     <Sender
+      minRows={2}
+      maxRows={12}
       onSend={sendMessage}
       className="chat-sender"
       inputClassName="chat-sender-input"
@@ -91,6 +94,25 @@ function SenderArea() {
 }
 
 export default function ChatPage() {
+  // Publish the floating sender's height as --chat-sender-offset so the
+  // Conversation's end sentinel can use scroll-margin-bottom to stop above it
+  // when auto-scrolling to the latest message.
+  const senderWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = senderWrapperRef.current;
+    if (!el) return;
+
+    const update = () => {
+      el.style.setProperty("--chat-sender-offset", `${el.offsetHeight}px`);
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <ConversationProvider>
       <div className="max-w-chat-area mx-auto flex min-h-[calc(100dvh-var(--spacing-navbar))] w-full flex-col">
@@ -98,7 +120,10 @@ export default function ChatPage() {
           <Conversation bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6" />
         </div>
 
-        <div className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur">
+        <div
+          ref={senderWrapperRef}
+          className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur"
+        >
           <SenderArea />
           <div className="my-2 flex items-center justify-center text-xs">
             AI can make mistakes. Please double-check responses.

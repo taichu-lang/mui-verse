@@ -16,7 +16,7 @@ export function Navbar() {
       </span>
       <DropdownMenu align="end" side="bottom">
         <DropdownMenuTrigger>
-          <IconGhostButton className="hover:bg-action-hover rounded-lg p-1.75">
+          <IconGhostButton className="hover:bg-action-hover h-8 w-8">
             <ChevronDownIcon />
           </IconGhostButton>
         </DropdownMenuTrigger>
