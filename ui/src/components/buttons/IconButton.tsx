@@ -40,7 +40,14 @@ export function IconGhostButton({
   ...rest
 }: IconTextButtonProps) {
   return (
-    <div ref={ref} className={cn("cursor-pointer p-1.5", className)} {...rest}>
+    <div
+      ref={ref}
+      className={cn(
+        "flex cursor-pointer items-center justify-center rounded-lg",
+        className,
+      )}
+      {...rest}
+    >
       {children}
     </div>
   );
