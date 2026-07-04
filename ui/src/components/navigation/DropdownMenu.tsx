@@ -5,8 +5,10 @@ import { Divider, Menu, type MenuProps } from "@mui/material";
 import { createContext, useCallback, useContext, useState } from "react";
 import { MenuItem, MenuItemProps } from "./MenuItem";
 
-type Align = "start" | "center" | "end";
-type Side = "top" | "right" | "bottom" | "left";
+export type Align = "start" | "center" | "end";
+
+// `cover` means that only the first item covers the trigger.
+export type Side = "top" | "right" | "bottom" | "left" | "cover";
 
 interface DropdownMenuContextValue {
   open: boolean;
@@ -128,6 +130,11 @@ const anchorOriginMap: Record<
     center: { vertical: "center", horizontal: "right" },
     end: { vertical: "bottom", horizontal: "right" },
   },
+  cover: {
+    start: { vertical: "top", horizontal: "left" },
+    center: { vertical: "top", horizontal: "center" },
+    end: { vertical: "top", horizontal: "right" },
+  },
 };
 
 const transformOriginMap: Record<
@@ -153,6 +160,11 @@ const transformOriginMap: Record<
     start: { vertical: "top", horizontal: "left" },
     center: { vertical: "center", horizontal: "left" },
     end: { vertical: "bottom", horizontal: "left" },
+  },
+  cover: {
+    start: { vertical: "top", horizontal: "left" },
+    center: { vertical: "top", horizontal: "center" },
+    end: { vertical: "top", horizontal: "right" },
   },
 };
 
@@ -223,30 +235,42 @@ export function DropdownMenuContent({
 
 // --- Item ---
 
-export interface DropdownMenuItemProps extends MenuItemProps {
-  closeOnClick?: boolean;
-}
+/**
+ * Polymorphic `DropdownMenuItem` props.
+ *
+ * Same `component` mechanism as `MenuItem`: pass `component={Link}` or
+ * `component="a"` and TypeScript will accept the destination element's props
+ * (e.g. `href`). Defaults to `"li"` — the same default as MUI's `MenuItem`.
+ */
+export type DropdownMenuItemProps<C extends React.ElementType = "li"> =
+  MenuItemProps<C> & {
+    closeOnClick?: boolean;
+  };
 
-export function DropdownMenuItem({
+export function DropdownMenuItem<C extends React.ElementType = "li">({
   closeOnClick = true,
   onClick,
   ...props
-}: DropdownMenuItemProps) {
+}: DropdownMenuItemProps<C>) {
   const { onClose } = useDropdownMenu();
 
+  // The `onClick` we receive is typed against `C`'s DOM node, but internally
+  // we hand it to a non-polymorphic `MenuItem`. Wrap once and cast at the
+  // boundary — runtime is unaffected because MUI passes the same event object
+  // through regardless of the root element.
+  const handleClick: React.MouseEventHandler = (e) => {
+    (onClick as React.MouseEventHandler | undefined)?.(e);
+    if (closeOnClick) onClose();
+  };
+
   return (
-    <MenuItem
-      onClick={(e) => {
-        onClick?.(e);
-        if (closeOnClick) onClose();
-      }}
-      {...props}
-    />
+    <MenuItem onClick={handleClick} {...(props as unknown as MenuItemProps)} />
   );
 }
 
 // --- Separator ---
 
-export function DropdownMenuSeparator() {
-  return <Divider flexItem />;
+// Using `my-xx` to override the default margin of `Divider`.
+export function DropdownMenuSeparator({ className }: { className?: string }) {
+  return <Divider flexItem className={className} />;
 }

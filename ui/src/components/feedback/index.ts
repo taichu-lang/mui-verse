@@ -1,4 +1,5 @@
 export {
+  DefaultDialog,
   Dialog,
   DialogActions,
   DialogProvider,

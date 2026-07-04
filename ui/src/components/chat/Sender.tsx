@@ -44,7 +44,7 @@ export function Sender({
   return (
     <div
       className={cn(
-        "border-divider flex w-full flex-col overflow-y-auto rounded-3xl border outline-none",
+        "flex w-full flex-col overflow-y-auto rounded-3xl",
         className,
       )}
     >

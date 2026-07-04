@@ -64,18 +64,14 @@ export function DialogProvider({
 
 export type DialogProps = Omit<MuiDialogProps, "open" | "onClose">;
 
-export function Dialog({
+export function DefaultDialog({
   fullWidth = true,
   maxWidth = "xs",
   sx,
   ...props
-}: DialogProps) {
-  const { open, setOpen } = useDialogContext();
-
+}: MuiDialogProps) {
   return (
     <MuiDialog
-      open={open}
-      onClose={() => setOpen(false)}
       fullWidth={fullWidth}
       maxWidth={maxWidth}
       slotProps={{
@@ -88,7 +84,15 @@ export function Dialog({
         },
       }}
       {...props}
-    ></MuiDialog>
+    />
+  );
+}
+
+export function Dialog(props: DialogProps) {
+  const { open, setOpen } = useDialogContext();
+
+  return (
+    <DefaultDialog open={open} onClose={() => setOpen(false)} {...props} />
   );
 }
 
@@ -99,8 +103,7 @@ export function DialogTitle({
 }: {
   children: React.ReactNode;
   enableCloseTrigger?:
-    | boolean
-    | React.ReactElement<TriggerProps & { children?: React.ReactNode }>;
+    boolean | React.ReactElement<TriggerProps & { children?: React.ReactNode }>;
   useSeparator?: boolean;
 }) {
   const { setOpen } = useDialogContext();
