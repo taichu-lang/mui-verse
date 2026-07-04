@@ -1,7 +1,11 @@
+"use client";
+
 import {
+  DefaultDialog,
   DialogProps,
   Dialog as MuiDialog,
 } from "@mui-verse/ui/components/feedback";
+import { useRouter } from "next/navigation";
 
 export function Dialog({ maxWidth = "sm", ...props }: DialogProps) {
   return (
@@ -12,5 +16,17 @@ export function Dialog({ maxWidth = "sm", ...props }: DialogProps) {
         boxShadow: "none",
       }}
     />
+  );
+}
+
+export function InterceptingDialog(props: DialogProps) {
+  const router = useRouter();
+
+  return (
+    <DefaultDialog
+      open={true}
+      onClose={() => router.back()}
+      {...props}
+    ></DefaultDialog>
   );
 }

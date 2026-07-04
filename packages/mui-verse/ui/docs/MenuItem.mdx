@@ -48,6 +48,61 @@ import { MenuItem } from "@mui-verse/ui/components/navigation";
 </DropdownMenu>
 ```
 
+## 作为其他元素渲染（`component` prop）
+
+`MenuItem` 是**多态组件**：默认渲染为 `<li>`，也可以通过 `component` 指定渲染成任意元素或组件。TypeScript 会根据 `component` 反推出目标元素的属性类型，无需额外类型声明就能拿到 `href`、`target` 之类的 props。
+
+### 渲染为原生 `<a>`
+
+```tsx
+<MenuItem component="a" href="https://example.com" target="_blank">
+  访问官网
+</MenuItem>
+```
+
+### 渲染为 Next.js `Link`（推荐用法）
+
+需要在菜单项里做客户端路由跳转时，直接把 `component` 设为 `Link`，并把 `href` 传给 `MenuItem` 自己 —— **不要**把 `Link` 作为 `MenuItem` 的 children 嵌套进去：
+
+```tsx
+import Link from "next/link";
+import { DropdownMenuItem } from "@mui-verse/ui/components/navigation";
+
+<DropdownMenuItem component={Link} href="/chat/settings">
+  <SettingsIcon />
+  Settings
+</DropdownMenuItem>
+```
+
+这样做的好处：
+
+- **整个菜单项都是可点击的跳转区域**：`<li>` 直接被替换为 `<a>`，菜单行的空白处点击也会跳转，不再只有文字/图标可点。
+- **键盘导航生效**：焦点落到菜单项按 Enter 时，浏览器对 `<a>` 的默认行为会触发跳转 —— 嵌套写法里键盘 Enter 只会触发 `<li>` 的 `onClick`，不会点到内部 `<a>`。
+- **`DropdownMenuItem` 内部的 `onClose()` 仍会执行**：路由跳转和菜单关闭两个动作都会发生。
+- **无障碍语义正确**：`role="menuitem"` 落在一个真正可导航的 `<a>` 上。
+
+### 嵌套 vs `component`
+
+同一个 Settings 菜单项的两种写法对比：
+
+```tsx
+// ❌ 不推荐：Link 作为 children
+<DropdownMenuItem>
+  <Link href="/chat/settings">
+    <SettingsIcon />
+    Settings
+  </Link>
+</DropdownMenuItem>
+// 生成 <li><a>…</a></li>：只有 <a> 覆盖到的区域会跳转，键盘 Enter 也不会触发跳转
+
+// ✅ 推荐：component={Link}
+<DropdownMenuItem component={Link} href="/chat/settings">
+  <SettingsIcon />
+  Settings
+</DropdownMenuItem>
+// 生成单个 <a role="menuitem">：整个菜单项都可跳转，键盘友好
+```
+
 ## 通过 CSS 变量覆盖样式
 
 组件内部使用 `var(--mv-menu-*, fallback)` 的形式书写样式，变体只负责提供 fallback 默认值。业务侧只要在父级（或 `:root`）声明同名 CSS 变量，即可在不接触组件代码的前提下覆盖部分样式。
@@ -168,11 +223,12 @@ CSS 变量也可以直接写在某一项上，只影响这一项：
 
 ### MenuItem Props
 
-继承 MUI `MenuItemProps`，新增以下属性：
+继承 MUI `MenuItemProps`，并支持多态 `component` 属性。新增/变化的属性：
 
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `variant` | `"sm" \| "md"` | `"sm"` | 尺寸变体。决定字号、行高、内边距的 fallback 默认值 |
+| `component` | `React.ElementType` | `"li"` | 渲染成任意元素或组件。类型系统会根据传入的 `component` 自动放开目标元素的额外 props（如 `href`、`target` 等） |
 
 其余属性（`onClick`、`disabled`、`selected`、`sx` 等）与 MUI `MenuItem` 一致，参见 [MUI MenuItem 文档](https://mui.com/material-ui/api/menu-item/)。
 

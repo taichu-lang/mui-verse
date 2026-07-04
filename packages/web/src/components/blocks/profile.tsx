@@ -8,19 +8,24 @@ import {
   SparklesIcon,
   UserIcon,
 } from "@/components/icons";
+import { usePathname } from "@/i18n/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  MenuItem,
 } from "@mui-verse/ui/components/navigation";
 import { Menu } from "@mui-verse/ui/layout/Menu";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { Avatar, Button } from "@mui/material";
+import Link from "next/link";
 
 function SigninPanel() {
   const { collapsed } = useSidebar();
+  const pathname = usePathname();
 
   if (collapsed) {
     return (
@@ -39,7 +44,10 @@ function SigninPanel() {
   return (
     <div className="px-2">
       <Menu title={"See plans and pricing"} icon={<SparklesIcon />} />
-      <Menu title={"Settings"} icon={<SettingsIcon />} />
+      <MenuItem component={Link} href={`${pathname}?modal=settings`}>
+        <SettingsIcon />
+        Settings
+      </MenuItem>
       <Menu title={"Help"} icon={<QuestionIcon />} />
       <div className="flex px-1.25 py-5">
         <Button
@@ -62,10 +70,10 @@ export function UserProfileMenu() {
       <div className="p-1.5">
         <DropdownMenu side="top" align="start">
           <DropdownMenuTrigger>
-            <div className="flex h-16.5 items-center pr-2.5 pl-4">
+            <div className="flex h-16.5 cursor-pointer items-center pr-2.5 pl-4">
               <Avatar className="h-8.5 w-8.5">S</Avatar>
               <div className="ml-2.5 flex flex-col gap-1.5">
-                <span className="text-sm">Someone</span>
+                <span className="text-text-primary text-sm">Someone</span>
                 <span className="text-text-secondary text-sm">Free plan</span>
               </div>
               <div className="flex-1" />
@@ -78,23 +86,25 @@ export function UserProfileMenu() {
               </Button>
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent sx={{ width: "260px", px: "16px" }}>
-            <div className="flex items-center">
+          <DropdownMenuContent sx={{ width: "260px", py: "6px" }}>
+            <div className="flex h-13.5 items-center">
               <Avatar className="h-8.5 w-8.5">S</Avatar>
-              <span className="ml-2.5 text-sm">Someone</span>
+              <span className="text-text-primary ml-2.5 text-sm">Someone</span>
               <div className="flex-1" />
               <span className="text-text-secondary text-sm">Free plan</span>
             </div>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="my-1.5" />
             <Menu title={"See plans and pricing"} icon={<SparklesIcon />} />
-            <Menu title={"Settings"} icon={<SettingsIcon />} />
+            <DropdownMenuItem component={Link} href="/chat/settings">
+              <SettingsIcon />
+              Settings
+            </DropdownMenuItem>
             <Menu title={"Help"} icon={<QuestionIcon />} />
-            <DropdownMenuSeparator />
-            <MenuButton
-              icon={<SignOutIcon />}
-              title="Sign out"
-              className="text-error-500"
-            />
+            <DropdownMenuSeparator className="my-1.5" />
+            <MenuItem className="text-error-500 hover:bg-error-200">
+              <SignOutIcon />
+              Sign out
+            </MenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

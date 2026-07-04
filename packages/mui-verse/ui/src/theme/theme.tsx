@@ -225,12 +225,12 @@ const createBaseTheme = (palette: PaletteOptions) =>
             paddingBottom: spaces[3],
           },
           outlined: {
-            borderColor: "var(--mui-palette-divider)",
-            boxShadow: "none",
+            border: 0,
+            boxShadow: "inset 0 0 0 1px var(--color-divider)",
             "&:hover": {
-              borderColor: "var(--mui-palette-text-secondary)",
               backgroundColor: "var(--mui-palette-action-hover)",
-              boxShadow: "none",
+              boxShadow: "inset 0 0 0 1px var(--color-divider)",
+              border: 0,
             },
           },
           text: {
@@ -271,6 +271,20 @@ const createBaseTheme = (palette: PaletteOptions) =>
               "&:hover": {
                 backgroundColor: "var(--mui-palette-action-hover)",
               },
+            },
+          },
+          {
+            props: { variant: "outlined", size: "small" },
+            style: {
+              border: 0,
+              boxShadow: "inset 0 0 0 1px var(--color-divider)",
+            },
+          },
+          {
+            props: { variant: "outlined", size: "large" },
+            style: {
+              border: 0,
+              boxShadow: "inset 0 0 0 1px var(--color-divider)",
             },
           },
         ],
@@ -390,8 +404,8 @@ const createBaseTheme = (palette: PaletteOptions) =>
         styleOverrides: {
           paper: {
             borderRadius: spaces[3],
-            border: "1px solid var(--mui-palette-divider)",
-            boxShadow: "var(--mui-shadow-surface-md)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
           },
         },
       },

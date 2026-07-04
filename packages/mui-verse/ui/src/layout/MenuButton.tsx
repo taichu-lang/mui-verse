@@ -45,10 +45,7 @@ export function MenuButton({
             {icon}
           </CardActionArea>
         ) : (
-          <MenuItem
-            className={cn("group w-full gap-2.5", className)}
-            onClick={onClick}
-          >
+          <MenuItem className={cn("group w-full", className)} onClick={onClick}>
             {icon}
             <Typography
               variant="body2"

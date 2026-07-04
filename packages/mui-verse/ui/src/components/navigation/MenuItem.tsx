@@ -10,10 +10,33 @@ import React from "react";
 
 type Variant = "sm" | "md";
 
-export interface MenuItemProps extends MuiMenuItemProps {
+/**
+ * Polymorphic `MenuItem` props.
+ *
+ * The generic `C` mirrors MUI's own multi-polymorphic API: pass `component={SomeComponent}`
+ * (or `component="a"`, etc.) and TypeScript will surface that element's DOM attributes
+ * (e.g. `href` for `<a>` / Next `Link`). Defaults to `"li"` — the same default as MUI's
+ * `MenuItem` — so consumers that don't set `component` get the historical typing.
+ *
+ * Note on the `Omit<..., "component"> & { component?: C }` trick: MUI's own
+ * `MenuItemProps` widens `component` back to `React.ElementType | undefined` at
+ * the tail of its type, which prevents TS from inferring `C` from a value like
+ * `component={Link}`. Narrowing `component` to `C` here restores the inference,
+ * which is how the polymorphic `href` prop becomes visible to callers.
+ *
+ * We layer `variant` / `actions` on the outside (via intersection) instead of
+ * threading them through MUI's `AdditionalProps` slot — the latter can collide
+ * with a `variant` field already present on the target `C` (e.g. a `<button>`
+ * from some libraries), producing a `never` intersection.
+ */
+export type MenuItemProps<C extends React.ElementType = "li"> = Omit<
+  MuiMenuItemProps<C>,
+  "component"
+> & {
+  component?: C;
   variant?: Variant;
   actions?: React.ReactNode;
-}
+};
 
 type Preset = {
   fontSize: string;
@@ -98,24 +121,37 @@ const StyledMenuItem = styled(MuiMenuItem, {
   };
 });
 
-export function MenuItem({
+export function MenuItem<C extends React.ElementType = "li">({
   variant = "sm",
   children,
   actions,
   className,
   ...rest
-}: MenuItemProps) {
+}: MenuItemProps<C>) {
+  // `StyledMenuItem` is `styled(MuiMenuItem)` and its type is narrowed to the
+  // default `<li>` root — but at runtime MUI's `MenuItem` handles the
+  // `component` prop and forwards everything to whatever element the caller
+  // chose. Cast so TS accepts the spread while preserving the polymorphic
+  // typing on the outer `MenuItem`.
+  const passthrough = rest as MuiMenuItemProps;
+
   if (actions === undefined) {
     return (
-      <StyledMenuItem variant={variant} className={className} {...rest}>
+      <StyledMenuItem
+        variant={variant}
+        className={cn("gap-2.5", className)}
+        {...passthrough}
+      >
         {children}
       </StyledMenuItem>
     );
   }
 
   return (
-    <StyledMenuItem variant={variant} hasActions {...rest}>
-      <div className={cn("VerseMenuItem-content", className)}>{children}</div>
+    <StyledMenuItem variant={variant} hasActions {...passthrough}>
+      <div className={cn("VerseMenuItem-content gap-2.5", className)}>
+        {children}
+      </div>
       <div className="VerseMenuItem-actions">{actions}</div>
     </StyledMenuItem>
   );
