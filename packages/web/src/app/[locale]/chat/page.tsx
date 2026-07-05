@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthZone } from "@/auth/AuthZone";
 import { ModelSelect } from "@/components/blocks/models";
 import {
   Conversation,
@@ -80,16 +81,18 @@ function SenderArea() {
   };
 
   return (
-    <Sender
-      minRows={2}
-      maxRows={12}
-      onSend={sendMessage}
-      className="chat-sender"
-      inputClassName="chat-sender-input"
-    >
-      <ModelSelect />
-      <WebSearchTool />
-    </Sender>
+    <AuthZone>
+      <Sender
+        minRows={2}
+        maxRows={12}
+        onSend={sendMessage}
+        className="chat-sender"
+        inputClassName="chat-sender-input"
+      >
+        <ModelSelect />
+        <WebSearchTool />
+      </Sender>
+    </AuthZone>
   );
 }
 

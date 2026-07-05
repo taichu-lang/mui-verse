@@ -48,7 +48,10 @@ function SigninPanel() {
         <SettingsIcon />
         Settings
       </MenuItem>
-      <Menu title={"Help"} icon={<QuestionIcon />} />
+      <MenuItem component={Link} href={`${pathname}?modal=settings/help`}>
+        <QuestionIcon />
+        Help
+      </MenuItem>
       <div className="flex px-1.25 py-5">
         <Button
           className="text-text-primary rounded-2xl"

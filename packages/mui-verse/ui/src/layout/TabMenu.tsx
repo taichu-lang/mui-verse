@@ -30,16 +30,22 @@ export function useTabMenuContext() {
 export function TabMenuContext({
   defaultIndex,
   children,
+  onChange,
 }: {
   defaultIndex: string;
   children: React.ReactNode;
+  onChange?: (value: string) => void;
 }) {
   const [selected, setSelected] = useState<string>(defaultIndex);
   const [title, setTitle] = useState<string | null>(null);
 
-  const handleClick = useCallback((value: string) => {
-    setSelected(value);
-  }, []);
+  const handleClick = useCallback(
+    (value: string) => {
+      setSelected(value);
+      onChange?.(value);
+    },
+    [onChange],
+  );
 
   const handleTitleChange = useCallback((title: string) => {
     setTitle(title);

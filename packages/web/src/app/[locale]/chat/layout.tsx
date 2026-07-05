@@ -1,6 +1,6 @@
 import { AppSidebar } from "./_components/AppSidebar";
 import { Navbar } from "./_components/Navbar";
-import SettingsDialog from "./_components/SettingsDialog";
+import SettingsDialog from "./_settings/SettingsDialog";
 
 export default function ChatLayout({
   reference,

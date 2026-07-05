@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthZone } from "@/auth/AuthZone";
 import {
   AnthropicIcon,
   ChevronDownIcon,
@@ -188,9 +189,11 @@ export function ModelAccordion() {
 
   return (
     <Accordion title="Models" className="mb-4">
-      {models.map((model) => (
-        <ModelMenuItem key={model.id} model={model} />
-      ))}
+      <AuthZone>
+        {models.map((model) => (
+          <ModelMenuItem key={model.id} model={model} />
+        ))}
+      </AuthZone>
     </Accordion>
   );
 }

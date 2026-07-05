@@ -1,5 +1,7 @@
 "use client";
 
+import { AuthFilter } from "@/auth/AuthFilter";
+import { AuthZone } from "@/auth/AuthZone";
 import { ChatHistory } from "@/components/blocks/history";
 import { ModelAccordion } from "@/components/blocks/models";
 import { UserProfileMenu } from "@/components/blocks/profile";
@@ -28,24 +30,28 @@ export function AppSidebar() {
         )}
         <SidebarToggle />
       </SidebarHeader>
-      <div
-        className={cn("mb-5 flex w-full flex-col items-center px-2", {
-          "mb-0": collapsed,
-        })}
-      >
-        <MenuIntl
-          href="/chat"
-          title="New chat"
-          icon={<CirclePlusIcon />}
-          locale={locale}
-        />
-        <SearchButton />
-      </div>
+      <AuthZone>
+        <div
+          className={cn("mb-5 flex w-full flex-col items-center px-2", {
+            "mb-0": collapsed,
+          })}
+        >
+          <MenuIntl
+            href="/chat"
+            title="New chat"
+            icon={<CirclePlusIcon />}
+            locale={locale}
+          />
+          <SearchButton />
+        </div>
+      </AuthZone>
       <div className="mb-2 overflow-y-auto">
         <div className="px-2">
           <ModelAccordion />
-          <ChatHistory pinned className="mb-9" />
-          <ChatHistory />
+          <AuthFilter>
+            <ChatHistory pinned className="mb-9" />
+            <ChatHistory />
+          </AuthFilter>
         </div>
       </div>
       <SidebarFooter className={"flex-col pb-0"}>

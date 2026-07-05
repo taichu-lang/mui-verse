@@ -35,6 +35,9 @@
   --spacing-bubble-user: 536px;
   --spacing-chat-area: 770px;
   --spacing-chat-reference: 358px;
+
+  --spacing-settings-width: 682px;
+  --spacing-settings-height: 578px;
 }
 
 html[data-mui-color-scheme="light"] {
