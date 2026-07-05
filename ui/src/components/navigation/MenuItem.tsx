@@ -111,6 +111,13 @@ const StyledMenuItem = styled(MuiMenuItem, {
       },
     }),
 
+    "&.Mui-selected": {
+      backgroundColor: "var(--mui-palette-action-hover)",
+      "&:hover": {
+        backgroundColor: "var(--mui-palette-action-hover)",
+      },
+    },
+
     // Default style of Divider after MenuItem is:
     //   marginTop: theme.spacing(1)
     //   marginBottom: theme.spacing(1)

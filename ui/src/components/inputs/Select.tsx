@@ -60,6 +60,7 @@ export interface DropdownSelectProps {
   IconComponent?: React.ComponentType;
   className?: string;
   children: React.ReactNode;
+  onChange?: (value: string) => void;
 }
 
 export function DropdownSelect({
@@ -69,6 +70,7 @@ export function DropdownSelect({
   IconComponent,
   className,
   children,
+  onChange,
 }: DropdownSelectProps) {
   const [value, setValueState] = useState<string | null>(defaultValue ?? null);
   const [label, setLabelState] = useState<React.ReactNode>(() => {
@@ -84,10 +86,14 @@ export function DropdownSelect({
     return found;
   });
 
-  const setValue = useCallback((value: string, label: React.ReactNode) => {
-    setValueState(value);
-    setLabelState(label);
-  }, []);
+  const setValue = useCallback(
+    (value: string, label: React.ReactNode) => {
+      setValueState(value);
+      setLabelState(label);
+      onChange?.(value);
+    },
+    [onChange],
+  );
 
   return (
     <DropdownSelectContext.Provider value={{ value, label, setValue }}>
@@ -116,9 +122,11 @@ export function DropdownSelect({
 export function DropdownSelectOption({
   value,
   children,
+  className,
 }: {
   value: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   const { value: contextValue, setValue } = useDropdownSelectContext();
   const selected = value === contextValue;
@@ -133,6 +141,7 @@ export function DropdownSelectOption({
       role="option"
       onClick={handleSelected}
       selected={selected}
+      className={className}
     >
       {children}
       <div className="flex-1" />
