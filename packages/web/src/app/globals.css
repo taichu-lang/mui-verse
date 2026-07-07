@@ -10,7 +10,7 @@
      * measures the real height at runtime via ResizeObserver and overrides
      * this on the sender wrapper; the default here is only a fallback for
      * first paint / SSR before hydration. */
-    --chat-sender-offset: 180px;
+    --chat-sender-offset: 195px;
   }
 }
 
@@ -38,6 +38,9 @@
 
   --spacing-settings-width: 682px;
   --spacing-settings-height: 578px;
+
+  --spacing-signin-width: 504px;
+  --spacing-signin-height: 414px;
 }
 
 html[data-mui-color-scheme="light"] {

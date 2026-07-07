@@ -345,6 +345,10 @@ const createBaseTheme = (palette: PaletteOptions) =>
             letterSpacing: 0,
             lineHeight: "20px",
           },
+          input: {
+            padding: 0,
+            height: "unset",
+          },
         },
       },
       MuiOutlinedInput: {

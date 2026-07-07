@@ -1,138 +1,153 @@
 "use client";
 
-import { AuthZone } from "@/auth/AuthZone";
 import { ModelSelect } from "@/components/blocks/models";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 import {
   Conversation,
-  ConversationProvider,
   Sender,
-  useConversationContext,
+  useConversation,
   WebSearchTool,
 } from "@mui-verse/ui/components/chat";
 import { useEffect, useRef } from "react";
 
-interface MetaEvent {
-  type: "meta";
+// event: meta
+interface MetaData {
   message_id: string;
   next_assistant_id: string;
+  conversation_id: string;
 }
 
-interface ChunkEvent {
-  type: "chunk";
-  content: string;
+// event: chunk
+interface ChunkData {
+  message_id: string;
+  chunk: string;
 }
 
-interface DoneEvent {
-  type: "done";
+// event: title
+interface TitleData {
+  conversation_id: string;
+  title: string;
 }
-
-type ChatEvent = MetaEvent | ChunkEvent | DoneEvent;
 
 function SenderArea() {
-  const { addUserMessage, onStream, stopStreaming } = useConversationContext();
+  const { addUserMessage, onStream, stopStreaming, setTitle } =
+    useConversation();
+  const conversationIdRef = useRef<string | null>(null);
 
   const sendMessage = async (text: string) => {
-    const response = await fetch("/api/chat", {
+    await fetchEventSource("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: text }),
-    });
-
-    if (!response.body) {
-      stopStreaming(false);
-      return;
-    }
-
-    const reader = response.body
-      .pipeThrough(new TextDecoderStream())
-      .getReader();
-    let buffer = "";
-    let assistantContent = "";
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += value;
-        let sepIdx = buffer.indexOf("\n\n");
-        while (sepIdx !== -1) {
-          const raw = buffer.slice(0, sepIdx);
-          buffer = buffer.slice(sepIdx + 2);
-          sepIdx = buffer.indexOf("\n\n");
-
-          if (!raw.startsWith("data: ")) continue;
-          const payload = JSON.parse(raw.slice(6)) as ChatEvent;
-
-          if (payload.type === "meta") {
+      body: JSON.stringify({
+        model: "gpt-4.1",
+        content: text,
+        ...(conversationIdRef.current
+          ? { conversation_id: conversationIdRef.current }
+          : {}),
+      }),
+      onmessage(ev) {
+        switch (ev.event) {
+          case "meta": {
+            const payload = JSON.parse(ev.data) as MetaData;
+            conversationIdRef.current = payload.conversation_id;
             addUserMessage(
-              { id: payload.message_id, role: "user", content: text },
+              { message_id: payload.message_id, role: "user", content: text },
               payload.next_assistant_id,
             );
-          } else if (payload.type === "chunk") {
-            assistantContent += payload.content;
-            onStream(assistantContent);
+            break;
           }
+
+          case "chunk": {
+            const payload = JSON.parse(ev.data) as ChunkData;
+            onStream(payload.message_id, payload.chunk);
+            break;
+          }
+
+          case "title": {
+            const payload = JSON.parse(ev.data) as TitleData;
+            setTitle(payload.title);
+            break;
+          }
+
+          case "done":
+            stopStreaming(true);
+            break;
+
+          default:
+            break;
         }
-      }
-    } finally {
-      stopStreaming(false);
-    }
+      },
+      onclose() {
+        stopStreaming(false);
+      },
+      onerror(err) {
+        console.log(err);
+        stopStreaming(false);
+      },
+    });
   };
 
   return (
-    <AuthZone>
-      <Sender
-        minRows={2}
-        maxRows={12}
-        onSend={sendMessage}
-        className="chat-sender"
-        inputClassName="chat-sender-input"
-      >
-        <ModelSelect />
-        <WebSearchTool />
-      </Sender>
-    </AuthZone>
+    // <AuthZone>
+    <Sender
+      minRows={2}
+      maxRows={12}
+      onSend={sendMessage}
+      className="chat-sender"
+      inputClassName="chat-sender-input"
+    >
+      <ModelSelect />
+      <WebSearchTool />
+    </Sender>
+    // </AuthZone>
   );
 }
 
 export default function ChatPage() {
-  // Publish the floating sender's height as --chat-sender-offset so the
-  // Conversation's end sentinel can use scroll-margin-bottom to stop above it
-  // when auto-scrolling to the latest message.
   const senderWrapperRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
+  // Publish the floating sender's height as --chat-sender-offset on the page
+  // root — a shared ancestor of both the sender wrapper and the Conversation's
+  // end sentinel — so scroll-margin-bottom on the sentinel parks auto-scroll
+  // above the sender rather than underneath it. CSS variables inherit down,
+  // so setting it on a sibling of the sentinel (as before) silently no-ops.
   useEffect(() => {
-    const el = senderWrapperRef.current;
-    if (!el) return;
+    const sender = senderWrapperRef.current;
+    const root = rootRef.current;
+    if (!sender || !root) return;
 
     const update = () => {
-      el.style.setProperty("--chat-sender-offset", `${el.offsetHeight}px`);
+      root.style.setProperty(
+        "--chat-sender-offset",
+        `${sender.offsetHeight}px`,
+      );
     };
 
     update();
     const observer = new ResizeObserver(update);
-    observer.observe(el);
+    observer.observe(sender);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <ConversationProvider>
-      <div className="max-w-chat-area mx-auto flex min-h-[calc(100dvh-var(--spacing-navbar))] w-full flex-col">
-        <div className="mt-2 flex-1">
-          <Conversation bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6" />
-        </div>
+    <div
+      ref={rootRef}
+      className="max-w-chat-area mx-auto flex w-full flex-1 flex-col"
+    >
+      <div className="mt-2 flex-1">
+        <Conversation bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6" />
+      </div>
 
-        <div
-          ref={senderWrapperRef}
-          className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur"
-        >
-          <SenderArea />
-          <div className="my-2 flex items-center justify-center text-xs">
-            AI can make mistakes. Please double-check responses.
-          </div>
+      <div
+        ref={senderWrapperRef}
+        className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur"
+      >
+        <SenderArea />
+        <div className="my-2 flex items-center justify-center text-xs">
+          AI can make mistakes. Please double-check responses.
         </div>
       </div>
-    </ConversationProvider>
+    </div>
   );
 }

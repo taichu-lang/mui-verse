@@ -4,7 +4,7 @@ import { cn } from "@mui-verse/ui/utils/cn";
 import { Button, InputBase } from "@mui/material";
 import { ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
-import { useConversationContext } from "./Conversation";
+import { useConversation } from "./Conversation";
 
 export function Sender({
   minRows = 3,
@@ -21,7 +21,7 @@ export function Sender({
   className?: string;
   inputClassName?: string;
 }) {
-  const { streaming } = useConversationContext();
+  const { streaming } = useConversation();
   const [text, setText] = useState<string>("");
 
   const handleSend = async () => {

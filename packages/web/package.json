@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "catalog:",
     "@emotion/styled": "catalog:",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@mui-verse/ui": "workspace:*",
     "@mui/material": "catalog:",
     "clsx": "^2.1.1",

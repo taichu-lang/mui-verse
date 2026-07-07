@@ -17,7 +17,7 @@ function BubbleUser({
         <div
           data-role="user"
           className={cn(
-            "bg-action-hover flex max-w-[85%] rounded-2xl px-3.5 py-2.5 text-base",
+            "bg-action-hover flex max-w-[85%] rounded-[22px] px-3.5 py-2.5 text-base",
             className,
           )}
         >
@@ -48,8 +48,8 @@ function BubbleAssistant({
     <div
       data-role="assistant"
       className={cn(
-        "flex w-full flex-col justify-start gap-3.5",
-        streaming ? "mb-5" : "mb-14",
+        "flex w-full flex-col justify-start gap-2",
+        streaming ? "pb-5" : "pb-2.5",
         className,
       )}
     >
@@ -119,11 +119,14 @@ function BubbleAssistant({
       >
         {content}
       </Streamdown>
-      {streaming || (
-        <BubbleActions role="assistant">
-          <BubbleCopyAction />
-        </BubbleActions>
-      )}
+      <BubbleActions
+        role="assistant"
+        // Using `opacity` rather than condition render, as the behavior of
+        // ResizeObserver depends on the height of this component.
+        className={streaming ? "opacity-0" : "opacity-100"}
+      >
+        <BubbleCopyAction />
+      </BubbleActions>
     </div>
   );
 }

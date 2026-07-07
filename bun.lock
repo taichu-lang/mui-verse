@@ -13,6 +13,7 @@
       "name": "@mui-verse/ui",
       "version": "0.1.0",
       "dependencies": {
+        "@tanstack/react-virtual": "^3.13.0",
         "clsx": "^2.1.1",
         "lucide-react": "^1.7.0",
         "pino": "^10.3.1",
@@ -59,6 +60,7 @@
       "dependencies": {
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
+        "@microsoft/fetch-event-source": "^2.0.1",
         "@mui-verse/ui": "workspace:*",
         "@mui/material": "catalog:",
         "clsx": "^2.1.1",
@@ -274,6 +276,8 @@
 
     "@mermaid-js/parser": ["@mermaid-js/parser@1.2.0", "https://mirrors.cloud.tencent.com/npm/@mermaid-js/parser/-/parser-1.2.0.tgz", { "dependencies": { "@chevrotain/types": "~11.1.2" } }, "sha512-oYPyv8A4As1yH5Bx+04iQEQxXuIQDe0GKCNSRgao6z8AM9jixXIfP0vsppRLvGf+nKIOb9/LdpWA4YuJiVvESA=="],
 
+    "@microsoft/fetch-event-source": ["@microsoft/fetch-event-source@2.0.1", "https://mirrors.cloud.tencent.com/npm/@microsoft/fetch-event-source/-/fetch-event-source-2.0.1.tgz", {}, "sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA=="],
+
     "@mui-verse/ui": ["@mui-verse/ui@workspace:packages/mui-verse/ui"],
 
     "@mui/core-downloads-tracker": ["@mui/core-downloads-tracker@7.3.11", "https://mirrors.cloud.tencent.com/npm/@mui/core-downloads-tracker/-/core-downloads-tracker-7.3.11.tgz", {}, "sha512-a7I/b/nBTdXYz2cOSlEmkQ9WWE1x8FHpqMhFPp+Y1VPFxcOw91G5ELOHARQAGSPy5V+UCgJua6K/1x70bAtQPw=="],
@@ -419,6 +423,10 @@
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.3.2", "https://mirrors.cloud.tencent.com/npm/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.3.2.tgz", { "os": "win32", "cpu": "x64" }, "sha512-QI9BO7KlNZsp2GuO0jwAAj5jCDABOKXRkCk2XuKTSaNEFSdfzqswYVTtCHBNKHLsqyjFyFkqlDiwkNbTYSssMQ=="],
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.3.2", "https://mirrors.cloud.tencent.com/npm/@tailwindcss/postcss/-/postcss-4.3.2.tgz", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.3.2", "@tailwindcss/oxide": "4.3.2", "postcss": "^8.5.15", "tailwindcss": "4.3.2" } }, "sha512-rjVWYCa7Ngbi5AarT6k8TkxUG3Wl1QKzHdIZVsjZSzf36Jmo2IKZt/NHRAwly8oDkbBOH0YTu+CHuf9jPxMc+g=="],
+
+    "@tanstack/react-virtual": ["@tanstack/react-virtual@3.14.5", "https://mirrors.cloud.tencent.com/npm/@tanstack/react-virtual/-/react-virtual-3.14.5.tgz", { "dependencies": { "@tanstack/virtual-core": "3.17.3" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-4EKRXh7zBLkbKbFmG3AUVkircuHd+7OdT1pocJSepxtfBd3qnrJgJ5rtPkRYyo9fmyVb2+pI2xPy5oYvMLQy6A=="],
+
+    "@tanstack/virtual-core": ["@tanstack/virtual-core@3.17.3", "https://mirrors.cloud.tencent.com/npm/@tanstack/virtual-core/-/virtual-core-3.17.3.tgz", {}, "sha512-8Np/TFELpI0ySuJoVmjvOrQYXH/8sTX0Biv9szhFhY39xOdAAY+smrMxjxOum/ux3eM8MUJQsEJ0/R0UpvC8dw=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.3", "https://mirrors.cloud.tencent.com/npm/@tybys/wasm-util/-/wasm-util-0.10.3.tgz", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg=="],
 

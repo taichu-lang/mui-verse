@@ -1,4 +1,5 @@
 import { AppSidebar } from "./_components/AppSidebar";
+import { ChatMain } from "./_components/ChatMain";
 import { Navbar } from "./_components/Navbar";
 import SettingsDialog from "./_settings/SettingsDialog";
 
@@ -15,10 +16,10 @@ export default function ChatLayout({
       <AppSidebar />
 
       {/* center */}
-      <div className="flex-1 overflow-y-auto">
+      <ChatMain>
         <Navbar />
         {children}
-      </div>
+      </ChatMain>
 
       {/* right */}
       {reference}
