@@ -53,3 +53,52 @@ export function PinnedIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function UnpinIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <g clipPath="url(#clip0_646_4666)">
+        <path
+          d="M9 12.75V16.5"
+          stroke="#232323"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M11.2505 7.005V5.25C11.2505 5.05109 11.3295 4.86032 11.4701 4.71967C11.6108 4.57902 11.8016 4.5 12.0005 4.5C12.3983 4.5 12.7798 4.34196 13.0611 4.06066C13.3424 3.77936 13.5005 3.39782 13.5005 3C13.5005 2.60218 13.3424 2.22064 13.0611 1.93934C12.7798 1.65804 12.3983 1.5 12.0005 1.5H5.91797"
+          stroke="#232323"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M1.5 1.5L16.5 16.5"
+          stroke="#232323"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M6.75 6.75V8.07C6.74985 8.34906 6.67186 8.62255 6.52479 8.85972C6.37772 9.09688 6.16741 9.28832 5.9175 9.4125L4.5825 10.0875C4.33259 10.2117 4.12228 10.4031 3.97521 10.6403C3.82814 10.8774 3.75015 11.1509 3.75 11.43V12C3.75 12.1989 3.82902 12.3897 3.96967 12.5303C4.11032 12.671 4.30109 12.75 4.5 12.75H12.75"
+          stroke="#232323"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_646_4666">
+          <rect width="18" height="18" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}

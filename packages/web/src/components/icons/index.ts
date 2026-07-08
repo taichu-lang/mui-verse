@@ -8,7 +8,7 @@ export { ChatIcon } from "./Message";
 export { ModelsIcon } from "./Models";
 export { OpenAIIcon } from "./OpenAI";
 export { PencilIcon } from "./Pencil";
-export { PinnedIcon, PinnerIcon } from "./Pinner";
+export { PinnedIcon, PinnerIcon, UnpinIcon } from "./Pinner";
 export { CirclePlusIcon } from "./Plus";
 export { QuestionIcon } from "./Question";
 export { SearchIcon } from "./Search";

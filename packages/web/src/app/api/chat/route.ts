@@ -1,11 +1,11 @@
 "server-only";
 
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   const serverUrl = process.env.SERVER_URL;
   if (!serverUrl) {
-    return new Response("SERVER_URL is not configured", { status: 500 });
+    return NextResponse.error();
   }
 
   const upstream = await fetch(`${serverUrl}/v1/chat/`, {
@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
 
   if (!upstream.ok || !upstream.body) {
     const text = await upstream.text().catch(() => "");
-    return new Response(text || "Upstream error", { status: upstream.status });
+    console.log("failed to send sse event.", text);
+    return NextResponse.error();
   }
 
   return new Response(upstream.body, {

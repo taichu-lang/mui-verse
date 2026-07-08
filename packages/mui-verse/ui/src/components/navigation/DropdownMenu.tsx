@@ -186,11 +186,11 @@ export function DropdownMenuContent({
 }: DropdownMenuContentProps) {
   const { open, anchorEl, onClose, side, align } = useDropdownMenu();
   const shadows: Record<ShadowLevel, string> = {
-    none: "none",
-    xs: "var(--mui-shadow-surface-xs)",
-    sm: "var(--mui-shadow-surface-sm)",
-    md: "var(--mui-shadow-surface-md)",
-    lg: "var(--mui-shadow-surface-lg)",
+    none: "var(--mui-shadow-border)",
+    xs: "var(--mui-shadow-border), var(--mui-shadow-surface-xs)",
+    sm: "var(--mui-shadow-border), var(--mui-shadow-surface-sm)",
+    md: "var(--mui-shadow-border), var(--mui-shadow-surface-md)",
+    lg: "var(--mui-shadow-border), var(--mui-shadow-surface-lg)",
   };
 
   return (
@@ -217,7 +217,7 @@ export function DropdownMenuContent({
           sx: {
             minWidth: 160,
             borderRadius: "18px",
-            border: "1px solid",
+            border: 0,
             borderColor: "divider",
             boxShadow: shadows[shadow],
             py: "8px",

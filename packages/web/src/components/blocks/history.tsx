@@ -1,35 +1,152 @@
 "use client";
 
 import { ChatIcon, DeleteIcon, PencilIcon } from "@/components/icons";
-import { PinnerIcon } from "@/components/icons/Pinner";
+import { PinnerIcon, UnpinIcon } from "@/components/icons/Pinner";
 import { Accordion } from "@/components/ui/Accordion";
+import { Conversation } from "@/lib/types/chat";
+import { Pagination } from "@/lib/types/pagination";
+import { InlineEditInput } from "@mui-verse/ui/components/inputs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  MenuItem,
 } from "@mui-verse/ui/components/navigation";
-import { Menu } from "@mui-verse/ui/layout/Menu";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Typography } from "@mui/material";
 import { EllipsisIcon } from "lucide-react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 
-export function ChatActionItems({ pinned = false }: { pinned?: boolean }) {
+interface ConversationValue {
+  editMode: boolean;
+  conversation: Conversation;
+  setConversation: (conversation: Partial<Conversation>) => void;
+  toggleEditMode: () => void;
+}
+
+const ConversationContext = createContext<ConversationValue | null>(null);
+
+function useConversation() {
+  const ctx = useContext(ConversationContext);
+  if (!ctx) {
+    throw new Error(
+      "useConversation must be used within a ConversationProvider",
+    );
+  }
+
+  return ctx;
+}
+
+function ConversationProvider({
+  conversation: defaultValue,
+  children,
+}: {
+  conversation: Conversation;
+  children: React.ReactNode;
+}) {
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [conversation, setConversationState] =
+    useState<Conversation>(defaultValue);
+
+  const toggleEditMode = useCallback(() => {
+    setEditMode((prev) => !prev);
+  }, []);
+
+  const setConversation = useCallback((c: Partial<Conversation>) => {
+    setConversationState((prev) => ({
+      ...prev,
+      ...c,
+    }));
+  }, []);
+
+  return (
+    <ConversationContext.Provider
+      value={{ conversation, editMode, toggleEditMode, setConversation }}
+    >
+      {children}
+    </ConversationContext.Provider>
+  );
+}
+
+function ConversationTitleEditor() {
+  const { conversation, toggleEditMode, setConversation } = useConversation();
+
+  const handleSubmit = async (value: string) => {
+    try {
+      await fetch(`/api/conversations/${conversation.id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          title: value,
+        }),
+      });
+      toggleEditMode();
+      setConversation({
+        title: value,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return (
+    <InlineEditInput
+      defaultValue={conversation.title}
+      onSubmit={(v) => handleSubmit(v as string)}
+    />
+  );
+}
+
+export function ChatActionItems() {
+  const { conversation, toggleEditMode } = useConversation();
+
+  const handlePin = async () => {
+    try {
+      await fetch(`/api/conversations/${conversation.id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          pinned: !conversation.pinned,
+        }),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await fetch(`/api/conversations/${conversation.id}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <DropdownMenuContent shadow="none" sx={{ py: "14px", minWidth: "194px" }}>
-      <DropdownMenuItem className="gap-2.5">
+      <DropdownMenuItem onClick={toggleEditMode}>
         <PencilIcon />
         Rename
       </DropdownMenuItem>
-      <DropdownMenuItem className="gap-2.5">
-        <PinnerIcon />
-        {pinned ? "Unpin chat" : "Pin Chat"}
+      <DropdownMenuItem onClick={handlePin}>
+        {conversation.pinned ? <UnpinIcon /> : <PinnerIcon />}
+        {conversation.pinned ? "Unpin chat" : "Pin Chat"}
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem className="text-error-500 hover:bg-error-200 gap-2.5">
+      <DropdownMenuItem
+        className="text-error-500 hover:bg-error-200"
+        onClick={handleDelete}
+      >
         <DeleteIcon />
         Delete
       </DropdownMenuItem>
@@ -37,36 +154,33 @@ export function ChatActionItems({ pinned = false }: { pinned?: boolean }) {
   );
 }
 
-function ChatAction({ pinned = false }: { pinned?: boolean }) {
+function ChatAction() {
   return (
     <DropdownMenu side="right" align="start">
       <DropdownMenuTrigger>
         <EllipsisIcon className="hidden h-4 w-4 group-hover:block" />
       </DropdownMenuTrigger>
-      <ChatActionItems pinned={pinned} />
+      <ChatActionItems />
     </DropdownMenu>
   );
 }
 
-function DropdownChatMenu({
-  title,
-  pinned = false,
-}: {
-  title: string;
-  pinned?: boolean;
-}) {
+function ChatMenu({ includingIcon = false }: { includingIcon?: boolean }) {
+  const { conversation, editMode } = useConversation();
+
   return (
-    <div className="hover:bg-action-hover group flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5">
-      <ChatIcon className="shrink-0" />
-      <Typography
-        variant="body2"
-        className="overflow-hidden leading-4.5 text-clip whitespace-nowrap"
-      >
-        {title}
-      </Typography>
-      <div className="flex-1" />
-      <ChatAction pinned={pinned} />
-    </div>
+    <MenuItem actions={<ChatAction />}>
+      {includingIcon && (
+        <div className="shrink-0">
+          <ChatIcon />
+        </div>
+      )}
+      {editMode ? (
+        <ConversationTitleEditor />
+      ) : (
+        <span className="truncate text-sm">{conversation.title}</span>
+      )}
+    </MenuItem>
   );
 }
 
@@ -79,17 +193,16 @@ export function ChatHistory({
 }) {
   const { collapsed } = useSidebar();
   const title = pinned ? "Pinned" : "Recents";
-  const history = [
-    "获取浏览器屏幕高度",
-    "高考报名指导",
-    "Taskfile中定义可被多个cmds引用的变量",
-    "Tauri",
-    "解决IndexDB强制刷新丢数据的问题",
-    "生成志愿报告",
-    "Strapi日志输出到文件的方法",
-    "Tailwind",
-    "MUI中是否能用Menu实现Select？",
-  ];
+  const [history, setHistory] = useState<Conversation[]>([]);
+  const [loading, startTransition] = useTransition();
+
+  useEffect(() => {
+    startTransition(async () => {
+      const response = await fetch(`/api/conversations?pinned=${pinned}`);
+      const conversations = (await response.json()) as Pagination<Conversation>;
+      setHistory(conversations.items);
+    });
+  }, [pinned]);
 
   if (collapsed) {
     return (
@@ -102,15 +215,20 @@ export function ChatHistory({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           sx={{
-            maxWidth: "274px",
+            maxWidth: "282px",
             width: "100%",
-            px: "8px",
           }}
+          shadow="none"
         >
-          <p className="mb-2 ml-2.5 text-sm font-semibold">{title}</p>
+          <p className="mt-1.5 mb-2 ml-2 text-sm font-semibold">{title}</p>
           <div className="flex flex-col gap-0.5">
-            {history.map((chat, index) => (
-              <DropdownChatMenu key={index} title={chat} />
+            {history.map((conversation) => (
+              <ConversationProvider
+                conversation={conversation}
+                key={conversation.id}
+              >
+                <ChatMenu includingIcon />
+              </ConversationProvider>
             ))}
           </div>
         </DropdownMenuContent>
@@ -120,13 +238,10 @@ export function ChatHistory({
 
   return (
     <Accordion title={title} className={cn("gap-0.5", className)}>
-      {history.map((chat, index) => (
-        <Menu
-          title={chat}
-          key={index}
-          actions={<ChatAction />}
-          showTips={false}
-        />
+      {history.map((conversation) => (
+        <ConversationProvider conversation={conversation} key={conversation.id}>
+          <ChatMenu />
+        </ConversationProvider>
       ))}
     </Accordion>
   );
