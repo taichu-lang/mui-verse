@@ -8,18 +8,15 @@ import { Bubble } from "./Bubble";
 import { useChatScrollContainer } from "./ChatScrollContext";
 import { Message } from "./types";
 
-interface ConversationValue {
-  title: string | null;
+interface ChatValue {
   streaming: boolean;
   messages: Message[];
   stopStreaming: (interrupted?: boolean) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
-  setTitle: (title: string) => void;
 }
 
-export const useConversation = create<ConversationValue>((set, get) => ({
-  title: null,
+export const useChat = create<ChatValue>((set, get) => ({
   streaming: false,
   messages: [],
 
@@ -54,8 +51,6 @@ export const useConversation = create<ConversationValue>((set, get) => ({
         ],
       };
     }),
-
-  setTitle: (title) => set({ title }),
 }));
 
 export function Conversation({
@@ -63,7 +58,7 @@ export function Conversation({
 }: {
   bubbleClassName?: string;
 }) {
-  const { streaming, messages } = useConversation();
+  const { streaming, messages } = useChat();
 
   // Sentinel just after the last message. scrollIntoView scrolls the nearest
   // scrollable ancestor into view. The sentinel carries a scroll-margin-bottom
