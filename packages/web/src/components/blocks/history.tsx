@@ -2,9 +2,8 @@
 
 import { ChatIcon, DeleteIcon, PencilIcon } from "@/components/icons";
 import { PinnerIcon, UnpinIcon } from "@/components/icons/Pinner";
-import { Accordion } from "@/components/ui/Accordion";
+import { useOptionalHistory } from "@/components/blocks/history/HistoryProvider";
 import { Conversation } from "@/lib/types/chat";
-import { Pagination } from "@/lib/types/pagination";
 import { InlineEditInput } from "@mui-verse/ui/components/inputs";
 import {
   DropdownMenu,
@@ -16,7 +15,6 @@ import {
 } from "@mui-verse/ui/components/navigation";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
-import { cn } from "@mui-verse/ui/utils/cn";
 import { EllipsisIcon } from "lucide-react";
 import {
   createContext,
@@ -26,28 +24,29 @@ import {
   useState,
   useTransition,
 } from "react";
+import type { Pagination } from "@/lib/types/pagination";
 
-interface ConversationValue {
+interface ConversationOpsValue {
   editMode: boolean;
   conversation: Conversation;
   setConversation: (conversation: Partial<Conversation>) => void;
   toggleEditMode: () => void;
 }
 
-const ConversationContext = createContext<ConversationValue | null>(null);
+const ConversationOpsContext = createContext<ConversationOpsValue | null>(null);
 
-function useConversation() {
-  const ctx = useContext(ConversationContext);
+function useConversationOps() {
+  const ctx = useContext(ConversationOpsContext);
   if (!ctx) {
     throw new Error(
-      "useConversation must be used within a ConversationProvider",
+      "useConversationOps must be used within a ConversationOpsProvider",
     );
   }
 
   return ctx;
 }
 
-function ConversationProvider({
+export function ConversationOpsProvider({
   conversation: defaultValue,
   children,
 }: {
@@ -70,16 +69,17 @@ function ConversationProvider({
   }, []);
 
   return (
-    <ConversationContext.Provider
+    <ConversationOpsContext.Provider
       value={{ conversation, editMode, toggleEditMode, setConversation }}
     >
       {children}
-    </ConversationContext.Provider>
+    </ConversationOpsContext.Provider>
   );
 }
 
 function ConversationTitleEditor() {
-  const { conversation, toggleEditMode, setConversation } = useConversation();
+  const { conversation, toggleEditMode, setConversation } =
+    useConversationOps();
 
   const handleSubmit = async (value: string) => {
     try {
@@ -107,7 +107,8 @@ function ConversationTitleEditor() {
 }
 
 export function ChatActionItems() {
-  const { conversation, toggleEditMode } = useConversation();
+  const { conversation, toggleEditMode } = useConversationOps();
+  const history = useOptionalHistory();
 
   const handlePin = async () => {
     try {
@@ -117,6 +118,10 @@ export function ChatActionItems() {
           pinned: !conversation.pinned,
         }),
       });
+      // Refresh both lists back to page 1 and scroll to the top of Pinned so
+      // the user sees the result of their action land in place.
+      await history?.refreshBoth();
+      history?.scrollPinnedIntoView();
     } catch (err) {
       console.log(err);
     }
@@ -127,6 +132,7 @@ export function ChatActionItems() {
       await fetch(`/api/conversations/${conversation.id}`, {
         method: "DELETE",
       });
+      await history?.refreshBoth();
     } catch (err) {
       console.log(err);
     }
@@ -165,8 +171,16 @@ function ChatAction() {
   );
 }
 
-function ChatMenu({ includingIcon = false }: { includingIcon?: boolean }) {
-  const { conversation, editMode } = useConversation();
+/**
+ * A single conversation row for the expanded sidebar — expects a
+ * ConversationProvider ancestor and renders inline-title edit + hover actions.
+ */
+export function ChatMenuRow({
+  includingIcon = false,
+}: {
+  includingIcon?: boolean;
+}) {
+  const { conversation, editMode } = useConversationOps();
 
   return (
     <MenuItem actions={<ChatAction />}>
@@ -184,65 +198,57 @@ function ChatMenu({ includingIcon = false }: { includingIcon?: boolean }) {
   );
 }
 
-export function ChatHistory({
-  pinned = false,
-  className,
-}: {
-  pinned?: boolean;
-  className?: string;
-}) {
+/**
+ * Collapsed-sidebar entry point: an icon that opens a dropdown listing the
+ * current page of pinned / recent conversations. The expanded-sidebar version
+ * lives in SidebarSections (which owns the virtualized layout).
+ */
+export function ChatHistory({ pinned = false }: { pinned?: boolean }) {
   const { collapsed } = useSidebar();
   const title = pinned ? "Pinned" : "Recents";
   const [history, setHistory] = useState<Conversation[]>([]);
-  const [loading, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
+    if (!collapsed) return;
     startTransition(async () => {
-      const response = await fetch(`/api/conversations?pinned=${pinned}`);
+      const response = await fetch(
+        `/api/conversations?pinned=${pinned}&page=1&limit=30`,
+      );
       const conversations = (await response.json()) as Pagination<Conversation>;
       setHistory(conversations.items);
     });
-  }, [pinned]);
+  }, [pinned, collapsed]);
 
-  if (collapsed) {
-    return (
-      <DropdownMenu side="right" align="start">
-        <DropdownMenuTrigger>
-          <MenuButton
-            title="history"
-            icon={pinned ? <PinnerIcon /> : <ChatIcon />}
-          />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          sx={{
-            maxWidth: "282px",
-            width: "100%",
-          }}
-          shadow="none"
-        >
-          <p className="mt-1.5 mb-2 ml-2 text-sm font-semibold">{title}</p>
-          <div className="flex flex-col gap-0.5">
-            {history.map((conversation) => (
-              <ConversationProvider
-                conversation={conversation}
-                key={conversation.id}
-              >
-                <ChatMenu includingIcon />
-              </ConversationProvider>
-            ))}
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  }
+  if (!collapsed) return null;
 
   return (
-    <Accordion title={title} className={cn("gap-0.5", className)}>
-      {history.map((conversation) => (
-        <ConversationProvider conversation={conversation} key={conversation.id}>
-          <ChatMenu />
-        </ConversationProvider>
-      ))}
-    </Accordion>
+    <DropdownMenu side="right" align="start">
+      <DropdownMenuTrigger>
+        <MenuButton
+          title="history"
+          icon={pinned ? <PinnerIcon /> : <ChatIcon />}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        sx={{
+          maxWidth: "282px",
+          width: "100%",
+        }}
+        shadow="none"
+      >
+        <p className="mt-1.5 mb-2 ml-2 text-sm font-semibold">{title}</p>
+        <div className="flex flex-col gap-0.5">
+          {history.map((conversation) => (
+            <ConversationOpsProvider
+              conversation={conversation}
+              key={conversation.id}
+            >
+              <ChatMenuRow includingIcon />
+            </ConversationOpsProvider>
+          ))}
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

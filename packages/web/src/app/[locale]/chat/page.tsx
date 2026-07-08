@@ -1,11 +1,12 @@
 "use client";
 
 import { ModelSelect } from "@/components/blocks/models";
+import { useConversation } from "@/hooks/useConversation";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import {
   Conversation,
   Sender,
-  useConversation,
+  useChat,
   WebSearchTool,
 } from "@mui-verse/ui/components/chat";
 import { useEffect, useRef } from "react";
@@ -30,8 +31,8 @@ interface TitleData {
 }
 
 function SenderArea() {
-  const { addUserMessage, onStream, stopStreaming, setTitle } =
-    useConversation();
+  const { addUserMessage, onStream, stopStreaming } = useChat();
+  const { setConversation, onInit } = useConversation();
   const conversationIdRef = useRef<string | null>(null);
 
   const sendMessage = async (text: string) => {
@@ -50,6 +51,7 @@ function SenderArea() {
           case "meta": {
             const payload = JSON.parse(ev.data) as MetaData;
             conversationIdRef.current = payload.conversation_id;
+            onInit(payload.conversation_id);
             addUserMessage(
               { message_id: payload.message_id, role: "user", content: text },
               payload.next_assistant_id,
@@ -65,7 +67,7 @@ function SenderArea() {
 
           case "title": {
             const payload = JSON.parse(ev.data) as TitleData;
-            setTitle(payload.title);
+            setConversation({ title: payload.title });
             break;
           }
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { AuthFilter } from "@/auth/AuthFilter";
 import { AuthZone } from "@/auth/AuthZone";
 import { ChatHistory } from "@/components/blocks/history";
+import { HistoryProvider } from "@/components/blocks/history/HistoryProvider";
+import { SidebarSections } from "@/components/blocks/history/SidebarSections";
 import { ModelAccordion } from "@/components/blocks/models";
 import { UserProfileMenu } from "@/components/blocks/profile";
 import { SearchButton } from "@/components/blocks/search";
@@ -45,15 +46,21 @@ export function AppSidebar() {
           <SearchButton />
         </div>
       </AuthZone>
-      <div className="mb-2 overflow-y-auto">
-        <div className="px-2">
+      {collapsed ? (
+        // Collapsed sidebar keeps the DropdownMenu-based entry points; the
+        // virtualized list is only meaningful in the expanded layout.
+        <div className="mb-2 flex flex-col items-center gap-1 overflow-y-auto">
           <ModelAccordion />
-          <AuthFilter>
-            <ChatHistory pinned className="mb-9" />
-            <ChatHistory />
-          </AuthFilter>
+          <ChatHistory pinned />
+          <ChatHistory />
         </div>
-      </div>
+      ) : (
+        <div className="mb-2 flex min-h-0 flex-1 flex-col">
+          <HistoryProvider>
+            <SidebarSections />
+          </HistoryProvider>
+        </div>
+      )}
       <SidebarFooter className={"flex-col pb-0"}>
         <UserProfileMenu />
       </SidebarFooter>
