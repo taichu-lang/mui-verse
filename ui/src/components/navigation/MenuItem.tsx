@@ -84,9 +84,10 @@ const StyledMenuItem = styled(MuiMenuItem, {
     lineHeight: `var(--verse-menu-line-height, ${preset["lineHeight"]})`,
     fontWeight: `var(--verse-menu-font-weight, ${preset["fontWeight"]})`,
     borderRadius: `var(--verse-menu-radius, ${preset["radius"]})`,
-    padding: hasActions ? 0 : `var(--verse-menu-padding, ${preset["padding"]})`,
+    padding: `var(--verse-menu-padding, ${preset["padding"]})`,
     margin: `var(--verse-menu-margin, ${preset["margin"]})`,
     minHeight: "unset",
+    minWidth: 0,
     display: "flex",
     alignItems: "center",
     letterSpacing: 0,
@@ -97,7 +98,6 @@ const StyledMenuItem = styled(MuiMenuItem, {
       "& .VerseMenuItem-content": {
         flex: 1,
         minWidth: 0,
-        padding: `var(--verse-menu-padding, ${preset["padding"]})`,
         display: "flex",
         alignItems: "center",
       },
@@ -107,7 +107,6 @@ const StyledMenuItem = styled(MuiMenuItem, {
         flexShrink: 0,
         display: "flex",
         alignItems: "center",
-        alignSelf: "stretch",
       },
     }),
 
@@ -155,7 +154,12 @@ export function MenuItem<C extends React.ElementType = "li">({
   }
 
   return (
-    <StyledMenuItem variant={variant} hasActions {...passthrough}>
+    <StyledMenuItem
+      variant={variant}
+      hasActions
+      {...passthrough}
+      className="group"
+    >
       <div className={cn("VerseMenuItem-content gap-2.5", className)}>
         {children}
       </div>
