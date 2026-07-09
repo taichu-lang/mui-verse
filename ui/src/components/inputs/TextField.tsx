@@ -246,6 +246,7 @@ export function Input({
   autoComplete = "on",
   autoCorrect = "off",
   spellCheck = "false",
+  error = false,
   ...props
 }: InputProps) {
   const [value, setValue] = useState<string>((defaultValue as string) ?? "");
@@ -272,6 +273,7 @@ export function Input({
         "rounded-[10px]",
         classes[size],
         classes[variant],
+        { "ring-error-500": error },
       )}
       onChange={handleChange}
       startAdornment={
