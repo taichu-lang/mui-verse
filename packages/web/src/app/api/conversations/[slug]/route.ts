@@ -1,5 +1,6 @@
 "server-only";
 
+import { getAuthSession } from "@/lib/cookie";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -13,9 +14,10 @@ export async function POST(
 
   const { slug } = await params;
 
+  const auth = await getAuthSession();
   const response = await fetch(`${serverUrl}/v1/conversations/${slug}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...auth },
     body: await request.text(),
   });
 
@@ -42,6 +44,7 @@ export async function DELETE(
 
   const response = await fetch(`${serverUrl}/v1/conversations/${slug}`, {
     method: "DELETE",
+    headers: await getAuthSession(),
   });
 
   if (!response.ok) {

@@ -98,7 +98,7 @@ export function UserProfileMenu() {
             </div>
             <DropdownMenuSeparator className="my-1.5" />
             <Menu title={"See plans and pricing"} icon={<SparklesIcon />} />
-            <DropdownMenuItem component={Link} href="/chat/settings">
+            <DropdownMenuItem component={Link} href="/chat?modal=settings">
               <SettingsIcon />
               Settings
             </DropdownMenuItem>

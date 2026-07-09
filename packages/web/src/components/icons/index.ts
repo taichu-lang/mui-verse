@@ -15,3 +15,4 @@ export { SettingsIcon } from "./Settings";
 export { SignOutIcon } from "./Sign";
 export { SparkleIcon, SparklesIcon } from "./Sparkle";
 export { UserIcon } from "./User";
+export { EyeOff, EyeOn } from "./Visibility";

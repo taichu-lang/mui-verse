@@ -19,6 +19,7 @@ interface AuthState<T extends BaseSession = BaseSession> {
 
 interface AuthActions<T extends BaseSession = BaseSession> {
   setSession: (session: T) => Promise<void>;
+  updateSession: (session: Partial<T>) => Promise<void>;
   loadSession: () => Promise<void>;
   logout: () => Promise<void>;
   hasAuthorization: () => boolean;
@@ -49,6 +50,27 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
           setSession: async (session) => {
             set({ session, error: null });
             await adapter.store<T>(cookieName, session);
+
+            // Notify other tabs about the session change.
+            if (typeof localStorage !== "undefined") {
+              localStorage.setItem(
+                SESSION_SYNC_KEY,
+                JSON.stringify({
+                  session,
+                  timestamp: Date.now(),
+                }),
+              );
+            }
+          },
+
+          updateSession: async (session) => {
+            const newSession = {
+              ...get().session!,
+              ...session,
+            };
+
+            set({ session: newSession, error: null });
+            await adapter.store<T>(cookieName, newSession);
 
             // Notify other tabs about the session change.
             if (typeof localStorage !== "undefined") {

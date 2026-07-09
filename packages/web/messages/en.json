@@ -1,1 +1,8 @@
-{}
+{
+  "sign": {
+    "password": {
+      "lengthRule": "Password must be 8-20 characters",
+      "charRule": "Password must include at least 1 letter and 1 number"
+    }
+  }
+}

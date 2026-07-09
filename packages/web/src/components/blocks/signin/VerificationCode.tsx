@@ -1,12 +1,13 @@
 import { sendOtpCode, verifyOtpCode } from "@/lib/apis/otp";
 import { signinWithCode } from "@/lib/apis/profile";
+import { apiCodeCredentialError } from "@/lib/types/api";
 import { CountdownButton } from "@mui-verse/ui/components/feedback";
 import { Input } from "@mui-verse/ui/components/inputs";
 import { Button } from "@mui/material";
 import { useEffect, useState, useTransition } from "react";
-import { SignCard } from "./SignCard";
-import { apiCodeCredentialError } from "@/lib/types/api";
 import toast from "react-hot-toast";
+import { SignCard } from "./SignCard";
+import { Title } from "./Title";
 
 /**
  * This component is used for code verification in the following two cases:
@@ -96,9 +97,7 @@ export function VerificationCode({
 
   return (
     <SignCard>
-      <span className="mt-6 text-center text-[26px] leading-7.5 font-medium">
-        Check your inbox
-      </span>
+      <Title>Check your inbox</Title>
       <span className="mt-9 text-center text-sm">
         Enter the verification code we just sent to {email}
       </span>

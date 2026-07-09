@@ -21,10 +21,16 @@ export interface AuthToken {
 
 export interface UserProfile {
   id: number;
+  name: string;
   email: string;
   auth: AuthToken;
 }
 
 export interface UserProfileResponse extends ApiResponse {
   data: UserProfile;
+}
+
+export interface UpdateProfileRequest {
+  name?: string;
+  password?: string;
 }

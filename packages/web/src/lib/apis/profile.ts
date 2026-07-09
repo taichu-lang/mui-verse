@@ -1,36 +1,19 @@
 import { useAuth } from "@/auth/auth";
+import { ApiResponse, AuthMethodsResponse } from "@/lib/types/api";
 import {
-  apiCodeUserNotFound,
-  AuthMethod,
-  AuthMethodsResponse,
-} from "@/lib/types/api";
-import { SigninRequest, UserProfileResponse } from "@/lib/types/sign";
+  SigninRequest,
+  UpdateProfileRequest,
+  UserProfileResponse,
+} from "@/lib/types/profile";
 
 export async function getAuthMethods(
   email: string,
-  onUserNotFound: () => void,
-): Promise<AuthMethod[]> {
-  try {
-    const client = await fetch(`/api/users/methods?email=${email}`, {
-      method: "GET",
-    });
-    const response = (await client.json()) as AuthMethodsResponse;
-    if (response.code === apiCodeUserNotFound) {
-      onUserNotFound();
-      return [];
-    }
-
-    if (response.code !== 0) {
-      console.log(`code: ${response.code}, message: ${response.message}`);
-      return [];
-    }
-
-    return response.data;
-  } catch (err) {
-    console.log(err);
-  }
-
-  return [];
+): Promise<AuthMethodsResponse> {
+  const client = await fetch(`/api/users/methods?email=${email}`, {
+    method: "GET",
+  });
+  const response = (await client.json()) as AuthMethodsResponse;
+  return response;
 }
 
 export async function signinWithCode(
@@ -51,11 +34,11 @@ export async function signinWithCode(
   });
   const response = (await client.json()) as UserProfileResponse;
   if (response.code === 0) {
-    const { email, auth } = response.data;
+    const profile = response.data;
     setSession({
-      email,
-      token: auth.token,
-      expires_at: auth.expires_in * 1000 + Date.now(),
+      ...profile,
+      token: profile.auth.token,
+      expires_at: profile.auth.expires_in * 1000 + Date.now(),
     });
   }
 
@@ -79,13 +62,39 @@ export async function signinWithPassword(
   });
   const response = (await client.json()) as UserProfileResponse;
   if (response.code === 0) {
-    const { email, auth } = response.data;
+    const profile = response.data;
     setSession({
-      email,
-      token: auth.token,
-      expires_at: auth.expires_in * 1000 + Date.now(),
+      ...profile,
+      token: profile.auth.token,
+      expires_at: profile.auth.expires_in * 1000 + Date.now(),
     });
   }
 
   return response;
+}
+
+export async function updateUser(
+  user_id: number,
+  request: UpdateProfileRequest,
+): Promise<boolean> {
+  if (!request.name && !request.password) {
+    throw new Error("invalid parameters.");
+  }
+
+  const { updateSession } = useAuth.getState();
+
+  const client = await fetch(`/api/users/${user_id}`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
+  const response = (await client.json()) as ApiResponse;
+  if (response.code === 0) {
+    if (request.name) {
+      updateSession({ name: request.name });
+    }
+
+    return true;
+  }
+
+  return false;
 }

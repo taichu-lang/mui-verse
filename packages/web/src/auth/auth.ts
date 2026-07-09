@@ -1,11 +1,12 @@
+import { UserProfile } from "@/lib/types/profile";
 import { BaseSession, createAuthStore } from "@mui-verse/ui/auth";
 import { authCookie } from "@mui-verse/ui/server";
 
-export interface UserSession extends BaseSession {
-  email: string;
-}
+export const cookieName = "x-anna-auth";
+
+export type UserSession = BaseSession & Omit<UserProfile, "auth">;
 
 export const useAuth = createAuthStore<UserSession>({
-  cookieName: "x-anna-auth",
+  cookieName,
   adapter: authCookie,
 });

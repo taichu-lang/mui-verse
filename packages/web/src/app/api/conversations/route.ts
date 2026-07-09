@@ -1,5 +1,6 @@
 "server-only";
 
+import { getAuthSession } from "@/lib/cookie";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -15,9 +16,9 @@ export async function GET(request: NextRequest) {
     url.searchParams.set(key, value);
   });
 
-  console.log("url: ", url.toString());
   const response = await fetch(url, {
     method: "GET",
+    headers: await getAuthSession(),
   });
   if (response.status !== 200) {
     console.log("failed to get conversations, status: ", response.status);
