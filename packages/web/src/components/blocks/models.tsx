@@ -2,7 +2,6 @@
 
 import {
   AnthropicIcon,
-  ChevronDownIcon,
   GeminiIcon,
   ModelsIcon,
   OpenAIIcon,
@@ -10,6 +9,8 @@ import {
   PinnerIcon,
 } from "@/components/icons";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
+import { Accordion } from "@mui-verse/ui/components/feedback";
+import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -169,20 +170,28 @@ function DropDownModelMenu({
 export function ModelAccordion() {
   const { collapsed } = useSidebar();
 
-  if (!collapsed) return null;
+  if (collapsed) {
+    return (
+      <DropdownMenu side="right" align="start">
+        <DropdownMenuTrigger>
+          <MenuButton title="Models" icon={<ModelsIcon />} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent sx={{ minWidth: "230px", px: "8px" }}>
+          <p className="mb-2 ml-2.5 text-sm font-semibold">Models</p>
+          {models.map((model) => (
+            <DropDownModelMenu key={model.id} model={model} />
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
 
   return (
-    <DropdownMenu side="right" align="start">
-      <DropdownMenuTrigger>
-        <MenuButton title="Models" icon={<ModelsIcon />} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent sx={{ minWidth: "230px", px: "8px" }}>
-        <p className="mb-2 ml-2.5 text-sm font-semibold">Models</p>
-        {models.map((model) => (
-          <DropDownModelMenu key={model.id} model={model} />
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Accordion title="Models" className="px-2">
+      {models.map((model) => (
+        <ModelMenuItem key={model.id} model={model} />
+      ))}
+    </Accordion>
   );
 }
 
@@ -195,7 +204,7 @@ export function ModelSelect() {
         <div className="flex cursor-pointer items-center">
           {icons[selectedModel.provider]}
           <span className="pr-2.5 pl-1.5 text-sm">{selectedModel.name}</span>
-          <ChevronDownIcon className="h-4 w-4" />
+          <ChevronDownIcon />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent shadow="none">

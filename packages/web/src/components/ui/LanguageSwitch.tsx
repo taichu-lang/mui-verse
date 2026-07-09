@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronDownIcon } from "@/components/icons";
 import { usePathname } from "@/i18n/navigation";
 import { languageSymbolMap, locales } from "@/i18n/routing";
+import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import {
   DropdownSelect,
   DropdownSelectOption,

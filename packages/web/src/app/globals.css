@@ -25,6 +25,10 @@
   line-height: 22px;
 }
 
+@utility card-shadow {
+  box-shadow: 0px 0px 16px 1px hsla(0, 0%, 64%, 0.25);
+}
+
 @theme {
   --color-sidebar-divider: hsla(0, 0%, 89%, 1);
 
@@ -39,8 +43,7 @@
   --spacing-settings-width: 682px;
   --spacing-settings-height: 578px;
 
-  --spacing-signin-width: 504px;
-  --spacing-signin-height: 414px;
+  --spacing-sign-width: 504px;
 }
 
 html[data-mui-color-scheme="light"] {

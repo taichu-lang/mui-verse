@@ -7,7 +7,6 @@ import {
 } from "@/components/blocks/history";
 import { useHistory } from "@/components/blocks/history/HistoryProvider";
 import { ModelMenuItem, models, type Model } from "@/components/blocks/models";
-import { ChevronDownIcon } from "@/components/icons";
 import type { Conversation } from "@/lib/types/chat";
 import {
   Section,
@@ -15,6 +14,7 @@ import {
   VirtualSectionListHandle,
 } from "@mui-verse/ui/components/data";
 import { Loading } from "@mui-verse/ui/components/effects";
+import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 

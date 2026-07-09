@@ -4,9 +4,9 @@ import {
   ChatActionItems,
   ConversationOpsProvider,
 } from "@/components/blocks/history";
-import { ChevronDownIcon } from "@/components/icons";
 import { useConversation } from "@/hooks/useConversation";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
+import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import {
   DropdownMenu,
   DropdownMenuTrigger,

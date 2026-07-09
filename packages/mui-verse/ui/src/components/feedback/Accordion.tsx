@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDownIcon } from "@/components/icons";
+import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { useState } from "react";
 

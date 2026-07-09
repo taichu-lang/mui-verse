@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import { AuthZone } from "@/auth/AuthZone";
 import { ChatHistory } from "@/components/blocks/history";
 import { HistoryProvider } from "@/components/blocks/history/HistoryProvider";
@@ -16,8 +17,40 @@ import {
   SidebarToggle,
 } from "@mui-verse/ui/layout/Sidebar";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
-import { cn } from "@mui-verse/ui/utils/cn";
 import { useLocale } from "next-intl";
+
+function ScrollArea() {
+  const { collapsed } = useSidebar();
+  const { hasAuthorization } = useAuth();
+
+  if (hasAuthorization()) {
+    return (
+      <>
+        {collapsed ? (
+          // Collapsed sidebar keeps the DropdownMenu-based entry points; the
+          // virtualized list is only meaningful in the expanded layout.
+          <div className="mb-2 flex flex-col items-center gap-1 overflow-y-auto">
+            <ModelAccordion />
+            <ChatHistory pinned />
+            <ChatHistory />
+          </div>
+        ) : (
+          <div className="mb-2 flex min-h-0 flex-1 flex-col">
+            <HistoryProvider>
+              <SidebarSections />
+            </HistoryProvider>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <AuthZone>
+      <ModelAccordion />
+    </AuthZone>
+  );
+}
 
 export function AppSidebar() {
   const { collapsed } = useSidebar();
@@ -32,11 +65,7 @@ export function AppSidebar() {
         <SidebarToggle />
       </SidebarHeader>
       <AuthZone>
-        <div
-          className={cn("mb-5 flex w-full flex-col items-center px-2", {
-            "mb-0": collapsed,
-          })}
-        >
+        <div className="flex w-full flex-col items-center px-2">
           <MenuIntl
             href="/chat"
             title="New chat"
@@ -46,21 +75,8 @@ export function AppSidebar() {
           <SearchButton />
         </div>
       </AuthZone>
-      {collapsed ? (
-        // Collapsed sidebar keeps the DropdownMenu-based entry points; the
-        // virtualized list is only meaningful in the expanded layout.
-        <div className="mb-2 flex flex-col items-center gap-1 overflow-y-auto">
-          <ModelAccordion />
-          <ChatHistory pinned />
-          <ChatHistory />
-        </div>
-      ) : (
-        <div className="mb-2 flex min-h-0 flex-1 flex-col">
-          <HistoryProvider>
-            <SidebarSections />
-          </HistoryProvider>
-        </div>
-      )}
+      {collapsed || <div className="h-5" />}
+      <ScrollArea />
       <SidebarFooter className={"flex-col pb-0"}>
         <UserProfileMenu />
       </SidebarFooter>

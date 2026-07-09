@@ -1,7 +1,10 @@
 "use client";
 
+import { cn } from "@mui-verse/ui/utils/cn";
 import {
   InputAdornment,
+  InputBase,
+  InputBaseProps,
   TextField as MuiTextField,
   TextFieldProps as MuiTextProps,
 } from "@mui/material";
@@ -220,6 +223,69 @@ export function TextField(props: TextFieldProps) {
       label={buildLabel()}
       type={type === "number" ? "text" : type}
       slotProps={buildSlotProps()}
+    />
+  );
+}
+
+export type InputProps = Omit<InputBaseProps, "value"> & {
+  onValueChange?: (value: string) => void;
+  variant?: "default" | "outlined";
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+};
+
+export function Input({
+  defaultValue,
+  onValueChange,
+  size = "small",
+  variant = "outlined",
+  startIcon,
+  endIcon,
+  className,
+  autoCapitalize = "none",
+  autoComplete = "on",
+  autoCorrect = "off",
+  spellCheck = "false",
+  ...props
+}: InputProps) {
+  const [value, setValue] = useState<string>((defaultValue as string) ?? "");
+
+  const classes = {
+    small: "",
+    medium: "text-sm leading-4.5 py-3.25 px-4",
+    default: "",
+    outlined: "ring-divider ring-1 ring-inset",
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.currentTarget.value;
+    setValue(v);
+    onValueChange?.(v);
+  };
+
+  return (
+    <InputBase
+      value={value}
+      {...props}
+      className={cn(
+        className,
+        "rounded-[10px]",
+        classes[size],
+        classes[variant],
+      )}
+      onChange={handleChange}
+      startAdornment={
+        startIcon && (
+          <InputAdornment position="start">{startIcon}</InputAdornment>
+        )
+      }
+      endAdornment={
+        endIcon && <InputAdornment position="end">{endIcon}</InputAdornment>
+      }
+      autoCapitalize={autoCapitalize}
+      autoComplete={autoComplete}
+      autoCorrect={autoCorrect}
+      spellCheck={spellCheck}
     />
   );
 }

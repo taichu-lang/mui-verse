@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthZone } from "@/auth/AuthZone";
 import { ModelSelect } from "@/components/blocks/models";
 import { useConversation } from "@/hooks/useConversation";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
@@ -90,18 +91,18 @@ function SenderArea() {
   };
 
   return (
-    // <AuthZone>
-    <Sender
-      minRows={2}
-      maxRows={12}
-      onSend={sendMessage}
-      className="chat-sender"
-      inputClassName="chat-sender-input"
-    >
-      <ModelSelect />
-      <WebSearchTool />
-    </Sender>
-    // </AuthZone>
+    <AuthZone>
+      <Sender
+        minRows={2}
+        maxRows={12}
+        onSend={sendMessage}
+        className="chat-sender"
+        inputClassName="chat-sender-input"
+      >
+        <ModelSelect />
+        <WebSearchTool />
+      </Sender>
+    </AuthZone>
   );
 }
 
