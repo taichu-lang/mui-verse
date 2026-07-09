@@ -226,10 +226,10 @@ const createBaseTheme = (palette: PaletteOptions) =>
           },
           outlined: {
             border: 0,
-            boxShadow: "inset 0 0 0 1px var(--color-divider)",
+            boxShadow: "var(--mui-shadow-border)",
             "&:hover": {
               backgroundColor: "var(--mui-palette-action-hover)",
-              boxShadow: "inset 0 0 0 1px var(--color-divider)",
+              boxShadow: "var(--mui-shadow-border)",
               border: 0,
             },
           },
@@ -348,6 +348,13 @@ const createBaseTheme = (palette: PaletteOptions) =>
           input: {
             padding: 0,
             height: "unset",
+            "&:-webkit-autofill": {
+              WebkitBoxShadow:
+                "0 0 0 100px var(--mui-palette-background-paper) inset",
+              WebkitTextFillColor: "var(--mui-palette-text-primary)",
+              caretColor: "var(--mui-palette-text-primary)",
+              borderRadius: "inherit",
+            },
           },
         },
       },
@@ -523,12 +530,12 @@ const createBaseTheme = (palette: PaletteOptions) =>
           },
           track: {
             backgroundColor: "var(--mui-palette-primary-main)",
-            border: "none",
+            border: 0,
           },
           thumb: {
             backgroundColor: "var(--mui-palette-background-paper)",
-            border: "1px solid var(--mui-palette-divider)",
-            boxShadow: "var(--mui-shadow-surface-sm)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border), var(--mui-shadow-surface-sm)",
             "&:hover, &.Mui-focusVisible": {
               boxShadow: "var(--mui-shadow-surface-md)",
             },
@@ -555,10 +562,12 @@ const createBaseTheme = (palette: PaletteOptions) =>
             lineHeight: "20px",
           },
           outlined: {
-            borderColor: "var(--mui-palette-divider)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
           },
           filled: {
-            border: "1px solid var(--mui-palette-divider)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
           },
         },
       },
@@ -570,8 +579,9 @@ const createBaseTheme = (palette: PaletteOptions) =>
                 borderRadius: 2,
                 margin: 0,
                 paddingX: 2,
-                border: "1px solid var(--mui-palette-divider)",
-                boxShadow: "var(--mui-shadow-surface-md)",
+                border: 0,
+                boxShadow:
+                  "var(--mui-shadow-border), var(--mui-shadow-surface-md)",
               },
             },
           },
@@ -635,7 +645,7 @@ const createBaseTheme = (palette: PaletteOptions) =>
         styleOverrides: {
           root: {
             backgroundImage: "none",
-            border: "1px solid var(--mui-palette-divider)",
+            border: 0,
             boxShadow: "var(--mui-shadow-surface-sm)",
             transition:
               "background-color 200ms, box-shadow 200ms, border-color 200ms",
@@ -663,11 +673,13 @@ const createBaseTheme = (palette: PaletteOptions) =>
         },
       },
       MuiCardContent: {
-        defaultProps: {
-          sx: {
-            py: 0,
-            px: 2,
+        styleOverrides: {
+          root: {
             margin: 0,
+            padding: 0,
+            ":last-child": {
+              paddingBottom: 0,
+            },
           },
         },
       },

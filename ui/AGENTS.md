@@ -74,3 +74,5 @@ sx: {
   boxShadow: "inset 0 0 0 1px var(--color-divider)";
 }
 ```
+
+## No border on `Card`, only shadow.
