@@ -1,6 +1,6 @@
 "server-only";
 
-import { cookieName, UserSession } from "@/auth/auth";
+import { cookieName, UserSession } from "@/auth/session";
 import { cookies } from "next/headers";
 
 export async function getAuthSession(): Promise<HeadersInit> {

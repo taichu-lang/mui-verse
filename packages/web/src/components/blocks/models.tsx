@@ -100,7 +100,14 @@ export function ModelMenuItem({
   model: Model;
   pinned?: boolean;
 }) {
+  const router = useRouter();
   const { provider, name } = model;
+  const { setModel } = useChat();
+
+  const switchModel = () => {
+    setModel(model.id);
+    router.replace(`/chat`);
+  };
 
   return (
     <MenuItem
@@ -121,6 +128,7 @@ export function ModelMenuItem({
           )}
         </div>
       }
+      onClick={switchModel}
     >
       <div className="h-4.5 w-4.5">{icons[provider]}</div>
       {name}

@@ -1,14 +1,11 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import { useAuth } from "./auth";
 
 export function AuthZone({ children }: { children: React.ReactNode }) {
-  const hasHydrated = useAuth((s) => s.hasHydrated);
-  const hasAuthorization = useAuth((s) => s.hasAuthorization);
   const router = useRouter();
+  const hasAuthorization = useAuth.useHasAuthorization();
 
-  if (hasHydrated && hasAuthorization()) {
+  if (hasAuthorization) {
     return children;
   }
 

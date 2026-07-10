@@ -25,6 +25,9 @@ import {
   useTransition,
 } from "react";
 import type { Pagination } from "@/lib/types/pagination";
+import Link from "next/link";
+import { useConversation } from "@/hooks/useConversation";
+import { usePathname } from "@/i18n/navigation";
 
 interface ConversationOpsValue {
   editMode: boolean;
@@ -182,8 +185,24 @@ export function ChatMenuRow({
 }) {
   const { conversation, editMode } = useConversationOps();
 
+  // useConversation is used for chat page, i.e., transfer conversation from
+  // sidebar to chat area.
+  const { setConversation } = useConversation();
+  const pathname = usePathname();
+  const uri = `/chat/${conversation.id}`;
+
+  const handleClick = () => {
+    setConversation(conversation);
+  };
+
   return (
-    <MenuItem actions={<ChatAction />}>
+    <MenuItem
+      actions={<ChatAction />}
+      component={Link}
+      href={uri}
+      onClick={handleClick}
+      selected={pathname === uri}
+    >
       {includingIcon && (
         <div className="shrink-0">
           <ChatIcon />

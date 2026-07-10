@@ -3,9 +3,9 @@
 import { useAuth } from "./auth";
 
 export function AuthFilter({ children }: { children: React.ReactNode }) {
-  const { hasAuthorization } = useAuth();
+  const hasAuthorization = useAuth.useHasAuthorization();
 
-  if (hasAuthorization()) {
+  if (hasAuthorization) {
     return children;
   }
 

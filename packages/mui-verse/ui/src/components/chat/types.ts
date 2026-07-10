@@ -5,7 +5,6 @@ export interface Message {
   // be used to query the historical messages.
   id?: string;
   message_id: string;
-  conversation_id?: string;
   role: MessageRole;
   content: string;
 }

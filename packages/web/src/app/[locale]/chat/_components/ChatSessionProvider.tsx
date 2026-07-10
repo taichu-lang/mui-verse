@@ -1,15 +1,14 @@
 "use client";
 
 import { usePathname } from "@/i18n/navigation";
-import { ConversationProvider } from "@/hooks/useConversation";
+import { useConversation } from "@/hooks/useConversation";
 import { ChatProvider } from "@mui-verse/ui/components/chat";
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Wraps chat pages in a session-scoped set of stores. The `key` on
- * `<ChatProvider>` is a session identity derived from the URL; when it
- * changes, both providers remount, dropping messages / streaming / draft state
- * so the user gets a clean slate.
+ * Wraps chat pages in a session-scoped ChatProvider. The `key` derived from
+ * the URL identifies a session; when it changes, the provider remounts,
+ * dropping messages / streaming / draft state so the user gets a clean slate.
  *
  * Rules (see useSessionKey):
  * - `/chat` → session id A
@@ -17,6 +16,11 @@ import { useEffect, useRef, useState } from "react";
  *   case A carries over — that's the "first message just created conversation
  *   X" transition, and remounting would wipe the in-flight stream).
  * - Same pathname → same session (no-op replace on model switch keeps state).
+ *
+ * The conversation-metadata store (title/pinned/id shown in the Navbar) is a
+ * module-level zustand store, deliberately outside this remount cycle — the
+ * sidebar writes to it before navigation, and we'd lose that write if it
+ * remounted with the session. Reset it explicitly when landing on `/chat`.
  */
 export function ChatSessionProvider({
   children,
@@ -25,11 +29,12 @@ export function ChatSessionProvider({
 }) {
   const pathname = usePathname();
   const sessionKey = useSessionKey(pathname);
-  return (
-    <ChatProvider key={sessionKey}>
-      <ConversationProvider>{children}</ConversationProvider>
-    </ChatProvider>
-  );
+
+  useEffect(() => {
+    if (pathname === "/chat") useConversation.getState().reset();
+  }, [pathname]);
+
+  return <ChatProvider key={sessionKey}>{children}</ChatProvider>;
 }
 
 function newKey(pathname: string) {

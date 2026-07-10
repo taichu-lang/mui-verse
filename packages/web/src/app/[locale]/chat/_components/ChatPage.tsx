@@ -13,6 +13,8 @@ import {
 } from "@mui-verse/ui/components/chat";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import type { MessagesPage } from "./messagesPage";
+import { useLoadOlder } from "./useLoadOlder";
 
 // event: meta
 interface MetaData {
@@ -115,10 +117,22 @@ function SenderArea() {
   );
 }
 
-export function ChatPage() {
+export function ChatPage({ initial }: { initial?: MessagesPage }) {
   const senderWrapperRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const { messages } = useChat();
+  const { messages, hydrate } = useChat();
+  const params = useParams<{ slug?: string }>();
+  const conversationId = params.slug;
+  const loadOlder = useLoadOlder(conversationId);
+
+  // Hydrate once from the RSC-fetched initial page. The store's own guard
+  // (skip if messages non-empty) protects the /chat -> /chat/<id> exemption
+  // where the Provider stays mounted with in-flight streaming state — a fresh
+  // RSC fetch during that transition MUST NOT clobber the just-streamed pair.
+  useEffect(() => {
+    if (!initial) return;
+    hydrate(initial.messages, initial.has_more);
+  }, [initial, hydrate]);
 
   // Publish the floating sender's height as --chat-sender-offset on the page
   // root — a shared ancestor of both the sender wrapper and the Conversation's
@@ -152,7 +166,10 @@ export function ChatPage() {
         <ModelBrandCard />
       ) : (
         <div className="mt-2 flex-1">
-          <Conversation bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6" />
+          <Conversation
+            bubbleClassName="data-[role=user]:max-w-bubble-user rounded-[22px] leading-6"
+            onReachTop={loadOlder}
+          />
         </div>
       )}
 

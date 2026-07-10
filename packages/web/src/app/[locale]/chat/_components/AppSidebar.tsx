@@ -21,9 +21,9 @@ import { useLocale } from "next-intl";
 
 function ScrollArea() {
   const { collapsed } = useSidebar();
-  const { hasAuthorization } = useAuth();
+  const hasAuthorization = useAuth.useHasAuthorization();
 
-  if (hasAuthorization()) {
+  if (hasAuthorization) {
     return (
       <>
         {collapsed ? (

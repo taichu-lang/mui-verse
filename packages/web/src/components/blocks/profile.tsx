@@ -66,9 +66,9 @@ function SigninPanel() {
 }
 
 export function UserProfileMenu() {
-  const { hasAuthorization, session } = useAuth();
+  const hasAuthorization = useAuth.useHasAuthorization();
 
-  if (hasAuthorization()) {
+  if (hasAuthorization) {
     return (
       <div className="p-1.5">
         <DropdownMenu side="top" align="start">

@@ -13,16 +13,16 @@ export default function ChatLayout({
 }) {
   return (
     <div className="flex h-full w-full overflow-hidden">
-      {/* left */}
-      <AppSidebar />
+      <ChatSessionProvider>
+        {/* left */}
+        <AppSidebar />
 
-      {/* center */}
-      <ChatMain>
-        <ChatSessionProvider>
+        {/* center */}
+        <ChatMain>
           <Navbar />
           {children}
-        </ChatSessionProvider>
-      </ChatMain>
+        </ChatMain>
+      </ChatSessionProvider>
 
       {/* right */}
       {reference}
