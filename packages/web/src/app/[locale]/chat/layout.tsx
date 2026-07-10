@@ -1,5 +1,6 @@
 import { AppSidebar } from "./_components/AppSidebar";
 import { ChatMain } from "./_components/ChatMain";
+import { ChatSessionProvider } from "./_components/ChatSessionProvider";
 import { Navbar } from "./_components/Navbar";
 import SettingsDialog from "./_settings/SettingsDialog";
 
@@ -17,8 +18,10 @@ export default function ChatLayout({
 
       {/* center */}
       <ChatMain>
-        <Navbar />
-        {children}
+        <ChatSessionProvider>
+          <Navbar />
+          {children}
+        </ChatSessionProvider>
       </ChatMain>
 
       {/* right */}

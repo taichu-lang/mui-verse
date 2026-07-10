@@ -9,6 +9,7 @@ import {
   PinnerIcon,
 } from "@/components/icons";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
+import { useChat } from "@mui-verse/ui/components/chat";
 import { Accordion } from "@mui-verse/ui/components/feedback";
 import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import {
@@ -22,15 +23,15 @@ import {
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Typography } from "@mui/material";
-import { useState } from "react";
+import { useRouter } from "@/i18n/navigation";
+import { Chip, Typography } from "@mui/material";
 
 type ModelProvider = "openai" | "google" | "anthropic";
 
 const icons = {
-  openai: <OpenAIIcon />,
-  google: <GeminiIcon />,
-  anthropic: <AnthropicIcon />,
+  openai: <OpenAIIcon className="h-full w-full" />,
+  google: <GeminiIcon className="h-full w-full" />,
+  anthropic: <AnthropicIcon className="h-full w-full" />,
 };
 
 export interface Model {
@@ -121,7 +122,7 @@ export function ModelMenuItem({
         </div>
       }
     >
-      {icons[provider]}
+      <div className="h-4.5 w-4.5">{icons[provider]}</div>
       {name}
     </MenuItem>
   );
@@ -150,7 +151,7 @@ function DropDownModelMenu({
       className="hover:bg-action-hover flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5"
       onClick={handleSelected}
     >
-      {icons[provider]}
+      <div className="h-4.5 w-4.5">{icons[provider]}</div>
       <Typography variant="body2" className="leading-4.5">
         {name}
       </Typography>
@@ -196,30 +197,57 @@ export function ModelAccordion() {
 }
 
 export function ModelSelect() {
-  const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
+  const router = useRouter();
+  const { model, setModel } = useChat();
+  const selected = models.find((v) => v.id === model) || models[0];
+
+  const handleSwitch = (id: string) => {
+    setModel(id);
+    router.replace(`/chat`);
+  };
 
   return (
     <DropdownMenu side="top" align="start">
       <DropdownMenuTrigger>
         <div className="flex cursor-pointer items-center">
-          {icons[selectedModel.provider]}
-          <span className="pr-2.5 pl-1.5 text-sm">{selectedModel.name}</span>
+          <div className="h-4 w-4">{icons[selected.provider]}</div>
+          <span className="pr-2.5 pl-1.5 text-sm">{selected.name}</span>
           <ChevronDownIcon />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent shadow="none">
-        {models.map((model) => (
+        {models.map((m) => (
           <DropdownMenuItem
-            key={model.id}
+            key={m.id}
             className="gap-2.5"
-            selected={selectedModel.id === model.id}
-            onClick={() => setSelectedModel(model)}
+            selected={selected.id === m.id}
+            onClick={() => handleSwitch(m.id)}
           >
-            {icons[model.provider]}
-            {model.name}
+            <div className="h-4 w-4">{icons[m.provider]}</div>
+            {m.name}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+export function ModelBrandCard() {
+  const { model } = useChat();
+  const selected = models.find((v) => v.id === model) || models[0];
+
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-5">
+      <div className="h-10 w-10">{icons[selected.provider]}</div>
+      <div className="flex items-center gap-2.5">
+        <span className="text-xl">{selected.name}</span>
+        <Chip label={"Official"} />
+      </div>
+      <span className="text-sm">
+        Built on {selected.name}, the Pro version is optimized for high-demand
+        scenarios, supporting more complex tasks with exceptional professional
+        performance.
+      </span>
+    </div>
   );
 }

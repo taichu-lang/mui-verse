@@ -2,56 +2,112 @@
 
 import { StreamingIcon } from "@mui-verse/ui/components/icons";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useCallback, useEffect, useRef } from "react";
-import { create } from "zustand";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { createStore, StoreApi, useStore } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { Bubble } from "./Bubble";
 import { useChatScrollContainer } from "./ChatScrollContext";
 import { Message } from "./types";
 
 interface ChatValue {
+  model: string;
   streaming: boolean;
   messages: Message[];
+  setModel: (model: string) => void;
   stopStreaming: (interrupted?: boolean) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
 }
 
-export const useChat = create<ChatValue>((set, get) => ({
-  streaming: false,
-  messages: [],
+// Preferences shared across sessions. Kept out of the session store so a
+// per-Provider remount (new-conversation navigation) doesn't drop the choice.
+const CHAT_PREFS_KEY = "chat.prefs";
+const readInitialModel = (): string => {
+  if (typeof window === "undefined") return "";
+  try {
+    const raw = window.localStorage.getItem(CHAT_PREFS_KEY);
+    return raw ? (JSON.parse(raw).model ?? "") : "";
+  } catch {
+    return "";
+  }
+};
 
-  stopStreaming: (interrupted?: boolean) => set({ streaming: false }),
+const createChatStore = (initialModel: string) =>
+  createStore<ChatValue>()(
+    persist(
+      (set, get) => ({
+        model: initialModel,
+        streaming: false,
+        messages: [],
 
-  addUserMessage: (message: Message, assistantMessageID: string) =>
-    set({
-      messages: [
-        ...get().messages,
-        message,
-        { message_id: assistantMessageID, role: "assistant", content: "" },
-      ],
-      streaming: true,
-    }),
+        setModel: (model: string) => set({ model }),
+        stopStreaming: () => set({ streaming: false }),
+        addUserMessage: (message: Message, assistantMessageID: string) =>
+          set({
+            messages: [
+              ...get().messages,
+              message,
+              {
+                message_id: assistantMessageID,
+                role: "assistant",
+                content: "",
+              },
+            ],
+            streaming: true,
+          }),
+        onStream: (message_id: string, chunk: string) =>
+          set((state) => {
+            const lastMessage = state.messages[state.messages.length - 1];
+            if (
+              !lastMessage ||
+              lastMessage.role !== "assistant" ||
+              lastMessage.message_id !== message_id
+            ) {
+              console.warn("Not assistant message.");
+              return state;
+            }
 
-  onStream: (message_id: string, chunk: string) =>
-    set((state) => {
-      const lastMessage = state.messages[state.messages.length - 1];
-      if (
-        !lastMessage ||
-        lastMessage.role !== "assistant" ||
-        lastMessage.message_id !== message_id
-      ) {
-        console.warn("Not assistant message.");
-        return state;
-      }
+            return {
+              messages: [
+                ...state.messages.slice(0, -1),
+                { ...lastMessage, content: lastMessage.content + chunk },
+              ],
+            };
+          }),
+      }),
+      {
+        name: CHAT_PREFS_KEY,
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({ model: state.model }),
+      },
+    ),
+  );
 
-      return {
-        messages: [
-          ...state.messages.slice(0, -1),
-          { ...lastMessage, content: lastMessage.content + chunk },
-        ],
-      };
-    }),
-}));
+const ChatContext = createContext<StoreApi<ChatValue> | null>(null);
+
+export function ChatProvider({ children }: { children: React.ReactNode }) {
+  // A fresh store per Provider instance. When an ancestor keys the Provider
+  // by a session identity, remounting yields a new store — that's how the
+  // messages/streaming state reset on new-conversation navigation. `model` is
+  // persisted separately via zustand `persist`, so it survives remount.
+  const [store] = useState(() => createChatStore(readInitialModel()));
+  return <ChatContext.Provider value={store}>{children}</ChatContext.Provider>;
+}
+
+export function useChat(): ChatValue {
+  const store = useContext(ChatContext);
+  if (!store) {
+    throw new Error("useChat must be used within a ChatProvider");
+  }
+  return useStore(store);
+}
 
 export function Conversation({
   bubbleClassName,

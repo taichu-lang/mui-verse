@@ -1,3 +1,5 @@
-export default function ConversationPage() {
-  return <div>conversation</div>;
+import { ChatPage } from "../_components/ChatPage";
+
+export default function Page() {
+  return <ChatPage />;
 }
