@@ -1,5 +1,6 @@
 "use client";
 
+import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { cn } from "@mui-verse/ui/utils/cn";
 import {
   InputAdornment,
@@ -8,6 +9,7 @@ import {
   TextField as MuiTextField,
   TextFieldProps as MuiTextProps,
 } from "@mui/material";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 // Refer to ValidityState.
@@ -239,6 +241,7 @@ export function Input({
   onValueChange,
   size = "small",
   variant = "outlined",
+  type: defaultType = "text",
   startIcon,
   endIcon,
   className,
@@ -250,12 +253,39 @@ export function Input({
   ...props
 }: InputProps) {
   const [value, setValue] = useState<string>((defaultValue as string) ?? "");
+  const [type, setType] = useState<string>(defaultType);
 
+  // TODO(Leo): customized other variants.
   const classes = {
     small: "",
     medium: "text-sm leading-4.5 py-3.25 px-4",
     default: "",
-    outlined: "ring-divider ring-1 ring-inset",
+    outlined:
+      "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
+  };
+
+  const buildEndIcon = () => {
+    if (endIcon) {
+      return endIcon;
+    }
+
+    if (defaultType === "password") {
+      return (
+        <IconGhostButton
+          onClick={() =>
+            setType((prev) => (prev === "text" ? "password" : "text"))
+          }
+        >
+          {type === "password" ? (
+            <EyeOffIcon className="h-4 w-4" />
+          ) : (
+            <EyeIcon className="h-4 w-4" />
+          )}
+        </IconGhostButton>
+      );
+    }
+
+    return null;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -266,14 +296,18 @@ export function Input({
 
   return (
     <InputBase
-      value={value}
       {...props}
+      value={value}
+      type={type}
       className={cn(
         className,
         "rounded-[10px]",
         classes[size],
         classes[variant],
-        { "ring-error-500": error },
+        {
+          "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
+            error,
+        },
       )}
       onChange={handleChange}
       startAdornment={
@@ -282,7 +316,7 @@ export function Input({
         )
       }
       endAdornment={
-        endIcon && <InputAdornment position="end">{endIcon}</InputAdornment>
+        <InputAdornment position="end">{buildEndIcon()}</InputAdornment>
       }
       autoCapitalize={autoCapitalize}
       autoComplete={autoComplete}
