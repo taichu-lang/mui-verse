@@ -1,17 +1,15 @@
 "use client";
 
-import {
-  OtpChannel,
-  PasswordChannel,
-} from "@/components/blocks/signin/channels";
 import { SignCard } from "@/components/blocks/signin/SignCard";
 import { getAuthMethods } from "@/lib/apis/profile";
 import { apiCodeUserNotFound, AuthMethod } from "@/lib/types/api";
 import { Input } from "@mui-verse/ui/components/inputs";
-import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { OtpCard } from "./OtpCard";
+import { PasswordCard } from "./PasswordCard";
+import { Button } from "@/components/ui/Button";
 
 export default function SigninPage() {
   const router = useRouter();
@@ -46,11 +44,13 @@ export default function SigninPage() {
   };
 
   if (method === "otp") {
-    return <OtpChannel email={email || ""} />;
+    return <OtpCard email={email || ""} />;
   }
 
   if (method === "password") {
-    return <PasswordChannel email={email || ""} />;
+    return (
+      <PasswordCard email={email || ""} onSwitch={() => setMethod("otp")} />
+    );
   }
 
   return (
@@ -66,7 +66,7 @@ export default function SigninPage() {
         onValueChange={setEmail}
       />
       <Button
-        className="mt-4 py-2.5 text-base shadow-none"
+        className="mt-4"
         disabled={!email}
         onClick={verifyEmail}
         loading={loading}

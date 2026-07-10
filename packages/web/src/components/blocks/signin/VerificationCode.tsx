@@ -1,9 +1,9 @@
+import { Button } from "@/components/ui/Button";
 import { sendOtpCode, verifyOtpCode } from "@/lib/apis/otp";
 import { signinWithCode } from "@/lib/apis/profile";
 import { apiCodeCredentialError } from "@/lib/types/api";
 import { CountdownButton } from "@mui-verse/ui/components/feedback";
 import { Input } from "@mui-verse/ui/components/inputs";
-import { Button } from "@mui/material";
 import { useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { SignCard } from "./SignCard";
@@ -28,11 +28,13 @@ export function VerificationCode({
   email,
   onLogin,
   onCodeChecked,
+  children,
 }: {
   email: string;
   onLogin?: () => void;
   onCodeChecked?: (token: string) => void;
   className?: string;
+  children?: React.ReactNode;
 }) {
   const [isPending, startTransition] = useTransition();
   const [code, setCode] = useState<string | null>(null);
@@ -60,8 +62,24 @@ export function VerificationCode({
       return;
     }
 
-    // TODO
-    await verifyOtpCode(email, code);
+    try {
+      const response = await verifyOtpCode(email, code);
+      switch (response.code) {
+        case 0:
+          onCodeChecked(response.data);
+          break;
+
+        case apiCodeCredentialError:
+          setError(true);
+          break;
+
+        default:
+          toast.error("system error");
+          break;
+      }
+    } catch {
+      toast.error("network error");
+    }
   };
 
   const handleLogin = async () => {
@@ -118,13 +136,14 @@ export function VerificationCode({
         <CountdownButton autoStart>Resend</CountdownButton>
       </div>
       <Button
-        className="mt-3.5 py-2.5 text-base"
+        className="mt-3.5"
         loading={isPending}
         onClick={handleSubmit}
         disabled={!code || code.length !== 4}
       >
         Continue
       </Button>
+      {children}
     </SignCard>
   );
 }

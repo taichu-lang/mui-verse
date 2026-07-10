@@ -77,7 +77,7 @@ export async function updateUser(
   user_id: number,
   request: UpdateProfileRequest,
 ): Promise<boolean> {
-  if (!request.name && !request.password) {
+  if (!request.name) {
     throw new Error("invalid parameters.");
   }
 
@@ -93,6 +93,25 @@ export async function updateUser(
       updateSession({ name: request.name });
     }
 
+    return true;
+  }
+
+  return false;
+}
+
+export async function updatePassword(
+  email: string,
+  password: string,
+  token: string,
+): Promise<boolean> {
+  const client = await fetch(`/api/users/password`, {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+    headers: { "x-token": token },
+  });
+
+  const response = (await client.json()) as ApiResponse;
+  if (response.code === 0) {
     return true;
   }
 

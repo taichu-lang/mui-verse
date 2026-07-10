@@ -1,4 +1,4 @@
-export default function SigninLayout({
+export default function SignLayout({
   children,
 }: {
   children: React.ReactNode;

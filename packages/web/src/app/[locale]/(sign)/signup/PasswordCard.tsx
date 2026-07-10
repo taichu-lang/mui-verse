@@ -1,14 +1,12 @@
 "use client";
 
 import { useAuth } from "@/auth/auth";
-import {
-  PasswordField,
-  type PasswordFieldRef,
-} from "@/components/blocks/signin/PasswordField";
+import { DefaultPasswordField } from "@/components/blocks/signin/PasswordField";
 import { SignCard } from "@/components/blocks/signin/SignCard";
 import { Title } from "@/components/blocks/signin/Title";
-import { updateUser } from "@/lib/apis/profile";
-import { Button } from "@mui/material";
+import { Button } from "@/components/ui/Button";
+import { updatePassword } from "@/lib/apis/profile";
+import { InputControlRef } from "@mui-verse/ui/components/inputs";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -17,7 +15,7 @@ export function PasswordCard({ email }: { email: string }) {
   const router = useRouter();
   const { session } = useAuth();
   const [password, setPassword] = useState<string | null>(null);
-  const passwordRef = useRef<PasswordFieldRef>(null);
+  const passwordRef = useRef<InputControlRef>(null);
 
   if (!session) {
     return null;
@@ -27,12 +25,13 @@ export function PasswordCard({ email }: { email: string }) {
     if (!passwordRef.current?.check()) {
       return;
     }
+
     if (!password) {
       return;
     }
 
     try {
-      await updateUser(session.id, { password });
+      await updatePassword(session.email, password, session.token);
       router.replace("/chat");
     } catch {
       toast.error("network error");
@@ -42,18 +41,12 @@ export function PasswordCard({ email }: { email: string }) {
   return (
     <SignCard>
       <Title>{email}</Title>
-      <PasswordField
-        label="Password"
-        enableRules
+      <DefaultPasswordField
         className="mt-5 mb-3.5"
         onChange={setPassword}
         ref={passwordRef}
       />
-      <Button
-        className="py-2.5 text-base"
-        onClick={getStarted}
-        disabled={!password}
-      >
+      <Button onClick={getStarted} disabled={!password}>
         Get started
       </Button>
     </SignCard>

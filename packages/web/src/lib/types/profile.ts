@@ -32,5 +32,4 @@ export interface UserProfileResponse extends ApiResponse {
 
 export interface UpdateProfileRequest {
   name?: string;
-  password?: string;
 }
