@@ -5,3 +5,4 @@ export {
   ChatScrollContainerContext,
   useChatScrollContainer,
 } from "./ChatScrollContext";
+export type { Message, MessageRole } from "./types";

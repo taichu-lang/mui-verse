@@ -20,10 +20,18 @@ interface ChatValue {
   model: string;
   streaming: boolean;
   messages: Message[];
+  // Pagination — only the historically-loaded prefix has ids; the tail (an
+  // in-flight user/assistant pair) is id-less. `messages[0]` is always the
+  // cursor source, and it is only ever a hydrated or prepended history row.
+  hasMoreOlder: boolean;
+  loadingOlder: boolean;
   setModel: (model: string) => void;
   stopStreaming: (interrupted?: boolean) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
+  hydrate: (messages: Message[], hasMoreOlder: boolean) => void;
+  prependOlder: (messages: Message[], hasMoreOlder: boolean) => void;
+  setLoadingOlder: (loading: boolean) => void;
 }
 
 // Preferences shared across sessions. Kept out of the session store so a
@@ -46,6 +54,8 @@ const createChatStore = (initialModel: string) =>
         model: initialModel,
         streaming: false,
         messages: [],
+        hasMoreOlder: false,
+        loadingOlder: false,
 
         setModel: (model: string) => set({ model }),
         stopStreaming: () => set({ streaming: false }),
@@ -81,6 +91,22 @@ const createChatStore = (initialModel: string) =>
               ],
             };
           }),
+        // Called once after the initial server-fetched page arrives on the
+        // client. Skips if the store already has messages — this preserves the
+        // in-flight stream on the /chat -> /chat/<id> exemption, where the
+        // Provider stayed mounted through the URL change and the RSC's initial
+        // fetch would otherwise clobber the just-appended user/assistant pair.
+        hydrate: (messages: Message[], hasMoreOlder: boolean) => {
+          if (get().messages.length > 0) return;
+          set({ messages, hasMoreOlder, loadingOlder: false });
+        },
+        prependOlder: (messages: Message[], hasMoreOlder: boolean) =>
+          set({
+            messages: [...messages, ...get().messages],
+            hasMoreOlder,
+            loadingOlder: false,
+          }),
+        setLoadingOlder: (loading: boolean) => set({ loadingOlder: loading }),
       }),
       {
         name: CHAT_PREFS_KEY,
@@ -111,10 +137,16 @@ export function useChat(): ChatValue {
 
 export function Conversation({
   bubbleClassName,
+  onReachTop,
 }: {
   bubbleClassName?: string;
+  // Fired when the top sentinel enters the viewport (with a 200px lead), and
+  // only while more history exists AND no load is already in flight. Consumers
+  // orchestrate the actual fetch + `prependOlder` externally so scroll-anchor
+  // preservation can bracket the state update (see useLoadOlder).
+  onReachTop?: () => void;
 }) {
-  const { streaming, messages } = useChat();
+  const { streaming, messages, hasMoreOlder, loadingOlder } = useChat();
 
   // Sentinel just after the last message. scrollIntoView scrolls the nearest
   // scrollable ancestor into view. The sentinel carries a scroll-margin-bottom
@@ -122,8 +154,11 @@ export function Conversation({
   // set --chat-sender-offset on any ancestor to the sender's height (defaults
   // to 0 when not set).
   const endRef = useRef<HTMLDivElement | null>(null);
+  const topSentinelRef = useRef<HTMLDivElement | null>(null);
   const messageAreaRef = useRef<HTMLDivElement | null>(null);
   const scrollElement = useChatScrollContainer();
+
+  const [initialSettled, setInitialSettled] = useState(false);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
@@ -141,19 +176,62 @@ export function Conversation({
   });
 
   const stickToEnd = useCallback(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    endRef.current?.scrollIntoView({ behavior: "instant", block: "end" });
   }, []);
 
-  // Streamdown may re-flow after the React commit (code blocks, math, images),
-  // which grows the list's height without a new messages update. The outer
-  // container's height tracks virtualizer.getTotalSize(), so measurement
-  // updates from the streaming bubble bubble up as height changes here.
+  // Re-stick to the end whenever the message area's height changes, but only
+  // while auto-stick is warranted: during streaming (assistant bubble grows
+  // as chunks arrive; Streamdown may re-flow post-commit for code blocks,
+  // math, images), OR during the initial-load window right after hydrate,
+  // before the virtualizer has finished measuring bubbles.
+  //
+  // The initial-load case matters because a one-shot scrollIntoView on
+  // hydrate lands on stale geometry: virtualizer starts with
+  // estimateSize (120px per row), so getTotalSize() is much smaller than
+  // reality; endRef sits at that estimated bottom. As measureElement fires
+  // on each rendered bubble, the total grows — but scrollTop doesn't chase
+  // it. Observing the message area lets every measurement pass re-park us
+  // at the true bottom until things settle.
   useEffect(() => {
-    if (!streaming || !messageAreaRef.current) return;
+    const active = streaming || !initialSettled;
+    if (!active || !messageAreaRef.current || messages.length === 0) return;
     const observer = new ResizeObserver(stickToEnd);
     observer.observe(messageAreaRef.current);
     return () => observer.disconnect();
-  }, [streaming, stickToEnd]);
+  }, [streaming, initialSettled, messages.length, stickToEnd]);
+
+  // Release the initial-load auto-stick after two animation frames. One rAF
+  // gives the virtualizer a paint to run measureElement on the currently
+  // rendered bubbles; the second rAF ensures any resize-triggered re-render
+  // has also flushed. After this, further scroll changes are user-driven
+  // (except during streaming, which reactivates the observer above) — we
+  // must stop auto-sticking so the user can scroll up without being fought.
+  useEffect(() => {
+    if (initialSettled || messages.length === 0) return;
+    const t = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setInitialSettled(true));
+    });
+    return () => cancelAnimationFrame(t);
+  }, [initialSettled, messages.length]);
+
+  // Top sentinel — a zero-height marker at offset 0 inside the virtual list.
+  // IntersectionObserver fires with a 200px lead so the next page starts
+  // fetching before the user actually reaches the top. The observer is
+  // recreated when hasMoreOlder flips false so we stop firing at the end of
+  // history; the loadingOlder guard is checked at fire time (fresh state read)
+  // to avoid closure-stale reads across rapid scroll events.
+  useEffect(() => {
+    const sentinel = topSentinelRef.current;
+    if (!sentinel || !scrollElement || !hasMoreOlder || !onReachTop) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) onReachTop();
+      },
+      { root: scrollElement, rootMargin: "200px 0px 0px 0px", threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [scrollElement, hasMoreOlder, onReachTop]);
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -166,6 +244,26 @@ export function Conversation({
           width: "100%",
         }}
       >
+        <div
+          ref={topSentinelRef}
+          aria-hidden
+          style={{ position: "absolute", top: 0, left: 0, height: 1, width: 1 }}
+        />
+        {loadingOlder && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              display: "flex",
+              justifyContent: "center",
+              padding: 8,
+            }}
+          >
+            <StreamingIcon />
+          </div>
+        )}
         {virtualItems.map((vi) => {
           const message = messages[vi.index];
           const isLast = vi.index === messages.length - 1;
