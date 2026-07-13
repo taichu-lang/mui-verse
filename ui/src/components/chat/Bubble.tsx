@@ -1,6 +1,7 @@
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Typography } from "@mui/material";
 import { Streamdown } from "streamdown";
+import { AnnotationAvatarGroup, SearchAnnotation } from "./Annotation";
 import { BubbleActions, BubbleCopyAction } from "./BubbleAction";
 import { Message } from "./types";
 
@@ -32,15 +33,15 @@ function BubbleUser({
 }
 
 function BubbleAssistant({
-  content,
+  message,
   className,
   streaming,
 }: {
-  content: string;
+  message: Message;
   className?: string;
   streaming?: boolean;
 }) {
-  if (!content) {
+  if (!message.content) {
     return null;
   }
 
@@ -54,6 +55,11 @@ function BubbleAssistant({
       )}
     >
       <Streamdown
+        linkSafety={{ enabled: false }}
+        allowedTags={{
+          // some tags such as `id`, `name` will be added prefix, ex: `data-content-id`.
+          annotation: ["site_name", "url", "title"],
+        }}
         components={{
           h1: ({ children, ...props }) => (
             <Typography
@@ -115,9 +121,18 @@ function BubbleAssistant({
               {children}
             </Typography>
           ),
+          annotation: ({ site_name, url, title }) => {
+            return (
+              <SearchAnnotation
+                site_name={site_name as string}
+                title={title as string}
+                url={url as string}
+              />
+            );
+          },
         }}
       >
-        {content}
+        {message.content}
       </Streamdown>
       <BubbleActions
         role="assistant"
@@ -126,6 +141,10 @@ function BubbleAssistant({
         className={streaming ? "opacity-0" : "opacity-100"}
       >
         <BubbleCopyAction />
+        <AnnotationAvatarGroup
+          annotations={message.annotations}
+          className="ml-2.5"
+        />
       </BubbleActions>
     </div>
   );
@@ -146,7 +165,7 @@ export function Bubble({
     case "assistant":
       return (
         <BubbleAssistant
-          content={message.content}
+          message={message}
           className={className}
           streaming={streaming}
         />

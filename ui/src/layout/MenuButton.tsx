@@ -37,13 +37,13 @@ export function MenuButton({
       >
         {/* `group` is used to bind state to icon and actions. */}
         {collapsed ? (
-          <div
+          <CardActionArea
             className={cn("group flex h-8 w-8 rounded-[10px]", className)}
             data-active={isActive || undefined}
             onClick={onClick}
           >
             {icon}
-          </div>
+          </CardActionArea>
         ) : (
           <MenuItem className={cn("group w-full", className)} onClick={onClick}>
             {icon}

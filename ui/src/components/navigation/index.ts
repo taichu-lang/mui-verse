@@ -39,3 +39,5 @@ export {
 } from "./Tabs";
 
 export { MenuItem, type MenuItemProps } from "./MenuItem";
+
+export { Popover, PopoverContent, PopoverTrigger } from "./Popover";

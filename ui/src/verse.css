@@ -82,7 +82,21 @@
   --mui-shadow-surface-lg:
     0 4px 8px rgb(0 0 0 / 0.08), 0 8px 18px rgb(0 0 0 / 0.06);
 
-  /* Use box-shadow for border */
+  /** 
+    Use box-shadow for border.
+    Params: inset | offset-x | offset-y | blur-radius | spread-radius | color
+      - inset:         paint the shadow inside the element (like an inner border)
+      - offset-x:      horizontal offset; positive shifts the shadow to the right
+      - offset-y:      vertical offset; positive shifts the shadow downward
+      - blur-radius:   0 = sharp edge, higher = softer
+      - spread-radius: expands (positive) or contracts (negative) the shadow; with inset,
+                       a positive spread thickens the border evenly on all sides
+      - color:         shadow color 
+
+    Ex: 
+      - inset 0 0 0 1px => all border
+      - inset 1px 0 0 0 => left border
+  */
   --mui-shadow-border: inset 0 0 0 1px var(--mui-palette-divider);
 }
 

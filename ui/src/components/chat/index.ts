@@ -1,8 +1,13 @@
-export { Sender } from "./Sender";
-export { WebSearchTool } from "./WebSearchTool";
-export { Conversation, ChatProvider, useChat } from "./Chat";
+export {
+  AnnotationAvatarGroup,
+  AnnotationSourceListView,
+  useAnnotationSources,
+} from "./Annotation";
+export { ChatProvider, Conversation, useChat } from "./Chat";
 export {
   ChatScrollContainerContext,
   useChatScrollContainer,
 } from "./ChatScrollContext";
+export { Sender } from "./Sender";
 export type { Message, MessageRole } from "./types";
+export { WebSearchTool } from "./WebSearchTool";
