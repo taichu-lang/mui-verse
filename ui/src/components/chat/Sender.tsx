@@ -4,7 +4,7 @@ import { cn } from "@mui-verse/ui/utils/cn";
 import { Button, InputBase } from "@mui/material";
 import { ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
-import { useChat } from "./Chat";
+import { useChat } from "./ChatContext";
 
 export function Sender({
   minRows = 3,

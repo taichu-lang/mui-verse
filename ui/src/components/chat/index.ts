@@ -3,7 +3,8 @@ export {
   AnnotationSourceListView,
   useAnnotationSources,
 } from "./Annotation";
-export { ChatProvider, Conversation, useChat } from "./Chat";
+export { Conversation } from "./Chat";
+export { ChatProvider, useChat } from "./ChatContext";
 export {
   ChatScrollContainerContext,
   useChatScrollContainer,
