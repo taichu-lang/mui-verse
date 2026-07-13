@@ -17,6 +17,7 @@ import { General } from "./General";
 import { Help } from "./Help";
 import { parseHash } from "./lib";
 import { AuthFilter } from "@/auth/AuthFilter";
+import { Account } from "./Account";
 
 function TabTitle() {
   const { title } = useTabMenuContext();
@@ -66,13 +67,18 @@ export default function SettingsDialog() {
               <CloseXIcon />
             </IconGhostButton>
             <AuthFilter>
-              <TabMenu title="Account" icon={<UserIcon />} value="account" />
+              <TabMenu
+                title="Account"
+                icon={<UserIcon className="h-4.5 w-4.5" />}
+                value="account"
+              />
             </AuthFilter>
             <TabMenu title="General" icon={<SettingsIcon />} value="general" />
             <TabMenu title="Help" icon={<QuestionIcon />} value="help" />
           </div>
           <div className="mx-7.5 flex flex-1 flex-col">
             <TabTitle />
+            <Account />
             <General />
             <Help />
           </div>

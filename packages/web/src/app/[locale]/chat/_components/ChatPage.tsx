@@ -13,7 +13,7 @@ import {
 } from "@mui-verse/ui/components/chat";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import type { MessagesPage } from "./messagesPage";
+import type { MessagesPage } from "./lib";
 import { useLoadOlder } from "./useLoadOlder";
 
 // event: meta

@@ -1,6 +1,7 @@
 "server-only";
 
 import { getAuthSession } from "@/lib/cookie";
+import { logger } from "@/lib/logger";
 import { ConversationMessagesResponse } from "@/lib/types/chat";
 import type { Message } from "@mui-verse/ui/components/chat";
 
@@ -36,17 +37,19 @@ export async function fetchMessagesPage(
   });
 
   if (!client.ok) {
-    console.log(
+    logger.error(
+      { conversation: conversationId, status: client.status },
       "failed to load initial messages page.",
-      conversationId,
-      client.status,
     );
     return null;
   }
 
   const response = (await client.json()) as ConversationMessagesResponse;
   if (response.code !== 0) {
-    console.log("failed to load initial messages page.", response.code);
+    logger.error(
+      { code: response.code },
+      "failed to load initial messages page.",
+    );
     return null;
   }
 

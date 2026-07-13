@@ -74,6 +74,7 @@ export function DropdownMenu({
   );
 
   const onClose = useCallback(() => {
+    setAnchorEl(null);
     setOpen(false);
     onOpenChange?.(false);
   }, [onOpenChange]);
@@ -106,7 +107,7 @@ export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
 
 // --- Content ---
 
-const anchorOriginMap: Record<
+export const AnchorOriginMap: Record<
   Side,
   Record<Align, MenuProps["anchorOrigin"]>
 > = {
@@ -137,7 +138,7 @@ const anchorOriginMap: Record<
   },
 };
 
-const transformOriginMap: Record<
+export const TransformOriginMap: Record<
   Side,
   Record<Align, MenuProps["transformOrigin"]>
 > = {
@@ -202,8 +203,8 @@ export function DropdownMenuContent({
       open={open}
       anchorEl={anchorEl}
       onClose={onClose}
-      anchorOrigin={anchorOriginMap[side][align]}
-      transformOrigin={transformOriginMap[side][align]}
+      anchorOrigin={AnchorOriginMap[side][align]}
+      transformOrigin={TransformOriginMap[side][align]}
       // MUI Popover keeps the menu at least `marginThreshold` px (default 16)
       // from every viewport edge, nudging it inward when the computed position
       // is closer than that. For triggers near the edge (e.g. inside a sidebar

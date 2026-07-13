@@ -1,3 +1,4 @@
+import { AnnotationSourceListView } from "@mui-verse/ui/components/chat";
 import { AppSidebar } from "./_components/AppSidebar";
 import { ChatMain } from "./_components/ChatMain";
 import { ChatSessionProvider } from "./_components/ChatSessionProvider";
@@ -5,10 +6,8 @@ import { Navbar } from "./_components/Navbar";
 import SettingsDialog from "./_settings/SettingsDialog";
 
 export default function ChatLayout({
-  reference,
   children,
 }: {
-  reference: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -25,7 +24,7 @@ export default function ChatLayout({
       </ChatSessionProvider>
 
       {/* right */}
-      {reference}
+      <AnnotationSourceListView width={"358px"} />
 
       {/* settings dialog */}
       <SettingsDialog />

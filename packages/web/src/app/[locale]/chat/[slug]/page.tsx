@@ -1,7 +1,7 @@
 import { Loading } from "@mui-verse/ui/components/effects";
 import { Suspense } from "react";
 import { ChatPage } from "../_components/ChatPage";
-import { fetchMessagesPage } from "../_components/messagesPage";
+import { fetchMessagesPage } from "../_components/lib";
 
 async function PageContent({ id }: { id: string }) {
   const initial = await fetchMessagesPage(id);

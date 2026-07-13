@@ -3,7 +3,7 @@
 import { useChat, useChatScrollContainer } from "@mui-verse/ui/components/chat";
 import { useCallback, useEffect, useRef } from "react";
 import { flushSync } from "react-dom";
-import type { MessagesPage } from "./messagesPage";
+import type { MessagesPage } from "./lib";
 
 // Orchestrates fetch + store update for the "load older" flow.
 //

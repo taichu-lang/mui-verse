@@ -1,6 +1,9 @@
 "use client";
 
-import { IconTextButton } from "@mui-verse/ui/components/buttons";
+import {
+  IconGhostButton,
+  IconTextButton,
+} from "@mui-verse/ui/components/buttons";
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Drawer, IconButton, useTheme } from "@mui/material";
@@ -75,16 +78,25 @@ export function Sidebar({
 export function SidebarToggle({
   className,
   variant = "text",
+  icon,
 }: {
   className?: string;
-  variant?: "contained" | "text";
+  variant?: "contained" | "text" | "ghost";
+  icon?: React.ReactNode;
 }) {
   const { collapsed, toggleCollapsed } = useSidebar();
-  const Comp = variant === "text" ? IconTextButton : IconButton;
+  const comps: Record<string, React.ElementType> = {
+    contained: IconButton,
+    text: IconTextButton,
+    ghost: IconGhostButton,
+  };
+  const Comp = comps[variant];
 
   return (
     <Comp onClick={toggleCollapsed} className={className}>
-      {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+      {collapsed
+        ? (icon ?? <PanelLeftOpen size={18} />)
+        : (icon ?? <PanelLeftClose size={18} />)}
     </Comp>
   );
 }

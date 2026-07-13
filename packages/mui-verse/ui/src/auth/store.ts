@@ -1,6 +1,5 @@
 "use client";
 
-import { logger } from "@mui-verse/ui/utils/logger";
 import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
@@ -111,7 +110,6 @@ export function createAuthStore<T extends BaseSession = BaseSession>({
               }
             } catch (error) {
               console.error("Failed to load session:", error);
-              logger.error({ err: error }, "failed to load session");
               set({
                 session: null,
                 error: "Failed to load session",

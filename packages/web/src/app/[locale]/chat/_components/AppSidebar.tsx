@@ -8,7 +8,7 @@ import { SidebarSections } from "@/components/blocks/history/SidebarSections";
 import { ModelAccordion } from "@/components/blocks/models";
 import { UserProfileMenu } from "@/components/blocks/profile";
 import { SearchButton } from "@/components/blocks/search";
-import { CirclePlusIcon } from "@/components/icons";
+import { CirclePlusIcon, CollapsedIcon } from "@/components/icons";
 import { MenuIntl } from "@mui-verse/ui/layout/MenuIntl";
 import {
   Sidebar,
@@ -62,7 +62,7 @@ export function AppSidebar() {
         {collapsed || (
           <span className="text-xl leading-6 font-semibold">Anna</span>
         )}
-        <SidebarToggle />
+        <SidebarToggle icon={<CollapsedIcon />} variant="ghost" />
       </SidebarHeader>
       <AuthZone>
         <div className="flex w-full flex-col items-center px-2">

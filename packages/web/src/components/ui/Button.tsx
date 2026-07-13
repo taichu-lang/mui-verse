@@ -15,7 +15,7 @@ export function Button({
 
   return (
     <MuiButton
-      className={cn(className, classes[variant])}
+      className={cn(classes[variant], className)}
       variant={variant}
       sx={{
         ...sx,
