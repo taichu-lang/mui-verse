@@ -7,9 +7,10 @@ import {
 
 export type SwitchVariant = "standard" | "inset";
 
-export type SwitchProps = MuiSwitchProps & {
+export type SwitchProps = Omit<MuiSwitchProps, "onChange"> & {
   variant?: SwitchVariant;
   ref?: React.Ref<HTMLButtonElement>;
+  onChange?: (checked: boolean) => void;
 };
 
 const insetSx = {
@@ -34,12 +35,18 @@ const insetSx = {
 export function Switch({
   variant = "standard",
   disableRipple = true,
+  onChange,
   sx,
   ref,
   ...rest
 }: SwitchProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e.target.checked);
+  };
+
   return (
     <MuiSwitch
+      onChange={handleChange}
       ref={ref}
       disableRipple={disableRipple}
       sx={[

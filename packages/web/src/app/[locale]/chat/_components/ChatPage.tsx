@@ -36,7 +36,14 @@ interface TitleData {
 }
 
 function SenderArea() {
-  const { addUserMessage, onStream, stopStreaming } = useChat();
+  const {
+    addUserMessage,
+    onStream,
+    stopStreaming,
+    model,
+    enableWebSearch,
+    setSharedState,
+  } = useChat();
   const { setConversation, onInit } = useConversation();
   const router = useRouter();
   // Read the conversation id off the URL each render — after the first-message
@@ -49,8 +56,9 @@ function SenderArea() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4.1",
+        model,
         content: text,
+        tools: enableWebSearch ? ["web_search"] : [],
         ...(conversationId ? { conversation_id: conversationId } : {}),
       }),
       onmessage(ev) {
@@ -111,7 +119,12 @@ function SenderArea() {
         inputClassName="chat-sender-input"
       >
         <ModelSelect />
-        <WebSearchTool />
+        <WebSearchTool
+          defaultChecked={enableWebSearch}
+          onSwitch={(checked: boolean) =>
+            setSharedState({ enableWebSearch: checked })
+          }
+        />
       </Sender>
     </AuthZone>
   );

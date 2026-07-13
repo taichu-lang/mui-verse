@@ -8,6 +8,7 @@ import {
   PinnedIcon,
   PinnerIcon,
 } from "@/components/icons";
+import { useRouter } from "@/i18n/navigation";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { useChat } from "@mui-verse/ui/components/chat";
 import { Accordion } from "@mui-verse/ui/components/feedback";
@@ -23,8 +24,8 @@ import {
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { useRouter } from "@/i18n/navigation";
 import { Chip, Typography } from "@mui/material";
+import { useEffect, useMemo } from "react";
 
 type ModelProvider = "openai" | "google" | "anthropic";
 
@@ -102,10 +103,10 @@ export function ModelMenuItem({
 }) {
   const router = useRouter();
   const { provider, name } = model;
-  const { setModel } = useChat();
+  const { setSharedState } = useChat();
 
   const switchModel = () => {
-    setModel(model.id);
+    setSharedState({ model: model.id });
     router.replace(`/chat`);
   };
 
@@ -206,11 +207,20 @@ export function ModelAccordion() {
 
 export function ModelSelect() {
   const router = useRouter();
-  const { model, setModel } = useChat();
-  const selected = models.find((v) => v.id === model) || models[0];
+  const { model, setSharedState } = useChat();
+  const selected = useMemo(
+    () => models.find((v) => v.id === model) || models[0],
+    [model],
+  );
+
+  useEffect(() => {
+    if (!model) {
+      setSharedState({ model: selected.id });
+    }
+  }, [model, setSharedState, selected]);
 
   const handleSwitch = (id: string) => {
-    setModel(id);
+    setSharedState({ model: id });
     router.replace(`/chat`);
   };
 
