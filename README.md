@@ -16,6 +16,18 @@
 
 参考 [examples](./examples).
 
+- 可通过 `subtree` 引入:
+
+  ```bash
+  git subtree add --prefix=packages/mui-verse git@github.com:taichu-lang/mui-verse.git main --squash
+  ```
+
+  同步更新:
+
+  ```bash
+  git subtree pull --prefix=packages/mui-verse git@github.com:taichu-lang/mui-verse.git main --squash
+  ```
+
 - 引用 `verse.css` 文件。在工程的 `globals.css` 文件中引入 `verse.css` 文件。如下:
 
   ```css
