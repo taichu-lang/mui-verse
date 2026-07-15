@@ -14,7 +14,7 @@ export function IconTextButton({
     <div
       ref={ref}
       className={cn(
-        "hover:shadow-button-hover cursor-pointer rounded-full p-1.5",
+        "hover:shadow-button-hover shrink-0 cursor-pointer rounded-full p-1.5",
         className,
       )}
       {...rest}
@@ -28,7 +28,7 @@ export function IconSquareButton({ className, ...props }: IconTextButtonProps) {
   return (
     <IconTextButton
       {...props}
-      className={cn("aspect-square rounded-lg", className)}
+      className={cn("aspect-square shrink-0 rounded-lg", className)}
     />
   );
 }
@@ -43,7 +43,7 @@ export function IconGhostButton({
     <div
       ref={ref}
       className={cn(
-        "flex cursor-pointer items-center justify-center rounded-lg",
+        "flex shrink-0 cursor-pointer items-center justify-center rounded-lg",
         className,
       )}
       {...rest}

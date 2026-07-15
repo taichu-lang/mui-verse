@@ -24,6 +24,7 @@ interface ChatValue extends SharedState {
   stopStreaming: (interrupted?: boolean) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
+  replaceMessage: (message: Message) => void;
   hydrate: (messages: Message[], hasMoreOlder: boolean) => void;
   prependOlder: (messages: Message[], hasMoreOlder: boolean) => void;
   setLoadingOlder: (loading: boolean) => void;
@@ -93,6 +94,12 @@ const createChatStore = (initialState: SharedState) =>
               ],
             };
           }),
+        replaceMessage: (message: Message) =>
+          set((state) => ({
+            messages: state.messages.map((m) =>
+              m.message_id === message.message_id ? message : m,
+            ),
+          })),
         // Called once after the initial server-fetched page arrives on the
         // client. Skips if the store already has messages — this preserves the
         // in-flight stream on the /chat -> /chat/<id> exemption, where the

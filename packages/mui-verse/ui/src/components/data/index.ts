@@ -9,3 +9,10 @@ export {
   type VirtualSectionListHandle,
   type VirtualSectionListProps,
 } from "./VirtualSectionList";
+export {
+  InfiniteScrollView,
+  type InfinitePage,
+  type InfiniteSection,
+  type InfiniteScrollViewHandle,
+  type InfiniteScrollViewProps,
+} from "./InfiniteScrollView";

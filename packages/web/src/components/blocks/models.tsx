@@ -83,6 +83,11 @@ export const models: Model[] = [
     provider: "openai",
   },
   {
+    id: "gpt-4.1",
+    name: "GPT-4.1",
+    provider: "openai",
+  },
+  {
     id: "gemini-3.1-pro-preview",
     name: "Gemini 3.1 Pro Preview",
     provider: "google",

@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import {
   Conversation,
+  Message,
   Sender,
   useChat,
   WebSearchTool,
@@ -39,6 +40,7 @@ function SenderArea() {
   const {
     addUserMessage,
     onStream,
+    replaceMessage,
     stopStreaming,
     model,
     enableWebSearch,
@@ -91,9 +93,12 @@ function SenderArea() {
             break;
           }
 
-          case "done":
+          case "done": {
+            const payload = JSON.parse(ev.data) as Message;
+            replaceMessage(payload);
             stopStreaming(true);
             break;
+          }
 
           default:
             break;

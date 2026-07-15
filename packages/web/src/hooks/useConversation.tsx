@@ -13,7 +13,9 @@ interface ConversationValue {
 export const useConversation = create<ConversationValue>((set, get) => ({
   conversation: null,
   onInit: (id: string) =>
-    set({ conversation: { id, title: "", pinned: false } }),
+    set({
+      conversation: { id: 0, conversation_id: id, title: "", pinned: false },
+    }),
   setConversation: (c: Partial<Conversation>) =>
     set({ conversation: { ...get().conversation!, ...c } }),
   reset: () => set({ conversation: null }),

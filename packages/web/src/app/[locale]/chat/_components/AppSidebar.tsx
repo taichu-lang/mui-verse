@@ -2,9 +2,8 @@
 
 import { useAuth } from "@/auth/auth";
 import { AuthZone } from "@/auth/AuthZone";
-import { ChatHistory } from "@/components/blocks/history";
-import { HistoryProvider } from "@/components/blocks/history/HistoryProvider";
-import { SidebarSections } from "@/components/blocks/history/SidebarSections";
+import { ChatHistoryDropdown } from "@/components/blocks/history/ChatRow";
+import { ConversationListView } from "@/components/blocks/history/ConversationListView";
 import { ModelAccordion } from "@/components/blocks/models";
 import { UserProfileMenu } from "@/components/blocks/profile";
 import { SearchButton } from "@/components/blocks/search";
@@ -29,16 +28,14 @@ function ScrollArea() {
         {collapsed ? (
           // Collapsed sidebar keeps the DropdownMenu-based entry points; the
           // virtualized list is only meaningful in the expanded layout.
-          <div className="mb-2 flex flex-col items-center gap-1 overflow-y-auto">
+          <>
             <ModelAccordion />
-            <ChatHistory pinned />
-            <ChatHistory />
-          </div>
+            <ChatHistoryDropdown pinned />
+            <ChatHistoryDropdown />
+          </>
         ) : (
           <div className="mb-2 flex min-h-0 flex-1 flex-col">
-            <HistoryProvider>
-              <SidebarSections />
-            </HistoryProvider>
+            <ConversationListView />
           </div>
         )}
       </>
@@ -75,7 +72,7 @@ export function AppSidebar() {
           <SearchButton />
         </div>
       </AuthZone>
-      {collapsed || <div className="h-5" />}
+      {collapsed || <div className="mt-5" />}
       <ScrollArea />
       <SidebarFooter className={"flex-col pb-0"}>
         <UserProfileMenu />

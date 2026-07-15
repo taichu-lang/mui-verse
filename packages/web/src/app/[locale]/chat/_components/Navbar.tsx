@@ -3,7 +3,7 @@
 import {
   ChatActionItems,
   ConversationOpsProvider,
-} from "@/components/blocks/history";
+} from "@/components/blocks/history/ConversationOps";
 import { useConversation } from "@/hooks/useConversation";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { ChevronDownIcon } from "@mui-verse/ui/components/icons";

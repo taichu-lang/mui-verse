@@ -71,7 +71,7 @@ export function useLoadOlder(conversationId: string | undefined) {
     (async () => {
       try {
         const params = new URLSearchParams({
-          before: oldest.id!,
+          before: oldest.id!.toString(),
           limit: "30",
         });
         const res = await fetch(
