@@ -77,6 +77,8 @@ export interface VirtualSectionListProps<T> {
   ref?: Ref<HTMLDivElement>;
 }
 
+// TODO(Leo): use InfiniteScrollView instead.
+
 /**
  * VirtualSectionList — one scroll container for N collapsible sections with
  * sticky section headers, per-section infinite-scroll paging, and stable

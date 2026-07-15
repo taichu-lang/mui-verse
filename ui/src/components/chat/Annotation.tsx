@@ -121,6 +121,16 @@ export function SearchAnnotation({
   );
 }
 
+function keyOfAnnotation(annotation: MessageAnnotation): string {
+  // The client side will accept message annotations before the server side
+  // saves them into database. In that case, `annotation.id` is 0.
+  if (annotation.id > 0) {
+    return annotation.id.toString();
+  }
+
+  return `${annotation.message_id}-anno-${annotation.start_index}`;
+}
+
 export function AnnotationAvatarGroup({
   annotations,
   className,
@@ -142,18 +152,19 @@ export function AnnotationAvatarGroup({
       )}
       onClick={() => setAnnotations(annotations)}
     >
-      <AvatarGroup>
+      <AvatarGroup spacing={"medium"}>
         {annotations.slice(0, 4).map((annotation) => {
           const payload = annotation.payload;
+          const key = keyOfAnnotation(annotation);
           return payload.icon ? (
             <Avatar
-              className="h-4.5 w-4.5"
-              key={annotation.id}
+              className="h-4.5 w-4.5 border-none"
+              key={key}
               src={payload.icon}
               alt={payload.title}
             />
           ) : (
-            <Avatar key={annotation.id} className="h-4.5 w-4.5">
+            <Avatar key={key} className="h-4.5 w-4.5 border-none">
               <FaviconIcon className="h-4.5 w-4.5" />
             </Avatar>
           );
@@ -246,7 +257,10 @@ export function AnnotationSourceListView({
       <Divider flexItem />
       <div className="m-2.5 flex-1 overflow-y-auto">
         {annotations.map((annotation) => (
-          <AnnotationCard key={annotation.id} annotation={annotation} />
+          <AnnotationCard
+            key={keyOfAnnotation(annotation)}
+            annotation={annotation}
+          />
         ))}
       </div>
     </Drawer>

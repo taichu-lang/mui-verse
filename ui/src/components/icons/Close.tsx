@@ -1,4 +1,4 @@
-export function CloseXIcon() {
+export function CloseXIcon({ className }: { className?: string }) {
   return (
     <svg
       width="18"
@@ -6,6 +6,7 @@ export function CloseXIcon() {
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path
         d="M13.5 4.5L4.5 13.5"

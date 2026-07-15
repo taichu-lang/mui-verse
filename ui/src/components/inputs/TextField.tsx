@@ -254,12 +254,12 @@ export function Input({
 }: InputProps) {
   const [value, setValue] = useState<string>((defaultValue as string) ?? "");
   const [type, setType] = useState<string>(defaultType);
+  const isComposingRef = useRef(false);
 
-  // TODO(Leo): customized other variants.
   const classes = {
-    small: "",
+    small: "text-sm leading-4.5 py-0.75",
     medium: "text-sm leading-4.5 py-3.25 px-4",
-    default: "",
+    default: "hover:ring-text-primary text-sm leading-4.5",
     outlined:
       "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
   };
@@ -291,7 +291,33 @@ export function Input({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.currentTarget.value;
     setValue(v);
-    onValueChange?.(v);
+
+    if (!isComposingRef.current) {
+      onValueChange?.(v);
+    }
+  };
+
+  // IME composition (e.g. Chinese Pinyin, Japanese Kana, Korean Hangul) fires
+  // `onChange` events for each intermediate keystroke before the user commits a
+  // character. Forwarding those transient values via `onValueChange` causes
+  // downstream consumers — debounced searches, network requests, validators —
+  // to react to text the user has not actually confirmed yet.
+  //
+  // We swallow `onValueChange` while composition is active and emit a single
+  // final value on `compositionend`. The visible input value is still updated
+  // on every change so the IME candidate UI keeps working normally.
+  //
+  // Consumers that genuinely need the in-flight composition text (custom
+  // candidate panels, collaborative cursors, typing analytics, full-fledged
+  // editors) should not rely on this component and read composition events
+  // directly instead.
+  const handleCompositionStart = () => {
+    isComposingRef.current = true;
+  };
+
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLDivElement>) => {
+    isComposingRef.current = false;
+    onValueChange?.((e.target as HTMLInputElement).value);
   };
 
   return (
@@ -300,7 +326,6 @@ export function Input({
       value={value}
       type={type}
       className={cn(
-        className,
         "rounded-[10px]",
         classes[size],
         classes[variant],
@@ -308,8 +333,11 @@ export function Input({
           "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
             error,
         },
+        className,
       )}
       onChange={handleChange}
+      onCompositionStart={handleCompositionStart}
+      onCompositionEnd={handleCompositionEnd}
       startAdornment={
         startIcon && (
           <InputAdornment position="start">{startIcon}</InputAdornment>
