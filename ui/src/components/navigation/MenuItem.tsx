@@ -93,6 +93,7 @@ const StyledMenuItem = styled(MuiMenuItem, {
     letterSpacing: 0,
     height: "unset",
     color: "var(--mui-palette-text-primary)",
+    flexShrink: 0,
 
     ...(hasActions && {
       "& .VerseMenuItem-content": {
@@ -132,38 +133,52 @@ export function MenuItem<C extends React.ElementType = "li">({
   children,
   actions,
   className,
-  ...rest
+  ...props
 }: MenuItemProps<C>) {
   // `StyledMenuItem` is `styled(MuiMenuItem)` and its type is narrowed to the
   // default `<li>` root — but at runtime MUI's `MenuItem` handles the
   // `component` prop and forwards everything to whatever element the caller
   // chose. Cast so TS accepts the spread while preserving the polymorphic
   // typing on the outer `MenuItem`.
-  const passthrough = rest as MuiMenuItemProps;
+  // const passthrough = rest as MuiMenuItemProps;
 
   if (actions === undefined) {
     return (
       <StyledMenuItem
         variant={variant}
         className={cn("gap-2.5", className)}
-        {...passthrough}
+        {...props}
       >
         {children}
       </StyledMenuItem>
     );
   }
 
+  const preset = presets[variant];
+
+  // Note that actions can not be children of MenuItem, as MenuItem could be rendered
+  // as any element based on its component prop. Meanwhile, actions could be any
+  // element. Ex: if component of MenuItem is `a`, actions is button, it will be issue
+  // of accessibility.
   return (
-    <StyledMenuItem
-      variant={variant}
-      hasActions
-      {...passthrough}
-      className="group"
+    <div
+      className={cn(
+        "group hover:bg-action-hover flex w-full items-center",
+        className,
+      )}
+      style={{
+        borderRadius: preset["radius"],
+      }}
     >
-      <div className={cn("VerseMenuItem-content gap-2.5", className)}>
+      <StyledMenuItem
+        variant={variant}
+        hasActions
+        {...props}
+        className="flex-1 gap-2.5"
+      >
         {children}
-      </div>
-      <div className="VerseMenuItem-actions">{actions}</div>
-    </StyledMenuItem>
+      </StyledMenuItem>
+      {actions}
+    </div>
   );
 }
