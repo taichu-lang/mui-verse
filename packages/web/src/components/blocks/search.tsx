@@ -1,4 +1,4 @@
-import { CirclePlusIcon, SearchIcon } from "@/components/icons";
+import { ChatIcon, CirclePlusIcon, SearchIcon } from "@/components/icons";
 import { searchConversation } from "@/lib/apis/conversation";
 import { MessageSearch } from "@/lib/types/chat";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
@@ -11,6 +11,7 @@ import {
   DialogProvider,
   DialogTitle,
   DialogTrigger,
+  useDialogContext,
 } from "@mui-verse/ui/components/feedback";
 import { CloseXIcon } from "@mui-verse/ui/components/icons";
 import { Input } from "@mui-verse/ui/components/inputs";
@@ -36,13 +37,17 @@ function NoResult() {
  * two lists render as one visual system.
  */
 function SearchResultRow({ result }: { result: MessageSearch }) {
+  const { setOpen } = useDialogContext();
+
   return (
     <MenuItem
       component={Link}
       href={`/chat/${result.conversation_id}`}
-      variant="md"
+      className="mx-2.5 h-15.5 px-2.5"
+      onClick={() => setOpen(false)}
     >
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <ChatIcon />
+      <div className="flex min-w-0 flex-col gap-1">
         <span className="truncate text-sm font-medium">{result.title}</span>
         <span className="text-text-secondary truncate text-xs">
           {result.content}
@@ -52,12 +57,30 @@ function SearchResultRow({ result }: { result: MessageSearch }) {
   );
 }
 
+function NewChatMenu() {
+  const { setOpen } = useDialogContext();
+
+  return (
+    <MenuItem
+      component={Link}
+      href={"/chat"}
+      className="mx-2.5 mt-2 h-9 shrink-0 px-2.5"
+      onClick={() => setOpen(false)}
+    >
+      <CirclePlusIcon />
+      New chat
+    </MenuItem>
+  );
+}
+
 export function SearchButton() {
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search);
 
   return (
-    <DialogProvider>
+    // Once the dialog is closed, clear the search input, as the SearchButton
+    // will not destroyed.
+    <DialogProvider onClose={() => setSearch("")}>
       <DialogTrigger>
         <MenuButton title="Search" icon={<SearchIcon />} />
       </DialogTrigger>
@@ -80,14 +103,14 @@ export function SearchButton() {
             onValueChange={setSearch}
           />
         </DialogTitle>
-        <DialogContent className="mt-2 flex min-h-0 flex-col px-2.5">
-          <MenuItem component={Link} href={"/chat"} className="h-9 shrink-0">
-            <CirclePlusIcon />
-            New chat
-          </MenuItem>
-          <div className="min-h-0 flex-1">
-            <InfiniteSearchView query={debouncedSearch} />
-          </div>
+        <DialogContent className="p-0">
+          {debouncedSearch ? (
+            <div className="min-h-0 flex-1">
+              <InfiniteSearchView query={debouncedSearch} />
+            </div>
+          ) : (
+            <NewChatMenu />
+          )}
         </DialogContent>
       </Dialog>
     </DialogProvider>
@@ -136,7 +159,7 @@ function InfiniteSearchView({ query }: { query: string }) {
         return <SearchResultRow result={item} />;
       }}
       handleRef={ref}
-      className="h-full"
+      className="mt-2.5"
     />
   );
 }

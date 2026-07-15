@@ -51,12 +51,9 @@ export function ChatMenuRow({
       href={uri}
       onClick={handleClick}
       selected={pathname === uri}
+      className="mb-0.5"
     >
-      {includingIcon && (
-        <div className="shrink-0">
-          <ChatIcon />
-        </div>
-      )}
+      {includingIcon && <ChatIcon />}
       {editMode ? (
         <ConversationTitleEditor />
       ) : (
@@ -103,7 +100,7 @@ export function ChatHistoryDropdown({ pinned = false }: { pinned?: boolean }) {
         shadow="none"
       >
         <p className="mt-1.5 mb-2 ml-2 text-sm font-semibold">{title}</p>
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col">
           {history.map((conversation) => (
             <ConversationOpsProvider
               conversation={conversation}

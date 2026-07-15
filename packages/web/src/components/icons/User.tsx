@@ -1,3 +1,5 @@
+import { cn } from "@mui-verse/ui/utils/cn";
+
 export function UserIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -6,7 +8,7 @@ export function UserIcon({ className }: { className?: string }) {
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={cn("min-w-0 shrink-0", className)}
     >
       <g clipPath="url(#clip0_1075_22199)">
         <path

@@ -1,3 +1,5 @@
+import { cn } from "@mui-verse/ui/utils/cn";
+
 export function SignOutIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -6,7 +8,7 @@ export function SignOutIcon({ className }: { className?: string }) {
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={cn("min-w-0 shrink-0", className)}
     >
       <path
         d="M12 12.75L15.75 9L12 5.25"

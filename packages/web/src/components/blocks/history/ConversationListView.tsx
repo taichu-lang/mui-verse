@@ -84,7 +84,7 @@ function SectionHeader({
   return (
     <div
       className={
-        "text-text-secondary bg-background-paper flex cursor-pointer items-center gap-4 px-2 pt-2 pb-1.75 text-xs"
+        "text-text-secondary bg-background-paper flex cursor-pointer items-center gap-4 px-2 pb-1.75 text-xs"
       }
       data-collapsed={collapsed ? "true" : undefined}
       onClick={onClick}

@@ -92,9 +92,11 @@ export function DefaultDialog({
 export function Dialog(props: DialogProps) {
   const { open, setOpen } = useDialogContext();
 
-  return (
-    <DefaultDialog open={open} onClose={() => setOpen(false)} {...props} />
-  );
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return <DefaultDialog open={open} onClose={handleClose} {...props} />;
 }
 
 export function DialogTitle({

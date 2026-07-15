@@ -1,4 +1,6 @@
-export function QuestionIcon() {
+import { cn } from "@mui-verse/ui/utils/cn";
+
+export function QuestionIcon({ className }: { className?: string }) {
   return (
     <svg
       width="18"
@@ -6,6 +8,7 @@ export function QuestionIcon() {
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={cn("min-w-0 shrink-0", className)}
     >
       <g clipPath="url(#clip0_924_9901)">
         <path

@@ -117,22 +117,18 @@ export function ModelMenuItem({
 
   return (
     <MenuItem
-      className="gap-2.5"
       actions={
-        <div
-          className={cn(
-            "flex h-full w-8 items-center justify-center p-0 opacity-0 hover:opacity-100",
-            {
-              "opacity-100": pinned,
-            },
-          )}
+        <IconGhostButton
+          className={cn("h-full w-8 opacity-0 group-hover:opacity-100", {
+            "opacity-100": pinned,
+          })}
         >
           {pinned ? (
             <PinnedIcon className="text-primary-500" />
           ) : (
             <PinnerIcon />
           )}
-        </div>
+        </IconGhostButton>
       }
       onClick={switchModel}
     >

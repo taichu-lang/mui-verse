@@ -1,3 +1,5 @@
+import { cn } from "@mui-verse/ui/utils/cn";
+
 export function GeminiIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -7,7 +9,7 @@ export function GeminiIcon({ className }: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={className}
+      className={cn("min-w-0 shrink-0", className)}
     >
       <circle
         cx="9"

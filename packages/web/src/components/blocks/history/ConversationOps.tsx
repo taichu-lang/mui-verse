@@ -7,6 +7,7 @@ import {
   UnpinIcon,
 } from "@/components/icons";
 import { Conversation } from "@/lib/types/chat";
+import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { InlineEditInput } from "@mui-verse/ui/components/inputs";
 import {
   DropdownMenu,
@@ -161,7 +162,9 @@ export function ChatAction() {
   return (
     <DropdownMenu side="right" align="start">
       <DropdownMenuTrigger>
-        <EllipsisIcon className="hidden h-4 w-4 group-hover:block" />
+        <IconGhostButton className="hidden h-8 w-8 group-hover:flex">
+          <EllipsisIcon className="h-4 w-4" />
+        </IconGhostButton>
       </DropdownMenuTrigger>
       <ChatActionItems />
     </DropdownMenu>
