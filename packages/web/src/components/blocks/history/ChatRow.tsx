@@ -32,16 +32,16 @@ export function ChatMenuRow({
 }: {
   includingIcon?: boolean;
 }) {
-  const { conversation, editMode } = useConversationOps();
+  const { target, editMode } = useConversationOps();
 
   // useConversation is used for chat page, i.e., transfer conversation from
   // sidebar to chat area.
   const { setConversation } = useConversation();
   const pathname = usePathname();
-  const uri = `/chat/${conversation.conversation_id}`;
+  const uri = `/chat/${target.conversation_id}`;
 
   const handleClick = () => {
-    setConversation(conversation);
+    setConversation(target);
   };
 
   return (
@@ -57,7 +57,7 @@ export function ChatMenuRow({
       {editMode ? (
         <ConversationTitleEditor />
       ) : (
-        <span className="truncate text-sm">{conversation.title}</span>
+        <span className="truncate text-sm">{target.title}</span>
       )}
     </MenuItem>
   );
@@ -103,7 +103,7 @@ export function ChatHistoryDropdown({ pinned = false }: { pinned?: boolean }) {
         <div className="flex flex-col">
           {history.map((conversation) => (
             <ConversationOpsProvider
-              conversation={conversation}
+              target={conversation}
               key={conversation.id}
             >
               <ChatMenuRow includingIcon />

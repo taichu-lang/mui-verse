@@ -47,3 +47,53 @@ export async function searchConversation(
 
   return (await response.json()) as MessageSearch[];
 }
+
+export async function updateConversationTitle(
+  conversationID: string,
+  title: string,
+): Promise<boolean> {
+  try {
+    await fetch(`/api/conversations/${conversationID}`, {
+      method: "POST",
+      body: JSON.stringify({
+        title,
+      }),
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function pinConversation(
+  conversationID: string,
+  pinned: boolean,
+): Promise<boolean> {
+  try {
+    await fetch(`/api/conversations/${conversationID}`, {
+      method: "POST",
+      body: JSON.stringify({
+        pinned,
+      }),
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function deleteConversation(
+  conversationID: string,
+): Promise<boolean> {
+  try {
+    await fetch(`/api/conversations/${conversationID}`, {
+      method: "DELETE",
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

@@ -6,6 +6,7 @@ import {
   PinnerIcon,
   UnpinIcon,
 } from "@/components/icons";
+import { useConversationMutations } from "@/hooks/useConversationMutations";
 import { Conversation } from "@/lib/types/chat";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { InlineEditInput } from "@mui-verse/ui/components/inputs";
@@ -18,12 +19,11 @@ import {
 } from "@mui-verse/ui/components/navigation";
 import { EllipsisIcon } from "lucide-react";
 import { createContext, useCallback, useContext, useState } from "react";
-import { useHistory } from "./HistoryProvider";
 
 interface ConversationOpsValue {
   editMode: boolean;
-  conversation: Conversation;
-  setConversation: (conversation: Partial<Conversation>) => void;
+  target: Conversation;
+  setTarget: (target: Partial<Conversation>) => void;
   toggleEditMode: () => void;
 }
 
@@ -41,22 +41,21 @@ export function useConversationOps() {
 }
 
 export function ConversationOpsProvider({
-  conversation: defaultValue,
+  target: defaultValue,
   children,
 }: {
-  conversation: Conversation;
+  target: Conversation;
   children: React.ReactNode;
 }) {
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [conversation, setConversationState] =
-    useState<Conversation>(defaultValue);
+  const [target, setTargetState] = useState<Conversation>(defaultValue);
 
   const toggleEditMode = useCallback(() => {
     setEditMode((prev) => !prev);
   }, []);
 
-  const setConversation = useCallback((c: Partial<Conversation>) => {
-    setConversationState((prev) => ({
+  const setTarget = useCallback((c: Partial<Conversation>) => {
+    setTargetState((prev) => ({
       ...prev,
       ...c,
     }));
@@ -64,7 +63,7 @@ export function ConversationOpsProvider({
 
   return (
     <ConversationOpsContext.Provider
-      value={{ conversation, editMode, toggleEditMode, setConversation }}
+      value={{ target, editMode, toggleEditMode, setTarget }}
     >
       {children}
     </ConversationOpsContext.Provider>
@@ -72,68 +71,32 @@ export function ConversationOpsProvider({
 }
 
 export function ConversationTitleEditor() {
-  const { conversation, toggleEditMode, setConversation } =
-    useConversationOps();
+  const { target, toggleEditMode } = useConversationOps();
+  const { rename } = useConversationMutations();
 
   const handleSubmit = async (value: string) => {
-    try {
-      await fetch(`/api/conversations/${conversation.id}`, {
-        method: "POST",
-        body: JSON.stringify({
-          title: value,
-        }),
-      });
-      toggleEditMode();
-      setConversation({
-        title: value,
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    await rename(target, value);
+    toggleEditMode();
   };
 
   return (
     <InlineEditInput
-      defaultValue={conversation.title}
+      defaultValue={target.title}
       onSubmit={(v) => handleSubmit(v as string)}
     />
   );
 }
 
 export function ChatActionItems() {
-  const { conversation, toggleEditMode } = useConversationOps();
-  const controller = useHistory();
+  const { target, toggleEditMode } = useConversationOps();
+  const { togglePin, remove } = useConversationMutations();
 
   const handlePin = async () => {
-    try {
-      await fetch(`/api/conversations/${conversation.id}`, {
-        method: "POST",
-        body: JSON.stringify({
-          pinned: !conversation.pinned,
-        }),
-      });
-      // Refresh both lists back to page 1 and scroll to the top of Pinned so
-      // the user sees the result of their action land in place.
-      await controller.refreshConversations();
-      controller.scrollPinnedIntoView();
-    } catch (err) {
-      console.log(err);
-    }
+    await togglePin(target);
   };
 
   const handleDelete = async () => {
-    try {
-      await fetch(`/api/conversations/${conversation.id}`, {
-        method: "DELETE",
-      });
-      if (conversation.pinned) {
-        await controller.refreshPinned();
-      } else {
-        await controller.refreshRecents();
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    await remove(target);
   };
 
   return (
@@ -143,8 +106,8 @@ export function ChatActionItems() {
         Rename
       </DropdownMenuItem>
       <DropdownMenuItem onClick={handlePin}>
-        {conversation.pinned ? <UnpinIcon /> : <PinnerIcon />}
-        {conversation.pinned ? "Unpin chat" : "Pin Chat"}
+        {target.pinned ? <UnpinIcon /> : <PinnerIcon />}
+        {target.pinned ? "Unpin chat" : "Pin Chat"}
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem

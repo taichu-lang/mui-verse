@@ -1,6 +1,9 @@
-import { Model, ModelMenuItem, models } from "@/components/blocks/models";
+import { useAuth } from "@/auth/auth";
+import { ModelMenuItem } from "@/components/blocks/models";
 import { getConversations } from "@/lib/apis/conversation";
+import { getModels } from "@/lib/apis/model";
 import { Conversation } from "@/lib/types/chat";
+import { Model } from "@/lib/types/model";
 import {
   InfiniteScrollView,
   InfiniteScrollViewHandle,
@@ -17,6 +20,7 @@ type ConversationItem = Model | Conversation;
 export function ConversationListView() {
   const ref = useRef<InfiniteScrollViewHandle>(null);
   const { setScrollRef } = useHistory();
+  const { session } = useAuth();
 
   useEffect(() => {
     if (ref.current) {
@@ -37,7 +41,7 @@ export function ConversationListView() {
             return model.id;
           },
           fetch: async () => {
-            return models;
+            return await getModels(session?.id);
           },
           collapsible: true,
           marginBottom: 24,
@@ -75,7 +79,7 @@ export function ConversationListView() {
         }
 
         return (
-          <ConversationOpsProvider conversation={item as Conversation}>
+          <ConversationOpsProvider target={item as Conversation}>
             <ChatMenuRow />
           </ConversationOpsProvider>
         );

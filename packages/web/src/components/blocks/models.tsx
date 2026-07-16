@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import {
   AnthropicIcon,
   GeminiIcon,
@@ -9,6 +10,9 @@ import {
   PinnerIcon,
 } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
+import { getModels } from "@/lib/apis/model";
+import { addPinnedModel, unPinModel } from "@/lib/apis/preference";
+import { Model, models } from "@/lib/types/model";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { useChat } from "@mui-verse/ui/components/chat";
 import { Accordion } from "@mui-verse/ui/components/feedback";
@@ -25,9 +29,8 @@ import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Chip, Typography } from "@mui/material";
-import { useEffect, useMemo } from "react";
-
-type ModelProvider = "openai" | "google" | "anthropic";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "./history/HistoryProvider";
 
 const icons = {
   openai: <OpenAIIcon className="h-full w-full" />,
@@ -35,84 +38,30 @@ const icons = {
   anthropic: <AnthropicIcon className="h-full w-full" />,
 };
 
-export interface Model {
-  id: string;
-  name: string;
-  provider: ModelProvider;
-}
-
-export const models: Model[] = [
-  {
-    id: "claude-sonnet-4-6",
-    name: "Claude Sonnet 4.6",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-sonnet-4-5-20250929",
-    name: "Claude Sonnet 4.5",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-haiku-4-5-20251001",
-    name: "Claude Haiku 4.5",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-opus-4-7",
-    name: "Claude Opus 4.7",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-opus-4-6",
-    name: "Claude Opus 4.6",
-    provider: "anthropic",
-  },
-  {
-    id: "gpt-5.5",
-    name: "GPT-5.5",
-    provider: "openai",
-  },
-  {
-    id: "gpt-5.4",
-    name: "GPT-5.4",
-    provider: "openai",
-  },
-  {
-    id: "gpt-5.3-codex",
-    name: "GPT-5.3-Codex",
-    provider: "openai",
-  },
-  {
-    id: "gpt-4.1",
-    name: "GPT-4.1",
-    provider: "openai",
-  },
-  {
-    id: "gemini-3.1-pro-preview",
-    name: "Gemini 3.1 Pro Preview",
-    provider: "google",
-  },
-  {
-    id: "gemini-3-flash-preview",
-    name: "Gemini 3 Flash Preview",
-    provider: "google",
-  },
-];
-
-export function ModelMenuItem({
-  model,
-  pinned = false,
-}: {
-  model: Model;
-  pinned?: boolean;
-}) {
+export function ModelMenuItem({ model }: { model: Model }) {
   const router = useRouter();
-  const { provider, name } = model;
+  const { provider, name, pinned = false } = model;
   const { setSharedState } = useChat();
+  const { session } = useAuth();
+  const history = useHistory();
 
   const switchModel = () => {
     setSharedState({ model: model.id });
     router.replace(`/chat`);
+  };
+
+  const handlePin = async () => {
+    if (!session) {
+      return;
+    }
+
+    if (model.pinned) {
+      await unPinModel(session.id, model.id);
+    } else {
+      await addPinnedModel(session.id, model.id);
+    }
+
+    history.refreshModels();
   };
 
   return (
@@ -122,6 +71,7 @@ export function ModelMenuItem({
           className={cn("h-full w-8 opacity-0 group-hover:opacity-100", {
             "opacity-100": pinned,
           })}
+          onClick={handlePin}
         >
           {pinned ? (
             <PinnedIcon className="text-primary-500" />
@@ -140,20 +90,41 @@ export function ModelMenuItem({
 
 function DropDownModelMenu({
   model,
-  pinned = false,
+  onRefresh,
 }: {
   model: Model;
-  pinned?: boolean;
+  onRefresh: () => void;
 }) {
-  const { provider, name } = model;
+  const router = useRouter();
+  const { provider, name, pinned = false } = model;
   const { onClose } = useDropdownMenu();
+  const { setSharedState } = useChat();
+  const { session } = useAuth();
 
   const handleSelected = () => {
+    setSharedState({ model: model.id });
+    router.replace(`/chat`);
     onClose();
   };
 
-  const handlePinned = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handlePinned = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+
+    if (!session) {
+      return;
+    }
+
+    if (!session) {
+      return;
+    }
+
+    if (model.pinned) {
+      await unPinModel(session.id, model.id);
+    } else {
+      await addPinnedModel(session.id, model.id);
+    }
+
+    onRefresh();
   };
 
   return (
@@ -180,6 +151,16 @@ function DropDownModelMenu({
 
 export function ModelAccordion() {
   const { collapsed } = useSidebar();
+  const { session } = useAuth();
+  const [models, setModels] = useState<Model[]>([]);
+
+  const refresh = useCallback(() => {
+    getModels(session?.id).then(setModels);
+  }, [session]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   if (collapsed) {
     return (
@@ -190,7 +171,11 @@ export function ModelAccordion() {
         <DropdownMenuContent sx={{ minWidth: "230px", px: "8px" }}>
           <p className="mb-2 ml-2.5 text-sm font-semibold">Models</p>
           {models.map((model) => (
-            <DropDownModelMenu key={model.id} model={model} />
+            <DropDownModelMenu
+              key={model.id}
+              model={model}
+              onRefresh={refresh}
+            />
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
