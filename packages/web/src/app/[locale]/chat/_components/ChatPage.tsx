@@ -4,6 +4,7 @@ import { AuthZone } from "@/auth/AuthZone";
 import { ModelBrandCard, ModelSelect } from "@/components/blocks/models";
 import { useConversation } from "@/hooks/useConversation";
 import { useRouter } from "@/i18n/navigation";
+import type { Conversation as ConversationMeta } from "@/lib/types/chat";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import {
   Conversation,
@@ -16,6 +17,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { MessagesPage } from "./lib";
 import { useLoadOlder } from "./useLoadOlder";
+import { useHistory } from "@/components/blocks/history/HistoryProvider";
 
 // event: meta
 interface MetaData {
@@ -37,6 +39,12 @@ interface TitleData {
 }
 
 function SenderArea() {
+  // Read the conversation id off the URL each render — after the first-message
+  // router.replace, the next send closes over the new id automatically.
+  const params = useParams<{ slug?: string }>();
+  const conversationId = params.slug;
+
+  const router = useRouter();
   const {
     addUserMessage,
     onStream,
@@ -47,11 +55,7 @@ function SenderArea() {
     setSharedState,
   } = useChat();
   const { setConversation, onInit } = useConversation();
-  const router = useRouter();
-  // Read the conversation id off the URL each render — after the first-message
-  // router.replace, the next send closes over the new id automatically.
-  const params = useParams<{ slug?: string }>();
-  const conversationId = params.slug;
+  const history = useHistory();
 
   const sendMessage = async (text: string) => {
     await fetchEventSource("/api/chat", {
@@ -90,6 +94,10 @@ function SenderArea() {
           case "title": {
             const payload = JSON.parse(ev.data) as TitleData;
             setConversation({ title: payload.title });
+
+            // Once the title has been generated, we can reload the recent
+            // conversation history.
+            history.refreshRecents();
             break;
           }
 
@@ -135,7 +143,13 @@ function SenderArea() {
   );
 }
 
-export function ChatPage({ initial }: { initial?: MessagesPage }) {
+export function ChatPage({
+  initialMessages,
+  initialConversation,
+}: {
+  initialMessages?: MessagesPage;
+  initialConversation?: ConversationMeta;
+}) {
   const senderWrapperRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const { messages, hydrate } = useChat();
@@ -148,9 +162,21 @@ export function ChatPage({ initial }: { initial?: MessagesPage }) {
   // where the Provider stays mounted with in-flight streaming state — a fresh
   // RSC fetch during that transition MUST NOT clobber the just-streamed pair.
   useEffect(() => {
-    if (!initial) return;
-    hydrate(initial.messages, initial.has_more);
-  }, [initial, hydrate]);
+    if (!initialMessages) return;
+    hydrate(initialMessages.messages, initialMessages.has_more);
+  }, [initialMessages, hydrate]);
+
+  // Seed the Navbar's conversation store from the RSC-fetched metadata so a
+  // hard refresh on /chat/<id> restores the title/pinned state that the
+  // sidebar's click-handler would otherwise be the only writer for.
+  useEffect(() => {
+    if (!initialConversation) return;
+    const current = useConversation.getState().conversation;
+    if (current?.conversation_id === initialConversation.conversation_id) {
+      return;
+    }
+    useConversation.getState().setConversation(initialConversation);
+  }, [initialConversation]);
 
   // Publish the floating sender's height as --chat-sender-offset on the page
   // root — a shared ancestor of both the sender wrapper and the Conversation's

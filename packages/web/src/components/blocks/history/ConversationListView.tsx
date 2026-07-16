@@ -1,17 +1,32 @@
 import { Model, ModelMenuItem, models } from "@/components/blocks/models";
 import { getConversations } from "@/lib/apis/conversation";
 import { Conversation } from "@/lib/types/chat";
-import { InfiniteScrollView } from "@mui-verse/ui/components/data";
+import {
+  InfiniteScrollView,
+  InfiniteScrollViewHandle,
+} from "@mui-verse/ui/components/data";
 import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useEffect, useRef } from "react";
 import { ChatMenuRow } from "./ChatRow";
 import { ConversationOpsProvider } from "./ConversationOps";
+import { useHistory } from "./HistoryProvider";
 
 type ConversationItem = Model | Conversation;
 
 export function ConversationListView() {
+  const ref = useRef<InfiniteScrollViewHandle>(null);
+  const { setScrollRef } = useHistory();
+
+  useEffect(() => {
+    if (ref.current) {
+      setScrollRef(ref);
+    }
+  }, [setScrollRef]);
+
   return (
     <InfiniteScrollView<ConversationItem>
+      handleRef={ref}
       limit={10}
       className="px-2"
       sections={[

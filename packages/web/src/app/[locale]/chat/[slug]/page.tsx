@@ -1,15 +1,23 @@
 import { Loading } from "@mui-verse/ui/components/effects";
 import { Suspense } from "react";
 import { ChatPage } from "../_components/ChatPage";
-import { fetchMessagesPage } from "../_components/lib";
+import { fetchMessagesPage, getConversation } from "../_components/lib";
 
 async function PageContent({ id }: { id: string }) {
-  const initial = await fetchMessagesPage(id);
-  if (!initial) {
+  const [messages, conversation] = await Promise.all([
+    fetchMessagesPage(id),
+    getConversation(id),
+  ]);
+  if (!messages) {
     return null;
   }
 
-  return <ChatPage initial={initial ?? undefined} />;
+  return (
+    <ChatPage
+      initialMessages={messages}
+      initialConversation={conversation ?? undefined}
+    />
+  );
 }
 
 export default async function Page({

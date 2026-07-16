@@ -6,17 +6,40 @@ import { create } from "zustand";
 interface HistoryContextValue {
   scrollRef: React.RefObject<InfiniteScrollViewHandle | null> | null;
 
-  refreshRecents: () => Promise<void>;
-  refreshPinned: () => Promise<void>;
-  refreshConversations: () => Promise<void>;
+  setScrollRef: (ref: React.RefObject<InfiniteScrollViewHandle | null>) => void;
+  refreshRecents: () => void;
+  refreshPinned: () => void;
+  refreshConversations: () => void;
   scrollPinnedIntoView: () => void;
 }
 
-export const useHistory = create<HistoryContextValue>()((set) => ({
+export const useHistory = create<HistoryContextValue>()((set, get) => ({
   scrollRef: null,
 
-  refreshRecents: async () => {},
-  refreshPinned: async () => {},
-  refreshConversations: async () => {},
+  setScrollRef: (ref) => set({ scrollRef: ref }),
+  refreshRecents: () => {
+    const ref = get().scrollRef;
+    if (!ref?.current) {
+      return;
+    }
+
+    ref.current.refresh("recents");
+  },
+  refreshPinned: () => {
+    const ref = get().scrollRef;
+    if (!ref?.current) {
+      return;
+    }
+
+    ref.current.refresh("pinned");
+  },
+  refreshConversations: () => {
+    const ref = get().scrollRef;
+    if (!ref?.current) {
+      return;
+    }
+
+    ref.current.refresh();
+  },
   scrollPinnedIntoView: () => {},
 }));

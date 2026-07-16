@@ -2,7 +2,11 @@
 
 import { getAuthSession } from "@/lib/cookie";
 import { logger } from "@/lib/logger";
-import { ConversationMessagesResponse } from "@/lib/types/chat";
+import {
+  Conversation,
+  ConversationMessagesResponse,
+  ConversationResponse,
+} from "@/lib/types/chat";
 import type { Message } from "@mui-verse/ui/components/chat";
 
 export interface MessagesPage {
@@ -57,4 +61,33 @@ export async function fetchMessagesPage(
     messages: response.data,
     has_more: response.data.length === limit,
   };
+}
+
+export async function getConversation(
+  conversationId: string,
+): Promise<Conversation | null> {
+  const serverUrl = process.env.SERVER_URL;
+  if (!serverUrl) return null;
+
+  const url = new URL(`${serverUrl}/v1/conversations/${conversationId}`);
+  const client = await fetch(url, {
+    method: "GET",
+    headers: await getAuthSession(),
+  });
+
+  if (!client.ok) {
+    logger.error(
+      { conversation: conversationId, status: client.status },
+      "failed to get conversation.",
+    );
+    return null;
+  }
+
+  const response = (await client.json()) as ConversationResponse;
+  if (response.code !== 0) {
+    logger.error({ code: response.code }, "failed to get conversation.");
+    return null;
+  }
+
+  return response.data;
 }

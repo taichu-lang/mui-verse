@@ -16,3 +16,7 @@ export interface MessageSearch extends Message {
   conversation_id: string;
   title: string;
 }
+
+export interface ConversationResponse extends ApiResponse {
+  data: Conversation;
+}
