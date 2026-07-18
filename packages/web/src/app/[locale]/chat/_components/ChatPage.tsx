@@ -18,6 +18,7 @@ import { useEffect, useRef } from "react";
 import type { MessagesPage } from "./lib";
 import { useLoadOlder } from "./useLoadOlder";
 import { useHistory } from "@/components/blocks/history/HistoryProvider";
+import { PlanUsage } from "@/components/blocks/usage/PlanUsage";
 
 // event: meta
 interface MetaData {
@@ -138,6 +139,7 @@ function SenderArea() {
             setSharedState({ enableWebSearch: checked })
           }
         />
+        <PlanUsage />
       </Sender>
     </AuthZone>
   );

@@ -41,3 +41,41 @@ export function QuestionIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function QuestionCircleIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g clipPath="url(#clip0_1217_27636)">
+        <path
+          d="M6.99996 12.8332C10.2216 12.8332 12.8333 10.2215 12.8333 6.99984C12.8333 3.77818 10.2216 1.1665 6.99996 1.1665C3.7783 1.1665 1.16663 3.77818 1.16663 6.99984C1.16663 10.2215 3.7783 12.8332 6.99996 12.8332Z"
+          stroke="#767676"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M5.30249 5.24984C5.43963 4.85998 5.71033 4.53124 6.06663 4.32184C6.42293 4.11244 6.84185 4.03589 7.24918 4.10576C7.65651 4.17563 8.02597 4.3874 8.29212 4.70357C8.55827 5.01974 8.70394 5.4199 8.70332 5.83318C8.70332 6.99984 6.95332 7.58318 6.95332 7.58318"
+          stroke="#767676"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M7 9.9165H7.00583"
+          stroke="#767676"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_1217_27636">
+          <rect width="14" height="14" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}

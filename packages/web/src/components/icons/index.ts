@@ -1,5 +1,6 @@
 export { AnthropicIcon } from "./Anthropic";
 export { ArrowRight } from "./Arrows";
+export { CheckIcon } from "./Check";
 export { CollapsedIcon } from "./Collapsed";
 export { DeleteIcon } from "./Delete";
 export { GeminiIcon } from "./Gemini";
@@ -8,8 +9,10 @@ export { ModelsIcon } from "./Models";
 export { OpenAIIcon } from "./OpenAI";
 export { PencilIcon } from "./Pencil";
 export { PinnedIcon, PinnerIcon, UnpinIcon } from "./Pinner";
+export { AdvancedIcon, CreditIcon, StandardIcon } from "./Plan";
 export { CirclePlusIcon } from "./Plus";
-export { QuestionIcon } from "./Question";
+export { QuestionCircleIcon, QuestionIcon } from "./Question";
+export { RocketIcon } from "./Rocket";
 export { SearchIcon } from "./Search";
 export { SettingsIcon } from "./Settings";
 export { SignOutIcon } from "./Sign";

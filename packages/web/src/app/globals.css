@@ -33,8 +33,13 @@
   --color-sidebar-divider: hsla(0, 0%, 89%, 1);
 
   --text-xs--line-height: 16px;
+  --text-xs--letter-spacing: 0;
   --text-sm--line-height: 18px;
+  --text-sm--letter-spacing: 0;
   --text-base--line-height: 24px;
+  --text-base--letter-spacing: 0;
+  --text-2xl--line-height: 30px;
+  --text-2xl--letter-spacing: 0;
 
   --spacing-bubble-user: 536px;
   --spacing-chat-area: 770px;

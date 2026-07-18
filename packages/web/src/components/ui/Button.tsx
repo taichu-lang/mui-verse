@@ -4,18 +4,22 @@ import { ButtonProps, Button as MuiButton } from "@mui/material";
 export function Button({
   className,
   variant = "contained",
+  size = "medium",
   sx,
   ...props
 }: ButtonProps) {
   const classes = {
-    contained: "text-base font-medium py-2.5 shadow-none",
-    outlined: "text-text-primary py-2.5 text-base bg-white",
+    contained: "py-2.5 shadow-none",
+    outlined: "text-text-primary py-2.5 bg-white",
     text: "",
+    large: "",
+    medium: "text-base",
+    small: "text-sm",
   };
 
   return (
     <MuiButton
-      className={cn(classes[variant], className)}
+      className={cn(classes[variant], classes[size], className)}
       variant={variant}
       sx={{
         ...sx,
