@@ -1,9 +1,10 @@
 export { AnthropicIcon } from "./Anthropic";
-export { ArrowRight } from "./Arrows";
+export { ArrowRightIcon, ChevronLeftIcon } from "./Arrows";
 export { CheckIcon } from "./Check";
 export { CollapsedIcon } from "./Collapsed";
 export { DeleteIcon } from "./Delete";
 export { GeminiIcon } from "./Gemini";
+export { InfinityIcon } from "./Infinity";
 export { ChatIcon } from "./Message";
 export { ModelsIcon } from "./Models";
 export { OpenAIIcon } from "./OpenAI";
@@ -19,3 +20,4 @@ export { SignOutIcon } from "./Sign";
 export { SparkleIcon, SparklesIcon } from "./Sparkle";
 export { UserIcon } from "./User";
 export { EyeOff, EyeOn } from "./Visibility";
+export { GlobeCheckIcon } from "./Web";

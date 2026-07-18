@@ -7,7 +7,8 @@
   },
   "workspaces": [
     "packages/web",
-    "packages/mui-verse/ui"
+    "packages/mui-verse/ui",
+    "packages/mui-verse/payment"
   ],
   "catalog": {
     "react": "^19.2.4",

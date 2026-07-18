@@ -24,7 +24,7 @@ export function Button({
       sx={{
         ...sx,
         "&.Mui-disabled": {
-          bgcolor: "primary.light",
+          bgcolor: "#C0DED4",
           color: "background.paper",
         },
       }}

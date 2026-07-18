@@ -4,7 +4,10 @@
   "private": true,
   "exports": {
     "./types": "./src/types.ts",
-    "./airwallex": "./src/airwallex/index.ts"
+    "./airwallex": "./src/airwallex/index.ts",
+    "./icons/*": "./src/icons/*.tsx",
+    "./methods": "./src/methods/index.ts",
+    "./result": "./src/result/index.ts"
   },
   "scripts": {
     "build": "tsc",

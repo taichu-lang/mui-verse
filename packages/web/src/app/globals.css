@@ -1,5 +1,6 @@
 @import "@mui-verse/ui/verse.css";
 @source "../../node_modules/@mui-verse/ui/src";
+@source "../../node_modules/@mui-verse/payment/src";
 
 @layer components {
   :root {
@@ -29,6 +30,18 @@
   box-shadow: 0px 0px 16px 1px hsla(0, 0%, 64%, 0.25);
 }
 
+@utility checkout-plan {
+  box-shadow:
+    var(--mui-shadow-border),
+    0px 0px 20px 8px hsla(0, 0%, 89%, 0.25);
+}
+
+@utility plan-radio {
+  box-shadow:
+    var(--mui-shadow-border),
+    0px 0px 8px 2px hsla(0, 0%, 75%, 0.25);
+}
+
 @theme {
   --color-sidebar-divider: hsla(0, 0%, 89%, 1);
 
@@ -55,7 +68,7 @@ html[data-mui-color-scheme="light"] {
   --mui-palette-primary-main: hsla(159, 54%, 50%, 1);
   --mui-palette-primary-500: hsla(159, 54%, 50%, 1);
   --mui-palette-primary-dark: hsla(159, 100%, 32%, 1);
-  --mui-palette-primary-light: hsla(159, 31%, 81%, 1);
+  --mui-palette-primary-light: hsla(159, 38%, 90%, 1);
 
   --mui-palette-divider: hsla(0, 0%, 79%, 1);
   --mui-palette-action-hover: hsla(0, 0%, 94%, 1);

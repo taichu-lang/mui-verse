@@ -1,4 +1,4 @@
-import { ArrowRight } from "@/components/icons";
+import { ArrowRightIcon } from "@/components/icons";
 import { CopyIcon } from "@mui-verse/ui/components/icons";
 import { MenuItem } from "@mui-verse/ui/components/navigation";
 import { TabMenuPanel } from "@mui-verse/ui/layout/TabMenu";
@@ -18,10 +18,10 @@ export function Help() {
           }
         />
         <DataSeparator />
-        <DataItem label="Terms of Service" value={<ArrowRight />} />
+        <DataItem label="Terms of Service" value={<ArrowRightIcon />} />
         <DataItem
           label="Privacy Policy"
-          value={<ArrowRight />}
+          value={<ArrowRightIcon />}
           className="mt-0.5"
         />
       </div>

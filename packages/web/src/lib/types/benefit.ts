@@ -3,7 +3,7 @@ type ResourceType = "model" | "tool";
 type BillingUnit = "request" | "token";
 type CurrencyCode = "RUB" | "USD";
 type PlanCode = "free" | "pro";
-type PlanDuration = "monthly" | "yearly";
+export type PlanDuration = "monthly" | "yearly";
 
 export interface Resource {
   type: ResourceType;

@@ -13,6 +13,7 @@
     "@emotion/styled": "catalog:",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@mui-verse/ui": "workspace:*",
+    "@mui-verse/payment": "workspace:*",
     "@mui/material": "catalog:",
     "clsx": "^2.1.1",
     "lucide-react": "^1.7.0",
