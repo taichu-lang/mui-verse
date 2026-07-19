@@ -1,17 +1,26 @@
 "use client";
 
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Tab, type TabProps, Tabs, type TabsProps } from "@mui/material";
+import {
+  SxProps,
+  Tab,
+  type TabProps,
+  Tabs,
+  type TabsProps,
+} from "@mui/material";
 import { useTabContext } from "./Tabs";
 
 export type PillTabsProps = Omit<
   TabsProps,
   "indicatorColor" | "textColor" | "value"
->;
+> & {
+  indicatorSx?: SxProps;
+};
 
 export function PillTabs({
   variant = "fullWidth",
   sx,
+  indicatorSx,
   slotProps,
   onChange,
   ...rest
@@ -49,6 +58,7 @@ export function PillTabs({
             bgcolor: (theme) => theme.palette.action.hover,
             boxShadow: "var(--mui-shadow-button)",
             zIndex: 0,
+            ...indicatorSx,
           },
         },
       }}
@@ -67,9 +77,10 @@ export function PillTab({ sx, className, ...rest }: PillTabProps) {
         p: 0,
         zIndex: 1,
         borderRadius: 9999,
+        border: 0,
         ...sx,
       }}
-      className={cn("hover:text-text-primary h-7 w-16", className)}
+      className={cn("hover:text-text-primary", className)}
       {...rest}
     />
   );

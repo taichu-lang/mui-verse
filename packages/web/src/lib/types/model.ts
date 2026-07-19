@@ -1,9 +1,14 @@
+import { AnthropicIcon, GeminiIcon, OpenAIIcon } from "@/components/icons";
+
 type ModelProvider = "openai" | "google" | "anthropic";
 
-export interface Model {
+export interface ModelMeta {
   id: string;
   name: string;
   provider: ModelProvider;
+}
+
+export interface Model extends ModelMeta {
   pinned?: boolean;
 }
 
@@ -64,3 +69,17 @@ export const models: Model[] = [
     provider: "google",
   },
 ];
+
+export const modelMap: Record<string, ModelMeta> = models.reduce(
+  (acc, model) => {
+    acc[model.id] = model;
+    return acc;
+  },
+  {} as Record<string, ModelMeta>,
+);
+
+export const modelIcons: Record<ModelProvider, React.ElementType> = {
+  openai: OpenAIIcon,
+  google: GeminiIcon,
+  anthropic: AnthropicIcon,
+};

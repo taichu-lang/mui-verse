@@ -1,7 +1,7 @@
 type BenefitCode = "standard_chat" | "advanced_chat";
 type ResourceType = "model" | "tool";
 type BillingUnit = "request" | "token";
-type CurrencyCode = "RUB" | "USD";
+export type CurrencyCode = "RUB" | "USD";
 type PlanCode = "free" | "pro";
 export type PlanDuration = "monthly" | "yearly";
 
@@ -38,4 +38,5 @@ export interface Plan {
   type: PlanCode;
   duration: PlanDuration;
   prices: Price[];
+  benefits: string[];
 }

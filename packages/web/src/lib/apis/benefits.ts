@@ -7,7 +7,7 @@ export async function getBenefits(): Promise<Benefit[]> {
       code: "standard_chat",
       resources: [
         { type: "model", id: "gpt-4.1" },
-        { type: "model", id: "sonnet-4.5" },
+        { type: "model", id: "claude-sonnet-4-5-20250929" },
       ],
       limit: 1000,
       unit: "request",
@@ -18,7 +18,7 @@ export async function getBenefits(): Promise<Benefit[]> {
       resources: [
         { type: "model", id: "gpt-5.4" },
         { type: "model", id: "gpt-5.5" },
-        { type: "model", id: "opus-4.8" },
+        { type: "model", id: "claude-opus-4-7" },
       ],
       limit: 1000_000,
       unit: "token",
@@ -29,6 +29,12 @@ export async function getBenefits(): Promise<Benefit[]> {
 export async function getPlans(): Promise<Plan[]> {
   return [
     {
+      type: "free",
+      duration: "monthly",
+      prices: [],
+      benefits: ["standard_chat"],
+    },
+    {
       type: "pro",
       duration: "monthly",
       prices: [
@@ -37,6 +43,7 @@ export async function getPlans(): Promise<Plan[]> {
           currency: "USD",
         },
       ],
+      benefits: ["standard_chat", "advanced_chat"],
     },
     {
       type: "pro",
@@ -47,6 +54,7 @@ export async function getPlans(): Promise<Plan[]> {
           currency: "USD",
         },
       ],
+      benefits: ["standard_chat", "advanced_chat"],
     },
   ];
 }

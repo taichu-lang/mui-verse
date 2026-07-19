@@ -44,6 +44,7 @@
 
 @theme {
   --color-sidebar-divider: hsla(0, 0%, 89%, 1);
+  --color-background-gray: hsla(0, 0%, 97%, 1);
 
   --text-xs--line-height: 16px;
   --text-xs--letter-spacing: 0;
@@ -62,6 +63,12 @@
   --spacing-settings-height: 578px;
 
   --spacing-sign-width: 504px;
+  --spacing-landing-width: 1122px;
+  --spacing-landing-navbar: 68px;
+
+  --spacing-landing-feature-left: 395px;
+  --spacing-landing-feature-mid: 296px;
+  --spacing-landing-feature-right: 180px;
 }
 
 html[data-mui-color-scheme="light"] {
@@ -74,6 +81,12 @@ html[data-mui-color-scheme="light"] {
   --mui-palette-action-hover: hsla(0, 0%, 94%, 1);
   --mui-palette-text-primary: hsla(0, 0%, 14%, 1);
   --mui-palette-text-secondary: hsla(0, 0%, 46%, 1);
+}
+
+h1 {
+  font-size: 48px;
+  line-height: 72px;
+  letter-spacing: 0;
 }
 
 [data-markdown="h1"] {

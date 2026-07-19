@@ -1,18 +1,11 @@
 "use client";
 
 import { useAuth } from "@/auth/auth";
-import {
-  AnthropicIcon,
-  GeminiIcon,
-  ModelsIcon,
-  OpenAIIcon,
-  PinnedIcon,
-  PinnerIcon,
-} from "@/components/icons";
+import { ModelsIcon, PinnedIcon, PinnerIcon } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
 import { getModels } from "@/lib/apis/model";
 import { addPinnedModel, unPinModel } from "@/lib/apis/preference";
-import { Model, models } from "@/lib/types/model";
+import { Model, modelIcons, models } from "@/lib/types/model";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { useChat } from "@mui-verse/ui/components/chat";
 import { Accordion } from "@mui-verse/ui/components/feedback";
@@ -31,12 +24,6 @@ import { cn } from "@mui-verse/ui/utils/cn";
 import { Chip, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "./history/HistoryProvider";
-
-const icons = {
-  openai: <OpenAIIcon className="h-full w-full" />,
-  google: <GeminiIcon className="h-full w-full" />,
-  anthropic: <AnthropicIcon className="h-full w-full" />,
-};
 
 export function ModelMenuItem({ model }: { model: Model }) {
   const router = useRouter();
@@ -64,6 +51,8 @@ export function ModelMenuItem({ model }: { model: Model }) {
     history.refreshModels();
   };
 
+  const Icon = modelIcons[provider];
+
   return (
     <MenuItem
       actions={
@@ -82,7 +71,7 @@ export function ModelMenuItem({ model }: { model: Model }) {
       }
       onClick={switchModel}
     >
-      <div className="h-4.5 w-4.5">{icons[provider]}</div>
+      {<Icon className="h-4.5 w-4.5" />}
       {name}
     </MenuItem>
   );
@@ -127,12 +116,14 @@ function DropDownModelMenu({
     onRefresh();
   };
 
+  const Icon = modelIcons[provider];
+
   return (
     <div
       className="hover:bg-action-hover flex h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2.5"
       onClick={handleSelected}
     >
-      <div className="h-4.5 w-4.5">{icons[provider]}</div>
+      <Icon className="h-4.5 w-4.5" />
       <Typography variant="body2" className="leading-4.5">
         {name}
       </Typography>
@@ -210,11 +201,18 @@ export function ModelSelect() {
     router.replace(`/chat`);
   };
 
+  const Icon = modelIcons[selected.provider];
+
+  const modelIcon = (m: Model) => {
+    const Comp = modelIcons[m.provider];
+    return <Comp className="h-4 w-4" />;
+  };
+
   return (
     <DropdownMenu side="top" align="start">
       <DropdownMenuTrigger>
         <div className="flex cursor-pointer items-center">
-          <div className="h-4 w-4">{icons[selected.provider]}</div>
+          <Icon className="h-4 w-4" />
           <span className="pr-2.5 pl-1.5 text-sm">{selected.name}</span>
           <ChevronDownIcon />
         </div>
@@ -227,7 +225,7 @@ export function ModelSelect() {
             selected={selected.id === m.id}
             onClick={() => handleSwitch(m.id)}
           >
-            <div className="h-4 w-4">{icons[m.provider]}</div>
+            {modelIcon(m)}
             {m.name}
           </DropdownMenuItem>
         ))}
@@ -239,10 +237,11 @@ export function ModelSelect() {
 export function ModelBrandCard() {
   const { model } = useChat();
   const selected = models.find((v) => v.id === model) || models[0];
+  const Icon = modelIcons[selected.provider];
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-5">
-      <div className="h-10 w-10">{icons[selected.provider]}</div>
+      <Icon className="h-10 w-10" />
       <div className="flex items-center gap-2.5">
         <span className="text-xl">{selected.name}</span>
         <Chip label={"Official"} />
