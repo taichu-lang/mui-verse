@@ -1,3 +1,5 @@
+"use client";
+
 import { extendHover, HoverProps } from "@mui-verse/ui/utils/click";
 import {
   Popover as MuiPopover,
