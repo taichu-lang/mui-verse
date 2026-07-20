@@ -39,9 +39,7 @@ export default function LandingLayout({
       >
         {navbar}
       </div>
-      <div className="w-landing-width mx-auto flex flex-col items-center">
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

@@ -52,6 +52,8 @@
   --text-sm--letter-spacing: 0;
   --text-base--line-height: 24px;
   --text-base--letter-spacing: 0;
+  --text-xl--line-height: 26px;
+  --text-xl--letter-spacing: 0;
   --text-2xl--line-height: 30px;
   --text-2xl--letter-spacing: 0;
 
@@ -99,4 +101,10 @@ h1 {
 
 [data-markdown="h3"] {
   line-height: 24px;
+}
+
+@layer components {
+  .anchor-offset {
+    scroll-margin-top: var(--spacing-landing-navbar);
+  }
 }

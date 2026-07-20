@@ -6,7 +6,7 @@ import { MonthLabel, PlanTabs, YearLabel } from "./_blocks/PlanTab";
 
 export default function PricingPage() {
   return (
-    <>
+    <div className="w-landing-width mx-auto flex flex-col items-center">
       <h1 className="mt-15 font-semibold">One tab. Infinite intelligence.</h1>
       <p className="text-text-secondary mt-2 text-base">
         Stop switching between apps. Every leading AI model, one seamless
@@ -32,6 +32,6 @@ export default function PricingPage() {
         <FeatureHeader />
         <BenefitTableList />
       </div>
-    </>
+    </div>
   );
 }
