@@ -4,17 +4,15 @@ import { Section } from "./Section";
 
 export function UiSection() {
   return (
-    <Section id="ui">
+    <Section id="product">
       <Chip label="Product UI" gray />
-      <p className="mt-7.5 text-2xl font-semibold">
-        Clean, consistent interactions
-      </p>
+      <h2 className="mt-7.5">Clean, consistent interactions</h2>
       <span className="text-text-secondary mt-5 text-base">
         AI workflows that feel familiar.
       </span>
       <div className="mt-15 grid grid-cols-2 gap-25">
         <div className="flex flex-col items-center gap-3">
-          <p className="text-xl font-medium">Complete conversation history</p>
+          <h3>Complete conversation history</h3>
           <span className="text-text-secondary text-base">
             Keeps full conversation history
           </span>
@@ -27,7 +25,7 @@ export function UiSection() {
           />
         </div>
         <div className="flex flex-col items-center gap-3">
-          <p className="text-xl font-medium">Multiple leading AI models</p>
+          <h3>Multiple leading AI models</h3>
           <span className="text-text-secondary text-base">
             This is only a partial list of available models
           </span>
@@ -41,7 +39,7 @@ export function UiSection() {
         </div>
       </div>
       <div className="mt-20 flex flex-col items-center gap-3">
-        <p className="text-xl font-medium">Web search</p>
+        <h3>Web search</h3>
         <span className="text-text-secondary text-base">
           Combine AI reasoning with real-time web results
         </span>
@@ -50,11 +48,11 @@ export function UiSection() {
           alt="web search"
           width={770}
           height={246}
-          className="mt-9"
+          className="mt-9 object-cover"
         />
       </div>
       <div className="mt-20 flex flex-col items-center gap-3">
-        <p className="text-xl font-medium">Sources</p>
+        <h3>Sources</h3>
         <span className="text-text-secondary text-xl">
           Reliable answers, backed by real sources
         </span>

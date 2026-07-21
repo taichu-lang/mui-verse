@@ -254,6 +254,14 @@ const createBaseTheme = (palette: PaletteOptions) =>
           // would paint text+border in `dark.main` (near-black) — invisible on
           // the dark background — so fall back to the scheme's text color.
           {
+            props: { variant: "contained", color: "dark" },
+            style: {
+              "&:hover": {
+                backgroundColor: "var(--mui-palette-text-secondary)",
+              },
+            },
+          },
+          {
             props: { variant: "outlined", color: "dark" },
             style: {
               color: "var(--mui-palette-text-primary)",

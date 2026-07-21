@@ -67,11 +67,9 @@ export function ModelSection() {
   ];
 
   return (
-    <Section id="model">
+    <Section>
       <Chip label="Model matrix" gray />
-      <p className="mt-7.5 text-2xl font-semibold">
-        Supports multiple leading AI models
-      </p>
+      <h2 className="mt-7.5">Supports multiple leading AI models</h2>
       <p className="text-text-secondary mt-5 text-base">
         Pick the right model for each task — we support{" "}
         <span className="font-semibold">20+</span> models.

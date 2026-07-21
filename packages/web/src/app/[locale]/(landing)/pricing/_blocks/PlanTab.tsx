@@ -47,7 +47,7 @@ export function YearLabel() {
       <span className="text-base leading-4.5">One Year</span>
       <span
         className={cn(
-          "text-base leading-4.5",
+          "text-base leading-4.5 font-medium",
           active ? "text-white" : "text-primary-500",
         )}
       >

@@ -1,12 +1,18 @@
+"use client";
+
+import { useAuth } from "@/auth/auth";
 import { Button } from "@/components/ui/Button";
+import { Dot } from "@/components/ui/Dot";
 import { Chip } from "./Chip";
 import { Section } from "./Section";
 
 export function HeroSection() {
+  const { session } = useAuth();
+
   return (
-    <Section id="hero">
+    <Section>
       <Chip
-        icon={<div className="bg-primary-500 h-1.5 w-1.5 rounded-full" />}
+        icon={<Dot />}
         label="Supports GPT · Claude · Gemini & other leading models"
         gray
       />
@@ -16,8 +22,12 @@ export function HeroSection() {
         included.
       </p>
       <div className="mt-10 flex items-center gap-4">
-        <Button className="bg-gray-950 text-white">Start for free</Button>
-        <Button className="bg-gray-950 text-white">View pricing</Button>
+        <Button color="dark" href={session ? "/chat" : "/signin"}>
+          Start for free
+        </Button>
+        <Button color="dark" href="/pricing">
+          View pricing
+        </Button>
       </div>
     </Section>
   );

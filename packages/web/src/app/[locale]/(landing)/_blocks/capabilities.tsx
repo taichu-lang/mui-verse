@@ -14,6 +14,7 @@ interface CapabilityProps extends TextProps {
   height: number;
   width: number;
   reverse?: boolean;
+  priority?: boolean;
 }
 
 function Capability({
@@ -24,6 +25,7 @@ function Capability({
   height,
   width,
   reverse = false,
+  priority = false,
 }: CapabilityProps) {
   return (
     <div
@@ -44,7 +46,13 @@ function Capability({
           ))}
         </ul>
       </div>
-      <Image src={img} alt={title} height={height} width={width} />
+      <Image
+        src={img}
+        alt={title}
+        height={height}
+        width={width}
+        priority={priority}
+      />
     </div>
   );
 }
@@ -63,6 +71,10 @@ export function CapabilitiesSection() {
       img: "/images/landing-capability-01.png",
       height: 342,
       width: 588,
+      // Eager-load the first image so its box is reserved before the user can
+      // click a nav anchor — otherwise later Image hydration shifts sections
+      // below and the first #product jump lands with a doubled offset.
+      priority: true,
     },
     {
       title: "End-to-end content creation",
@@ -109,9 +121,7 @@ export function CapabilitiesSection() {
   return (
     <WhiteSection id="capabilities">
       <Chip label="Product capabilities" />
-      <p className="mt-7.5 text-2xl font-semibold">
-        From quick questions to complex tasks
-      </p>
+      <h2 className="mt-7.5">From quick questions to complex tasks</h2>
       <p className="text-text-secondary mt-5 text-base">
         Four core capabilities for learning, work, development & beyond.
       </p>

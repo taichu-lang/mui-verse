@@ -42,6 +42,10 @@ export async function getPlans(): Promise<Plan[]> {
           amount: 16,
           currency: "USD",
         },
+        {
+          amount: 150,
+          currency: "RUB",
+        },
       ],
       benefits: ["standard_chat", "advanced_chat"],
     },
@@ -52,6 +56,10 @@ export async function getPlans(): Promise<Plan[]> {
         {
           amount: 180,
           currency: "USD",
+        },
+        {
+          amount: 1500,
+          currency: "RUB",
         },
       ],
       benefits: ["standard_chat", "advanced_chat"],

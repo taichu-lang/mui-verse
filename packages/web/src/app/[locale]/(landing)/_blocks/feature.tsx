@@ -27,9 +27,9 @@ function FeatureCard({
 
 export function FeatureSection() {
   return (
-    <WhiteSection id="feature">
+    <WhiteSection>
       <Chip label="Key features" />
-      <p className="mt-7.5 text-2xl font-semibold">Why choose Plato</p>
+      <h2 className="mt-7.5">Why choose Plato</h2>
       <p className="text-text-secondary mt-5 text-base">
         Stop switching between platforms. One account for your entire AI
         workflow.

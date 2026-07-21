@@ -86,9 +86,24 @@ html[data-mui-color-scheme="light"] {
 }
 
 h1 {
-  font-size: 48px;
-  line-height: 72px;
+  font-size: 40px;
+  line-height: 60px;
   letter-spacing: 0;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: 0;
+  font-weight: 500;
 }
 
 [data-markdown="h1"] {
@@ -101,10 +116,4 @@ h1 {
 
 [data-markdown="h3"] {
   line-height: 24px;
-}
-
-@layer components {
-  .anchor-offset {
-    scroll-margin-top: var(--spacing-landing-navbar);
-  }
 }

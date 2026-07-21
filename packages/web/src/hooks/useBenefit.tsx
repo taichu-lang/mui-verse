@@ -1,7 +1,8 @@
 "use client";
 
 import { getBenefits, getPlans } from "@/lib/apis/benefits";
-import { Benefit, CurrencyCode, Plan } from "@/lib/types/benefit";
+import { Benefit, Plan } from "@/lib/types/benefit";
+import { CurrencyCode } from "@/lib/types/currency";
 import { useCallback, useEffect, useState } from "react";
 
 export function useBenefit() {

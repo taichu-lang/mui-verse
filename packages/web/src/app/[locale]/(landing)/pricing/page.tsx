@@ -28,7 +28,7 @@ export default function PricingPage() {
         <PlanPanels />
       </TabContext>
       <div className="mt-20">
-        <p className="text-center text-2xl font-semibold">Plan features</p>
+        <h2>Plan features</h2>
         <FeatureHeader />
         <BenefitTableList />
       </div>

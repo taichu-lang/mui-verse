@@ -1,8 +1,9 @@
+import { CurrencyCode } from "./currency";
+
 type BenefitCode = "standard_chat" | "advanced_chat";
 type ResourceType = "model" | "tool";
 type BillingUnit = "request" | "token";
-export type CurrencyCode = "RUB" | "USD";
-type PlanCode = "free" | "pro";
+export type PlanCode = "free" | "pro";
 export type PlanDuration = "monthly" | "yearly";
 
 export interface Resource {
@@ -16,11 +17,6 @@ export interface Benefit {
   resources: Resource[];
   limit: number;
   unit: BillingUnit;
-}
-
-export interface Subscription {
-  plan: PlanCode;
-  benefits: Benefit[];
 }
 
 export interface Balance {
