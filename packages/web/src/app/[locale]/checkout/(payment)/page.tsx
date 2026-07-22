@@ -1,32 +1,50 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
+import { createOrder } from "@/lib/apis/order";
 import { PlanDuration } from "@/lib/types/benefit";
-import { PaymentMethodProvider } from "@mui-verse/payment/methods";
-import { PaymentMethodType } from "@mui-verse/payment/types";
+import { priceStringify } from "@/lib/types/currency";
+import {
+  PaymentMethodProvider,
+  usePaymentMethod,
+} from "@mui-verse/payment/methods";
+import {
+  PaymentMethodType,
+  PaymentProviderType,
+} from "@mui-verse/payment/types";
+import { AnimatedSpinner } from "@mui-verse/ui/components/effects";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { Backdrop } from "@mui/material";
+import { useLocale } from "next-intl";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
+import toast from "react-hot-toast";
 
 function PlanRadio({ duration }: { duration: PlanDuration }) {
-  const { duration: selected, updateCheckout } = useCheckout();
+  const { currency, duration: selected, updateCheckout } = useCheckout();
   const active = selected === duration;
-  const { plans } = useBenefit();
+  const { monthPrice, yearPrice, discountPercent } = useBenefit();
 
+  const month = useMemo(() => {
+    return monthPrice(currency) || 0;
+  }, [monthPrice, currency]);
+
+  const year = useMemo(() => {
+    return yearPrice(currency) || 0;
+  }, [yearPrice, currency]);
+
+  const discount = useMemo(() => {
+    return discountPercent(currency);
+  }, [discountPercent, currency]);
+
+  const perMonth = (year / 12).toFixed(1);
   const title = duration === "monthly" ? "One month plan" : "One year plan";
-  const month = plans
-    .find((p) => p.duration === "monthly")
-    ?.prices.find((p) => p.currency === "USD")?.amount;
-  const year = plans
-    .find((p) => p.duration === "yearly")
-    ?.prices.find((p) => p.currency === "USD")?.amount;
-  if (!month || !year) {
-    return null;
-  }
-
-  const perMonth = year / 12;
-  const price = duration === "monthly" ? month : perMonth.toFixed(1);
-  const discount = (((month - perMonth) / month) * 100).toFixed(0);
+  const price =
+    duration === "monthly"
+      ? priceStringify(month.toString(), currency)
+      : priceStringify(perMonth, currency);
 
   return (
     <div
@@ -44,16 +62,39 @@ function PlanRadio({ duration }: { duration: PlanDuration }) {
         <div className="flex-1" />
         {duration === "yearly" && (
           <div className="bg-primary-light text-primary-500 flex w-18 justify-center rounded-full py-1 text-xs">
-            SAVE {discount}%
+            SAVE {discount}
           </div>
         )}
       </div>
-      <span className="text-text-secondary text-sm">${price}/month</span>
+      <span className="text-text-secondary text-sm">
+        {currency} {price}/mo
+      </span>
     </div>
   );
 }
 
+function CheckoutBackdrop() {
+  const { loading } = usePaymentMethod();
+
+  return (
+    <Backdrop
+      open={loading}
+      onClick={() => {}} // do not close the backdrop
+      sx={(theme) => ({
+        bgcolor: "rgba(255, 255, 255, 0.6)",
+        backdropFilter: "blur(4px) saturate(180%)",
+        zIndex: theme.zIndex.drawer + 10,
+      })}
+    >
+      <AnimatedSpinner />
+    </Backdrop>
+  );
+}
+
 export default function CheckoutPage() {
+  const router = useRouter();
+  const locale = useLocale();
+  const { duration, currency, updateCheckout, order } = useCheckout();
   const renderTitle = (method: PaymentMethodType) => {
     switch (method) {
       case "card":
@@ -61,6 +102,28 @@ export default function CheckoutPage() {
 
       default:
         return "";
+    }
+  };
+
+  const handleCheckout = async (
+    method: PaymentMethodType,
+    provider: PaymentProviderType,
+  ) => {
+    console.log(method, provider);
+    const order = await createOrder(
+      {
+        method,
+        provider,
+        plan_code: "pro",
+        plan_duration: duration,
+        currency,
+      },
+      locale,
+    );
+    if (order) {
+      updateCheckout({ order });
+    } else {
+      toast.error("network issue");
     }
   };
 
@@ -76,9 +139,28 @@ export default function CheckoutPage() {
         methods={["card"]}
         renderTitle={renderTitle}
         className="mt-4"
+        onSwitch={handleCheckout}
       >
-        <Button className="mt-5">Continue</Button>
+        <CheckoutBackdrop />
       </PaymentMethodProvider>
+      {order?.external?.checkout_url && (
+        <Link
+          href={order.external.checkout_url}
+          className="bg-primary-500 mt-5 flex h-11 items-center justify-center rounded-full text-base font-semibold text-white"
+          target="_blank"
+          onClick={() =>
+            router.replace(`/checkout/result?order_id=${order.order_id}`)
+          }
+        >
+          Buy now
+        </Link>
+      )}
+      <p className="text-text-secondary mt-3.5 text-sm text-wrap">
+        By making this payment, you accept the{" "}
+        <span className="cursor-pointer text-sm underline">
+          terms and conditions of the service
+        </span>
+      </p>
     </div>
   );
 }

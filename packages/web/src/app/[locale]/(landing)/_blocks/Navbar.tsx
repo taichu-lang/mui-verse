@@ -47,9 +47,9 @@ export function Navbar() {
   const sectionActive = (id: string) => pathname === "/" && hash === `#${id}`;
 
   return (
-    <div className="w-landing-width mx-auto flex h-full items-center">
+    <div className="w-landing-width relative mx-auto flex h-full items-center justify-between">
       <p className="text-base font-medium">Anna</p>
-      <div className="flex flex-1 justify-center gap-11.5">
+      <div className="absolute left-1/2 flex -translate-x-1/2 gap-11.5">
         <NavbarItem href={section("product")} active={sectionActive("product")}>
           Product
         </NavbarItem>

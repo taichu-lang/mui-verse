@@ -6,32 +6,30 @@ import { MonthLabel, PlanTabs, YearLabel } from "./_blocks/PlanTab";
 
 export default function PricingPage() {
   return (
-    <div className="w-landing-width mx-auto flex flex-col items-center">
-      <h1 className="mt-15 font-semibold">One tab. Infinite intelligence.</h1>
-      <p className="text-text-secondary mt-2 text-base">
+    <div className="w-pricing-width mx-auto flex flex-col items-center">
+      <h1 className="mt-15">One tab. Infinite intelligence.</h1>
+      <p className="text-text-secondary mt-5 text-base">
         Stop switching between apps. Every leading AI model, one seamless
         experience.
       </p>
       <TabContext defaultValue="monthly">
-        <PlanTabs>
+        <PlanTabs className="mt-4">
           <PillTab
             value="monthly"
             label={<MonthLabel />}
-            className="flex px-3.5 py-2.5 text-base leading-4.5"
+            className="px-3.5 py-2.5"
           />
           <PillTab
             value="yearly"
             label={<YearLabel />}
-            className="flex px-3.5 py-2.5"
+            className="px-3.5 py-2.5"
           />
         </PlanTabs>
         <PlanPanels />
-      </TabContext>
-      <div className="mt-20">
-        <h2>Plan features</h2>
+        <h2 className="mt-20 text-center">Plan features</h2>
         <FeatureHeader />
         <BenefitTableList />
-      </div>
+      </TabContext>
     </div>
   );
 }

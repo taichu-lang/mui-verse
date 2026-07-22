@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/auth/auth";
 import {
   CheckIcon,
   FreeTierIcon,
@@ -8,7 +7,6 @@ import {
   SparkleFilledIcon,
 } from "@/components/icons";
 import { CheckXIcon } from "@/components/icons/Check";
-import { Button } from "@/components/ui/Button";
 import { CurrencySwitch } from "@/components/ui/CurrencySwitch";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
@@ -17,6 +15,7 @@ import { priceStringify } from "@/lib/types/currency";
 import { useTabContext } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { useMemo } from "react";
+import { FreePlanButton, ProPlanButton } from "./Actions";
 
 function Header({
   plan,
@@ -76,34 +75,16 @@ function Feature({
   );
 }
 
-function FreePlanButton() {
-  const { session } = useAuth();
-  const title =
-    session?.plan_code === "pro" ? "Already included" : "Get started";
-
-  return (
-    <Button
-      size="small"
-      fullWidth
-      variant="outlined"
-      className="mt-3.5 font-medium"
-      href={session ? "/chat" : "/signin"}
-    >
-      {title}
-    </Button>
-  );
-}
-
 export function FreePanel() {
   return (
-    <div className="flex w-99 flex-col rounded-[20px] bg-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
+    <div className="flex w-full flex-col rounded-[20px] bg-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
       <Header
         plan="free"
         title="Free"
         price={"0"}
         description="Perfect for getting started"
       />
-      <FreePlanButton />
+      <FreePlanButton className="mt-3.5 font-medium" />
       <div className="mt-7.5 flex flex-col gap-3.25">
         <Feature
           Icon={CheckIcon}
@@ -122,22 +103,6 @@ export function FreePanel() {
         <Feature Icon={CheckXIcon} feature="Web search" disabled />
       </div>
     </div>
-  );
-}
-
-function ProPlanButton() {
-  const { session } = useAuth();
-  const title = session?.plan_code === "pro" ? "Extend" : "Buy now";
-
-  return (
-    <Button
-      size="small"
-      fullWidth
-      className="from-primary-500 mt-3.5 bg-linear-to-r to-[#27B2E5]"
-      href={session ? "/checkout" : "/signin"}
-    >
-      {title}
-    </Button>
   );
 }
 
@@ -160,14 +125,14 @@ export function ProPanel() {
   }, [value, monthPrice, yearPrice, currency]);
 
   return (
-    <div className="flex w-99 flex-col rounded-[20px] bg-linear-to-b from-[#F2FFFB] to-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
+    <div className="flex w-full flex-col rounded-[20px] bg-linear-to-b from-[#F2FFFB] to-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
       <Header
         plan="pro"
         title="Pro"
         price={price || ""}
         description="For power users"
       />
-      <ProPlanButton />
+      <ProPlanButton className="mt-3.5" />
       <div className="mt-7.5 flex flex-col gap-3.25">
         <Feature
           Icon={CheckIcon}
@@ -209,7 +174,7 @@ export function ProPanel() {
 
 export function PlanPanels() {
   return (
-    <div className="mt-5 flex gap-6">
+    <div className="mt-5 grid w-full grid-cols-2 gap-8.5">
       <FreePanel />
       <ProPanel />
     </div>

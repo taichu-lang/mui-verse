@@ -32,7 +32,8 @@ export default function LandingLayout({
     >
       <div
         className={cn("h-landing-navbar z-navbar sticky top-0 w-full", {
-          "bg-white/80 backdrop-blur-xs transition-all duration-300": scrolled,
+          "bg-white/80 backdrop-blur-xs backdrop-saturate-150 transition-all duration-300":
+            scrolled,
           "bg-white": !scrolled,
         })}
       >

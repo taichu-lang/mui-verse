@@ -22,21 +22,40 @@ export function useBenefit() {
 
   const monthPrice = useCallback(
     (currency: CurrencyCode) => {
-      return plans
-        .find((p) => p.type === "pro" && p.duration === "monthly")
-        ?.prices.find((p) => p.currency === currency)?.amount;
+      return (
+        plans
+          .find((p) => p.type === "pro" && p.duration === "monthly")
+          ?.prices.find((p) => p.currency === currency)?.amount || 0
+      );
     },
     [plans],
   );
 
   const yearPrice = useCallback(
     (currency: CurrencyCode) => {
-      return plans
-        .find((p) => p.type === "pro" && p.duration === "yearly")
-        ?.prices.find((p) => p.currency === currency)?.amount;
+      return (
+        plans
+          .find((p) => p.type === "pro" && p.duration === "yearly")
+          ?.prices.find((p) => p.currency === currency)?.amount || 0
+      );
     },
     [plans],
   );
 
-  return { loading, plans, benefits, monthPrice, yearPrice };
+  const discountPercent = useCallback(
+    (currency: CurrencyCode) => {
+      const month = monthPrice(currency);
+      const year = yearPrice(currency);
+      if (month === 0 || year === 0) {
+        return "";
+      }
+
+      const perMonth = year / 12;
+      const discount = (((month - perMonth) * 100) / month).toFixed(0);
+      return `${discount}%`;
+    },
+    [monthPrice, yearPrice],
+  );
+
+  return { loading, plans, benefits, monthPrice, yearPrice, discountPercent };
 }

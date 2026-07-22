@@ -6,12 +6,24 @@ import {
   PaymentProviderType,
 } from "@mui-verse/payment/types";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 interface MethodMeta {
   provider: PaymentProviderType;
   Icon: React.ElementType;
 }
+
+type onSwitchFunc = (
+  method: PaymentMethodType,
+  provider: PaymentProviderType,
+) => Promise<void>;
 
 const metaMap: Record<PaymentMethodType, MethodMeta> = {
   card: {
@@ -24,6 +36,12 @@ const metaMap: Record<PaymentMethodType, MethodMeta> = {
   },
 };
 
+export function getPaymentProvider(
+  method: PaymentMethodType,
+): PaymentProviderType {
+  return metaMap[method].provider;
+}
+
 export function PaymentMethod({
   method,
   title,
@@ -34,21 +52,40 @@ export function PaymentMethod({
   className?: string;
 }) {
   const Icon = metaMap[method].Icon;
-  const { method: selected, setMethod, setProvider } = usePaymentMethod();
+  const {
+    method: selected,
+    setMethod,
+    onSwitch,
+    loading,
+    setLoading,
+  } = usePaymentMethod();
 
-  const handleChecked = () => {
+  const handleChecked = async () => {
+    if (loading) {
+      return;
+    }
+
     setMethod(method);
-    setProvider(metaMap[method].provider);
+    if (onSwitch.current) {
+      setLoading(true);
+      try {
+        await onSwitch.current?.(method, metaMap[method].provider);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <div
       className={cn(
-        "flex w-full cursor-pointer items-center gap-5 rounded-full py-2.5 pr-2.5 pl-4.5 shadow-[0px_0px_4px_0px_#6D6D6D40]",
-        className,
+        "flex w-full items-center gap-5 rounded-full py-2.5 pr-2.5 pl-4.5 shadow-[0px_0px_4px_0px_#6D6D6D40]",
+        "hover:bg-action-hover hover:cursor-pointer",
         {
-          "bg-primary-light": selected === method,
+          "ring-primary-500 ring ring-inset": selected === method,
+          "pointer-events-none": loading,
         },
+        className,
       )}
       onClick={handleChecked}
     >
@@ -63,18 +100,19 @@ export function PaymentMethod({
 }
 
 interface PaymentMethodContextValue {
-  provider: PaymentProviderType | null;
   method: PaymentMethodType | null;
+  onSwitch: React.RefObject<onSwitchFunc | null>;
+  loading: boolean; // loading state of onSwitch.
 
   setMethod: (method: PaymentMethodType) => void;
-  setProvider: (provider: PaymentProviderType) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 const PaymentMethodContext = createContext<PaymentMethodContextValue | null>(
   null,
 );
 
-function usePaymentMethod() {
+export function usePaymentMethod() {
   const context = useContext(PaymentMethodContext);
   if (!context) {
     throw new Error(
@@ -90,26 +128,42 @@ export function PaymentMethodProvider({
   renderTitle,
   children,
   className,
+  onSwitch,
 }: {
   methods: PaymentMethodType[];
   renderTitle: (method: PaymentMethodType) => string;
   children?: React.ReactNode;
   className?: string;
+  onSwitch?: (
+    method: PaymentMethodType,
+    provider: PaymentProviderType,
+  ) => Promise<void>;
 }) {
-  const [provider, setProviderState] = useState<PaymentProviderType | null>(
-    null,
-  );
   const [method, setMethodState] = useState<PaymentMethodType | null>(null);
-  const setProvider = useCallback((provider: PaymentProviderType) => {
-    setProviderState(provider);
-  }, []);
   const setMethod = useCallback((method: PaymentMethodType) => {
     setMethodState(method);
   }, []);
+  const [loading, setLoadingState] = useState<boolean>(false);
+  const setLoading = useCallback((loading: boolean) => {
+    setLoadingState(loading);
+  }, []);
+
+  const onSwitchRef = useRef<onSwitchFunc>(onSwitch || null);
+  useEffect(() => {
+    if (onSwitch) {
+      onSwitchRef.current = onSwitch;
+    }
+  }, [onSwitch]);
 
   return (
     <PaymentMethodContext.Provider
-      value={{ provider, method, setMethod, setProvider }}
+      value={{
+        method,
+        setMethod,
+        onSwitch: onSwitchRef,
+        loading,
+        setLoading,
+      }}
     >
       <div className={cn("flex flex-col gap-3", className)}>
         {methods.map((method) => (

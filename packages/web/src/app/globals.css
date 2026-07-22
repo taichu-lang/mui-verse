@@ -67,10 +67,7 @@
   --spacing-sign-width: 504px;
   --spacing-landing-width: 1122px;
   --spacing-landing-navbar: 68px;
-
-  --spacing-landing-feature-left: 395px;
-  --spacing-landing-feature-mid: 296px;
-  --spacing-landing-feature-right: 180px;
+  --spacing-pricing-width: 874px;
 }
 
 html[data-mui-color-scheme="light"] {

@@ -10,7 +10,7 @@ export function Button({
 }: ButtonProps) {
   const classes = {
     contained: "py-2.5 shadow-none",
-    outlined: "text-text-primary py-2.5 bg-white",
+    outlined: "text-text-primary py-2.5",
     text: "",
     large: "",
     medium: "text-base",

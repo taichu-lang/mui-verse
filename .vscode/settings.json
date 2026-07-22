@@ -3,5 +3,13 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "cSpell.words": ["overscan", "partialize", "PREFS", "recents", "Swipeable"]
+  "cSpell.words": [
+    "dukpay",
+    "overscan",
+    "partialize",
+    "PREFS",
+    "recents",
+    "Swipeable",
+    "Yoomoney"
+  ]
 }

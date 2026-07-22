@@ -73,7 +73,9 @@ export function LanguageSwitchRounded() {
       side="bottom"
       align="center"
       defaultValue={locale}
-      IconComponent={() => <GlobeIcon className="h-4.5 w-4.5" />}
+      IconComponent={() => (
+        <GlobeIcon className="h-4.5 w-4.5" strokeWidth={1.2} />
+      )}
       onChange={handleSwitch}
       className="flex-row-reverse gap-1.5 rounded-full px-3 py-1.5 text-base shadow-(--mui-shadow-border)"
     >

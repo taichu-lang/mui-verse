@@ -27,63 +27,69 @@ export function BenefitTable({ benefit }: { benefit: Benefit }) {
   const proEnabled = pro?.benefits.includes(benefit.code);
 
   return (
-    <div className="flex items-center">
-      <div className="w-landing-feature-left flex flex-col items-start gap-7.5">
-        <p className="text-base">{benefit.code}</p>
-        {benefit.resources.map((r) => {
-          if (r.type === "model") {
-            return <Model model_id={r.id} key={r.id} />;
-          }
-
-          return null;
-        })}
-      </div>
-      <div className="w-landing-feature-mid flex flex-col items-start gap-7.5">
-        <p className="text-base">
-          {benefit.limit}/{free?.duration}
-        </p>
-        {benefit.resources.map((r) => {
-          if (r.type === "model") {
-            if (freeEnabled) {
-              return <CheckIcon key={`free-${r.id}`} className="h-6" />;
-            } else {
-              return <CheckXIcon key={`free-${r.id}`} className="h-6" />;
+    <>
+      <div className="grid grid-cols-4 items-center">
+        <div className="col-span-2 flex flex-col items-start gap-7.5">
+          <p className="text-base">{benefit.code}</p>
+          {benefit.resources.map((r) => {
+            if (r.type === "model") {
+              return <Model model_id={r.id} key={r.id} />;
             }
-          }
 
-          return null;
-        })}
-      </div>
-      <div className="w-landing-feature-right flex flex-col items-start gap-7.5">
-        <p className="text-base">
-          {benefit.limit}/{pro?.duration}
-        </p>
-        {benefit.resources.map((r) => {
-          if (r.type === "model") {
-            if (proEnabled) {
-              return <CheckIcon key={`pro-${r.id}`} className="h-6" />;
-            } else {
-              return <CheckXIcon key={`pro-${r.id}`} className="h-6" />;
+            return null;
+          })}
+        </div>
+        <div className="col-span-1 flex flex-col items-start gap-7.5">
+          <p className="text-base">
+            {benefit.limit}/{free?.duration}
+          </p>
+          {benefit.resources.map((r) => {
+            if (r.type === "model") {
+              if (freeEnabled) {
+                return <CheckIcon key={`free-${r.id}`} className="h-6" />;
+              } else {
+                return <CheckXIcon key={`free-${r.id}`} className="h-6" />;
+              }
             }
-          }
 
-          return null;
-        })}
+            return null;
+          })}
+        </div>
+        <div className="col-span-1 flex flex-col items-start gap-7.5">
+          <p className="text-base">
+            {benefit.limit}/{pro?.duration}
+          </p>
+          {benefit.resources.map((r) => {
+            if (r.type === "model") {
+              if (proEnabled) {
+                return <CheckIcon key={`pro-${r.id}`} className="h-6" />;
+              } else {
+                return <CheckXIcon key={`pro-${r.id}`} className="h-6" />;
+              }
+            }
+
+            return null;
+          })}
+        </div>
       </div>
-    </div>
+      <p className="text-text-secondary mt-7.5 text-sm">
+        Basic models consume Standard queries. Each request a user sends
+        consumes one Standard query.
+      </p>
+    </>
   );
 }
 
 export function BenefitTableList() {
   const { benefits } = useBenefit();
   return (
-    <div className="flex flex-col">
+    <>
       {benefits.map((benefit) => (
-        <div key={benefit.code}>
+        <div key={benefit.code} className="w-full">
           <Divider flexItem className="my-7.5" />
           <BenefitTable benefit={benefit} />
         </div>
       ))}
-    </div>
+    </>
   );
 }
