@@ -1,1 +1,1 @@
-export { PaymentMethodProvider } from "./PaymentMethod";
+export { PaymentMethodProvider, usePaymentMethod } from "./PaymentMethod";
