@@ -95,9 +95,11 @@ export function SearchAnnotation({
           href={url}
           target="_blank"
           className={cn(
-            "bg-action-hover hover:bg-divider mx-2.5 rounded-full px-2 py-px text-xs",
+            "bg-action-hover hover:bg-divider mx-2.5 rounded-full px-2 py-px",
             "ring-divider ring-1 ring-inset", // border
-            "max-w-45 truncate",
+            // using `inline-block` to enable `truncate`, using `align-middle` to align the text vertically.
+            // annotation might be part of a bold text, always use `font-normal`.
+            "inline-block max-w-45 truncate align-middle text-xs font-normal",
           )}
           data-annotation={true}
         >

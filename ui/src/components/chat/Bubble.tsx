@@ -146,6 +146,11 @@ function BubbleAssistant({
           className="ml-2.5"
         />
       </BubbleActions>
+      {message.interrupted && (
+        <p className="text-text-secondary text-sm">
+          This message has been stopped.
+        </p>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ export interface Message {
   role: MessageRole;
   content: string;
   annotations?: MessageAnnotation[];
+  interrupted?: boolean;
 }
 
 export interface MessageAnnotation {
