@@ -7,7 +7,7 @@ export async function getBenefits(): Promise<Benefit[]> {
       code: "standard_chat",
       resources: [
         { type: "model", id: "gpt-4.1" },
-        { type: "model", id: "claude-sonnet-4-5-20250929" },
+        { type: "model", id: "claude-sonnet-4-5" },
       ],
       limit: 1000,
       unit: "request",

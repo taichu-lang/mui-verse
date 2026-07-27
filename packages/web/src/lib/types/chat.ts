@@ -1,6 +1,13 @@
 import { Message } from "@mui-verse/ui/components/chat";
 import { ApiResponse } from "./api";
 
+export interface ChatRequest {
+  conversation_id: string;
+  model: string;
+  content: string;
+  tools?: string[];
+}
+
 export interface Conversation {
   id: number;
   conversation_id: string;

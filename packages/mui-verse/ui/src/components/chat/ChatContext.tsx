@@ -12,6 +12,9 @@ interface SharedState {
 }
 
 interface ChatValue extends SharedState {
+  // `user input` ~ `message done` or `interrupted`.
+  pending: boolean;
+  // `first chunk` ~ `message done` or `interrupted`.
   streaming: boolean;
   messages: Message[];
   // Pagination — only the historically-loaded prefix has ids; the tail (an
@@ -53,6 +56,7 @@ const createChatStore = (initialState: SharedState) =>
       (set, get) => ({
         model: initialState.model,
         enableWebSearch: initialState.enableWebSearch,
+        pending: false,
         streaming: false,
         messages: [],
         hasMoreOlder: false,
@@ -61,7 +65,26 @@ const createChatStore = (initialState: SharedState) =>
         setSharedState: (shared: Partial<SharedState>) => {
           set({ ...shared });
         },
-        stopStreaming: (interrupted?: boolean) => set({ streaming: false }),
+        stopStreaming: (interrupted?: boolean) =>
+          set((state) => {
+            if (!interrupted) {
+              return { streaming: false, pending: false };
+            }
+
+            const lastMessage = state.messages[state.messages.length - 1];
+            if (!lastMessage) {
+              return { streaming: false, pending: false };
+            }
+
+            return {
+              streaming: false,
+              pending: false,
+              messages: [
+                ...state.messages.slice(0, -1),
+                { ...lastMessage, interrupted: true },
+              ],
+            };
+          }),
         addUserMessage: (message: Message, assistantMessageID: string) =>
           set({
             messages: [
@@ -73,7 +96,7 @@ const createChatStore = (initialState: SharedState) =>
                 content: "",
               },
             ],
-            streaming: true,
+            pending: true,
           }),
         onStream: (message_id: string, chunk: string) =>
           set((state) => {
@@ -92,6 +115,7 @@ const createChatStore = (initialState: SharedState) =>
                 ...state.messages.slice(0, -1),
                 { ...lastMessage, content: lastMessage.content + chunk },
               ],
+              streaming: true,
             };
           }),
         replaceMessage: (message: Message) =>
@@ -100,11 +124,6 @@ const createChatStore = (initialState: SharedState) =>
               m.message_id === message.message_id ? message : m,
             ),
           })),
-        // Called once after the initial server-fetched page arrives on the
-        // client. Skips if the store already has messages — this preserves the
-        // in-flight stream on the /chat -> /chat/<id> exemption, where the
-        // Provider stayed mounted through the URL change and the RSC's initial
-        // fetch would otherwise clobber the just-appended user/assistant pair.
         hydrate: (messages: Message[], hasMoreOlder: boolean) => {
           if (get().messages.length > 0) return;
           set({ messages, hasMoreOlder, loadingOlder: false });

@@ -15,11 +15,9 @@ export interface MessagesPage {
 }
 
 // Server-side initial-page fetch. `before` is omitted for the first page so
-// the backend returns the newest window. Returns null on any non-200 —
-// callers should render the empty state rather than crashing:
-// - The /chat -> /chat/<id> transition races the DB write; a 404 here is
-//   expected, and the client store already has the just-streamed messages.
-// - A user pasting a bogus id also lands here; the empty state is acceptable.
+// the backend returns the newest window. Returns null on any non-200 — callers
+// should render the empty state rather than crashing (e.g. a user pasting a
+// bogus id lands here).
 export async function fetchMessagesPage(
   conversationId: string,
   before?: string,

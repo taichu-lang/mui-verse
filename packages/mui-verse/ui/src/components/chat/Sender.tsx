@@ -3,7 +3,7 @@
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Button, InputBase } from "@mui/material";
 import { ArrowUpIcon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useChat } from "./ChatContext";
 
 export function Sender({
@@ -17,20 +17,31 @@ export function Sender({
   minRows?: number;
   maxRows?: number;
   children?: React.ReactNode;
-  onSend: (text: string) => Promise<void>;
+  onSend: (text: string, controller: AbortController) => Promise<void>;
   className?: string;
   inputClassName?: string;
 }) {
-  const { streaming } = useChat();
+  const { pending, stopStreaming, streaming } = useChat();
   const [text, setText] = useState<string>("");
+  const abortCtrlRef = useRef<AbortController>(null);
 
   const handleSend = async () => {
-    if (!text || streaming) {
+    if (!text.trim() || pending) {
       return;
     }
 
+    const controller = new AbortController();
+    abortCtrlRef.current = controller;
+
     setText("");
-    await onSend(text);
+    await onSend(text, abortCtrlRef.current);
+  };
+
+  const handleAbort = () => {
+    if (abortCtrlRef.current) {
+      abortCtrlRef.current.abort();
+      stopStreaming(true);
+    }
   };
 
   const bindKey = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -69,7 +80,7 @@ export function Sender({
         {streaming ? (
           <Button
             className="h-8 w-8 min-w-0 rounded-full p-0"
-            onClick={handleSend}
+            onClick={handleAbort}
           >
             <svg
               width="16"
@@ -92,7 +103,7 @@ export function Sender({
           <Button
             className="h-8 w-8 min-w-0 rounded-lg p-0"
             onClick={handleSend}
-            disabled={!text || streaming}
+            disabled={!text || pending}
           >
             <ArrowUpIcon className="h-4 w-4" />
           </Button>

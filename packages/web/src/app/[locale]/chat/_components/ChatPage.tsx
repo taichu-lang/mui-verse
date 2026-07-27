@@ -1,10 +1,15 @@
 "use client";
 
 import { AuthZone } from "@/auth/AuthZone";
+import { useHistory } from "@/components/blocks/history/HistoryProvider";
 import { ModelBrandCard, ModelSelect } from "@/components/blocks/models";
+import { PlanUsage } from "@/components/blocks/usage/PlanUsage";
 import { useConversation } from "@/hooks/useConversation";
 import { useRouter } from "@/i18n/navigation";
-import type { Conversation as ConversationMeta } from "@/lib/types/chat";
+import type {
+  ChatRequest,
+  Conversation as ConversationMeta,
+} from "@/lib/types/chat";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import {
   Conversation,
@@ -13,18 +18,15 @@ import {
   useChat,
   WebSearchTool,
 } from "@mui-verse/ui/components/chat";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { MessagesPage } from "./lib";
 import { useLoadOlder } from "./useLoadOlder";
-import { useHistory } from "@/components/blocks/history/HistoryProvider";
-import { PlanUsage } from "@/components/blocks/usage/PlanUsage";
 
 // event: meta
 interface MetaData {
   message_id: string;
   next_assistant_id: string;
-  conversation_id: string;
 }
 
 // event: chunk
@@ -40,8 +42,8 @@ interface TitleData {
 }
 
 function SenderArea() {
-  // Read the conversation id off the URL each render — after the first-message
-  // router.replace, the next send closes over the new id automatically.
+  // The id is set in the URL before the first send (generated in /chat/page.tsx
+  // and pushed as /chat/<id>?n=1), so this is the single source of truth.
   const params = useParams<{ slug?: string }>();
   const conversationId = params.slug;
 
@@ -55,30 +57,33 @@ function SenderArea() {
     enableWebSearch,
     setSharedState,
   } = useChat();
-  const { setConversation, onInit } = useConversation();
+  const { setConversation } = useConversation();
   const history = useHistory();
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = async (text: string, controller: AbortController) => {
+    if (!conversationId) {
+      return;
+    }
+
+    const message: ChatRequest = {
+      conversation_id: conversationId,
+      model,
+      content: text,
+    };
+    if (enableWebSearch) {
+      message.tools = ["web_search"];
+    }
+
     await fetchEventSource("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        content: text,
-        tools: enableWebSearch ? ["web_search"] : [],
-        ...(conversationId ? { conversation_id: conversationId } : {}),
-      }),
+      body: JSON.stringify(message),
+      signal: controller.signal,
       onmessage(ev) {
         switch (ev.event) {
           case "meta": {
             const payload = JSON.parse(ev.data) as MetaData;
-            // First message of a brand-new conversation: promote /chat to
-            // /chat/<id> without remounting the ChatProvider (see the
-            // /chat -> /chat/<id> exemption in useSessionKey).
-            if (!conversationId) {
-              router.replace(`/chat/${payload.conversation_id}`);
-              onInit(payload.conversation_id);
-            }
+            router.replace(`/chat/${conversationId}`);
             addUserMessage(
               { message_id: payload.message_id, role: "user", content: text },
               payload.next_assistant_id,
@@ -103,9 +108,11 @@ function SenderArea() {
           }
 
           case "done": {
+            // We get the final message includes annotations, we need to
+            // replace the message to enable rendering properly.
             const payload = JSON.parse(ev.data) as Message;
             replaceMessage(payload);
-            stopStreaming(true);
+            stopStreaming();
             break;
           }
 
@@ -114,11 +121,11 @@ function SenderArea() {
         }
       },
       onclose() {
-        stopStreaming(false);
+        // Server side closes the connection unexpectedly.
+        stopStreaming();
       },
-      onerror(err) {
-        console.log(err);
-        stopStreaming(false);
+      onerror() {
+        stopStreaming();
       },
     });
   };
@@ -149,22 +156,22 @@ export function ChatPage({
   initialMessages,
   initialConversation,
 }: {
-  initialMessages?: MessagesPage;
-  initialConversation?: ConversationMeta;
+  initialMessages: MessagesPage;
+  initialConversation: ConversationMeta;
 }) {
   const senderWrapperRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const { messages, hydrate } = useChat();
   const params = useParams<{ slug?: string }>();
   const conversationId = params.slug;
-  const loadOlder = useLoadOlder(conversationId);
+  const newly = useSearchParams().get("n") === "1";
+  const loadOlder = useLoadOlder(conversationId, newly);
 
-  // Hydrate once from the RSC-fetched initial page. The store's own guard
-  // (skip if messages non-empty) protects the /chat -> /chat/<id> exemption
-  // where the Provider stays mounted with in-flight streaming state — a fresh
-  // RSC fetch during that transition MUST NOT clobber the just-streamed pair.
+  // Hydrate once from the RSC-fetched initial page. For a brand-new
+  // conversation (?n=1) initialMessages is empty and there is nothing to
+  // hydrate — streaming will populate the store directly.
   useEffect(() => {
-    if (!initialMessages) return;
+    if (initialMessages.messages.length === 0) return;
     hydrate(initialMessages.messages, initialMessages.has_more);
   }, [initialMessages, hydrate]);
 
@@ -172,7 +179,6 @@ export function ChatPage({
   // hard refresh on /chat/<id> restores the title/pinned state that the
   // sidebar's click-handler would otherwise be the only writer for.
   useEffect(() => {
-    if (!initialConversation) return;
     const current = useConversation.getState().conversation;
     if (current?.conversation_id === initialConversation.conversation_id) {
       return;
@@ -223,6 +229,21 @@ export function ChatPage({
         ref={senderWrapperRef}
         className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur"
       >
+        <SenderArea />
+        <div className="my-2 flex items-center justify-center text-xs">
+          AI can make mistakes. Please double-check responses.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// DefaultChatPage is the skeleton of the chat page even though user hasn't signed in.
+export function DefaultChatPage() {
+  return (
+    <div className="max-w-chat-area mx-auto flex w-full flex-1 flex-col">
+      <ModelBrandCard />
+      <div className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur">
         <SenderArea />
         <div className="my-2 flex items-center justify-center text-xs">
           AI can make mistakes. Please double-check responses.

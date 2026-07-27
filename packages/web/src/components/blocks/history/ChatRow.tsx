@@ -57,7 +57,7 @@ export function ChatMenuRow({
       {editMode ? (
         <ConversationTitleEditor />
       ) : (
-        <span className="truncate text-sm">{target.title}</span>
+        <span className="truncate text-sm">{target.title || "新对话"}</span>
       )}
     </MenuItem>
   );

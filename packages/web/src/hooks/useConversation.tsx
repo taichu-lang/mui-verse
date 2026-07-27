@@ -5,17 +5,12 @@ import { create } from "zustand";
 
 interface ConversationValue {
   conversation: Conversation | null;
-  onInit: (id: string) => void;
   setConversation: (c: Partial<Conversation>) => void;
   reset: () => void;
 }
 
 export const useConversation = create<ConversationValue>((set, get) => ({
   conversation: null,
-  onInit: (id: string) =>
-    set({
-      conversation: { id: 0, conversation_id: id, title: "", pinned: false },
-    }),
   setConversation: (c: Partial<Conversation>) =>
     set({ conversation: { ...get().conversation!, ...c } }),
   reset: () => set({ conversation: null }),

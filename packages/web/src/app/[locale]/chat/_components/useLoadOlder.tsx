@@ -23,7 +23,10 @@ import type { MessagesPage } from "./lib";
 //
 // The hook returns an `onReachTop` callback stable across renders (only
 // resubscribes to observer when the conversation id changes).
-export function useLoadOlder(conversationId: string | undefined) {
+export function useLoadOlder(
+  conversationId: string | undefined,
+  newly: boolean,
+) {
   const { messages, hasMoreOlder, setLoadingOlder, prependOlder } = useChat();
   const scrollElement = useChatScrollContainer();
 
@@ -50,6 +53,10 @@ export function useLoadOlder(conversationId: string | undefined) {
 
   return useCallback(() => {
     if (!conversationId) return;
+    // Brand-new conversation (redirected from /chat with ?n=1): there is no
+    // server-side history to page through, so short-circuit before we hit the
+    // API with a bogus `before` cursor.
+    if (newly) return;
     if (inFlightRef.current) return;
     const { messages, hasMoreOlder } = latestRef.current;
     if (!hasMoreOlder) return;
@@ -109,5 +116,5 @@ export function useLoadOlder(conversationId: string | undefined) {
         if (abortRef.current === ac) abortRef.current = null;
       }
     })();
-  }, [conversationId, scrollElement, setLoadingOlder, prependOlder]);
+  }, [conversationId, newly, scrollElement, setLoadingOlder, prependOlder]);
 }

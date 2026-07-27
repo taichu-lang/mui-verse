@@ -19,12 +19,12 @@ export const models: Model[] = [
     provider: "anthropic",
   },
   {
-    id: "claude-sonnet-4-5-20250929",
+    id: "claude-sonnet-4-5",
     name: "Claude Sonnet 4.5",
     provider: "anthropic",
   },
   {
-    id: "claude-haiku-4-5-20251001",
+    id: "claude-haiku-4-5",
     name: "Claude Haiku 4.5",
     provider: "anthropic",
   },
@@ -65,12 +65,12 @@ export const models: Model[] = [
   },
   {
     id: "gemini-3.1-pro-preview",
-    name: "Gemini 3.1 Pro Preview",
+    name: "Gemini 3.1 Pro",
     provider: "google",
   },
   {
     id: "gemini-3-flash-preview",
-    name: "Gemini 3 Flash Preview",
+    name: "Gemini 3 Flash",
     provider: "google",
   },
 ];
