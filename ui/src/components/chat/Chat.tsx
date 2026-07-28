@@ -18,7 +18,7 @@ export function Conversation({
   // preservation can bracket the state update (see useLoadOlder).
   onReachTop?: () => void;
 }) {
-  const { streaming, messages, hasMoreOlder, loadingOlder } = useChat();
+  const { pending, messages, hasMoreOlder, loadingOlder } = useChat();
 
   // Sentinel just after the last message. scrollIntoView scrolls the nearest
   // scrollable ancestor into view. The sentinel carries a scroll-margin-bottom
@@ -65,12 +65,12 @@ export function Conversation({
   // it. Observing the message area lets every measurement pass re-park us
   // at the true bottom until things settle.
   useEffect(() => {
-    const active = streaming || !initialSettled;
+    const active = pending || !initialSettled;
     if (!active || !messageAreaRef.current || messages.length === 0) return;
     const observer = new ResizeObserver(stickToEnd);
     observer.observe(messageAreaRef.current);
     return () => observer.disconnect();
-  }, [streaming, initialSettled, messages.length, stickToEnd]);
+  }, [pending, initialSettled, messages.length, stickToEnd]);
 
   // Release the initial-load auto-stick after two animation frames. One rAF
   // gives the virtualizer a paint to run measureElement on the currently
@@ -155,13 +155,13 @@ export function Conversation({
               <Bubble
                 message={message}
                 className={bubbleClassName}
-                streaming={isLast ? streaming : undefined}
+                streaming={isLast ? pending : undefined}
               />
             </div>
           );
         })}
       </div>
-      {streaming && <StreamingIcon />}
+      {pending && <StreamingIcon />}
       <div
         ref={endRef}
         aria-hidden
