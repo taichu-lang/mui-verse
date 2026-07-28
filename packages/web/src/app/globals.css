@@ -56,6 +56,9 @@
   --text-xl--letter-spacing: 0;
   --text-2xl--line-height: 30px;
   --text-2xl--letter-spacing: 0;
+  --text-4xl--font-size: 40px; /* h1 */
+  --text-4xl--line-height: 60px;
+  --text-4xl--letter-spacing: 0;
 
   --spacing-bubble-user: 536px;
   --spacing-chat-area: 770px;
@@ -67,6 +70,7 @@
   --spacing-sign-width: 504px;
   --spacing-landing-width: 1122px;
   --spacing-landing-navbar: 68px;
+  --spacing-faq-width: 800px;
   --spacing-pricing-width: 874px;
 }
 

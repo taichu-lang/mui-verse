@@ -4,32 +4,9 @@ import { useAuth } from "@/auth/auth";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitchRounded } from "@/components/ui/LanguageSwitch";
 import { usePathname } from "@/i18n/navigation";
-import { cn } from "@mui-verse/ui/utils/cn";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-
-function NavbarItem({
-  href,
-  active,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      className={cn(
-        "hover:bg-action-hover rounded-full px-3 py-1.5 text-base",
-        {
-          "bg-action-hover": active,
-        },
-      )}
-      href={href}
-    >
-      {children}
-    </a>
-  );
-}
+import { AnchorLink } from "./AnchorLink";
 
 export function Navbar() {
   const { session } = useAuth();
@@ -48,23 +25,25 @@ export function Navbar() {
 
   return (
     <div className="w-landing-width relative mx-auto flex h-full items-center justify-between">
-      <p className="text-base font-medium">Anna</p>
+      <Link href="/" className="text-base font-medium">
+        Anna
+      </Link>
       <div className="absolute left-1/2 flex -translate-x-1/2 gap-11.5">
-        <NavbarItem href={section("product")} active={sectionActive("product")}>
+        <AnchorLink href={section("product")} active={sectionActive("product")}>
           Product
-        </NavbarItem>
-        <NavbarItem
+        </AnchorLink>
+        <AnchorLink
           href={section("capabilities")}
           active={sectionActive("capabilities")}
         >
           Capabilities
-        </NavbarItem>
-        <NavbarItem href="/pricing" active={pathname === "/pricing"}>
+        </AnchorLink>
+        <AnchorLink href={section("faq")} active={sectionActive("faq")}>
+          FAQ
+        </AnchorLink>
+        <AnchorLink href="/pricing" active={pathname === "/pricing"}>
           Pricing
-        </NavbarItem>
-        <NavbarItem href={section("support")} active={sectionActive("support")}>
-          Support
-        </NavbarItem>
+        </AnchorLink>
       </div>
       <div className="flex gap-5.25">
         <LanguageSwitchRounded />

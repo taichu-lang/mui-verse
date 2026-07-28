@@ -2,6 +2,7 @@
 
 import { cn } from "@mui-verse/ui/utils/cn";
 import { useEffect, useRef, useState } from "react";
+import { Footer } from "./_blocks/Footer";
 import { Navbar } from "./_blocks/Navbar";
 
 export default function LandingLayout({
@@ -40,6 +41,7 @@ export default function LandingLayout({
         <Navbar />
       </div>
       {children}
+      <Footer />
     </div>
   );
 }

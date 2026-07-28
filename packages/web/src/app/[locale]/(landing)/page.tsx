@@ -1,4 +1,6 @@
+import { Divider } from "@mui/material";
 import { CapabilitiesSection } from "./_blocks/capabilities";
+import { FaqSection } from "./_blocks/faq";
 import { FeatureSection } from "./_blocks/feature";
 import { HeroSection } from "./_blocks/hero";
 import { ModelSection } from "./_blocks/models";
@@ -12,6 +14,8 @@ export default function LandingPage() {
       <ModelSection />
       <CapabilitiesSection />
       <UiSection />
+      <FaqSection />
+      <Divider flexItem />
     </>
   );
 }

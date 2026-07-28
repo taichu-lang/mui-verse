@@ -26,9 +26,11 @@ export default function PricingPage() {
           />
         </PlanTabs>
         <PlanPanels />
-        <h2 className="mt-20 text-center">Plan features</h2>
-        <FeatureHeader />
-        <BenefitTableList />
+        <div className="mt-20 mb-15 w-full">
+          <h2 className="text-center">Plan features</h2>
+          <FeatureHeader />
+          <BenefitTableList />
+        </div>
       </TabContext>
     </div>
   );

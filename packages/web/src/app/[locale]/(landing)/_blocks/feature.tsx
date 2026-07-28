@@ -1,7 +1,7 @@
 import { UserIcon } from "@/components/icons";
 import { ArrowRightLeftIcon, GlobeIcon, MessageCircleIcon } from "lucide-react";
 import { Chip } from "./Chip";
-import { WhiteSection } from "./Section";
+import { Section } from "./Section";
 
 function FeatureCard({
   Icon,
@@ -27,7 +27,7 @@ function FeatureCard({
 
 export function FeatureSection() {
   return (
-    <WhiteSection>
+    <Section white>
       <Chip label="Key features" />
       <h2 className="mt-7.5">Why choose Plato</h2>
       <p className="text-text-secondary mt-5 text-base">
@@ -56,6 +56,6 @@ export function FeatureSection() {
           description="Every conversation saved and searchable — pick up right where you left off."
         />
       </div>
-    </WhiteSection>
+    </Section>
   );
 }

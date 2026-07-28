@@ -1,7 +1,7 @@
 import { cn } from "@mui-verse/ui/utils/cn";
 import Image from "next/image";
 import { Chip } from "./Chip";
-import { WhiteSection } from "./Section";
+import { Section } from "./Section";
 
 interface TextProps {
   title: string;
@@ -119,7 +119,7 @@ export function CapabilitiesSection() {
     },
   ];
   return (
-    <WhiteSection id="capabilities">
+    <Section id="capabilities" white>
       <Chip label="Product capabilities" />
       <h2 className="mt-7.5">From quick questions to complex tasks</h2>
       <p className="text-text-secondary mt-5 text-base">
@@ -130,6 +130,6 @@ export function CapabilitiesSection() {
           <Capability {...c} key={index} />
         ))}
       </div>
-    </WhiteSection>
+    </Section>
   );
 }
