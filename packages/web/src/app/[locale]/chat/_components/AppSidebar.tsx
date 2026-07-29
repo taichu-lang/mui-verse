@@ -22,30 +22,30 @@ function ScrollArea() {
   const { collapsed } = useSidebar();
   const hasAuthorization = useAuth.useHasAuthorization();
 
-  if (hasAuthorization) {
+  if (!hasAuthorization) {
+    return (
+      <AuthZone>
+        <ModelAccordion />
+      </AuthZone>
+    );
+  }
+
+  if (collapsed) {
+    // Collapsed sidebar keeps the DropdownMenu-based entry points; the
+    // virtualized list is only meaningful in the expanded layout.
     return (
       <>
-        {collapsed ? (
-          // Collapsed sidebar keeps the DropdownMenu-based entry points; the
-          // virtualized list is only meaningful in the expanded layout.
-          <>
-            <ModelAccordion />
-            <ChatHistoryDropdown pinned />
-            <ChatHistoryDropdown />
-          </>
-        ) : (
-          <div className="mb-2 flex min-h-0 flex-1 flex-col">
-            <ConversationListView />
-          </div>
-        )}
+        <ModelAccordion />
+        <ChatHistoryDropdown pinned />
+        <ChatHistoryDropdown />
       </>
     );
   }
 
   return (
-    <AuthZone>
-      <ModelAccordion />
-    </AuthZone>
+    <div className="mb-2 flex min-h-0 flex-1 flex-col">
+      <ConversationListView />
+    </div>
   );
 }
 

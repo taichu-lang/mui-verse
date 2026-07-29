@@ -4,7 +4,7 @@ import { cn } from "@mui-verse/ui/utils/cn";
 import { Button, InputBase } from "@mui/material";
 import { ArrowUpIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { useChat } from "./ChatContext";
+import { useChatSession } from "./ChatSessionContext";
 
 export function Sender({
   minRows = 3,
@@ -21,7 +21,7 @@ export function Sender({
   className?: string;
   inputClassName?: string;
 }) {
-  const { pending, stopStreaming, streaming } = useChat();
+  const { pending, stopStreaming, streaming } = useChatSession();
   const [text, setText] = useState<string>("");
   const abortCtrlRef = useRef<AbortController>(null);
 

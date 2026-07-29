@@ -5,8 +5,10 @@
 // Use the following header to sync locale to the server side.
 export const LOCALE_HEADER = "x-api-locale";
 
+export const apiCodeInputError = 1;
 export const apiCodeUserNotFound = 2;
 export const apiCodeCredentialError = 3;
+export const apiCodeForbidden = 4;
 export const apiCodeSystemError = 99;
 
 export interface ApiResponse {

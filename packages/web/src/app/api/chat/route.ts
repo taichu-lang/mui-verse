@@ -1,7 +1,9 @@
 "server-only";
 
-import { NextResponse, type NextRequest } from "next/server";
 import { getAuthSession } from "@/lib/cookie";
+import { logger } from "@/lib/logger";
+import { apiCodeSystemError } from "@/lib/types/api";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const serverUrl = process.env.SERVER_URL;
@@ -18,10 +20,25 @@ export async function POST(request: NextRequest) {
     signal: request.signal,
   });
 
-  if (!upstream.ok || !upstream.body) {
-    const text = await upstream.text().catch(() => "");
-    console.log("failed to send sse event.", text);
-    return NextResponse.error();
+  if (!upstream.ok) {
+    const err = await upstream
+      .text()
+      .catch(() => JSON.stringify({ code: apiCodeSystemError }));
+    logger.error({ err }, "failed to receive chat stream.");
+    const event = `event: error\ndata: ${err}\n\n`;
+    return new Response(event, {
+      // We can not get the status code from fetchEventSource, so just be 200.
+      status: 200,
+      headers: {
+        // Content type must be `text/event-stream`, as fetchEventSource only
+        // supports event stream. If content type is `application/json` here,
+        // `onerror` callback will be called, however, data in the callback is
+        // not the `event` above, but a content type mismatch error.
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+      },
+    });
   }
 
   return new Response(upstream.body, {

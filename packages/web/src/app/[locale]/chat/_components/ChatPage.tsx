@@ -16,6 +16,7 @@ import {
   Message,
   Sender,
   useChat,
+  useChatSession,
   WebSearchTool,
 } from "@mui-verse/ui/components/chat";
 import { useParams, useSearchParams } from "next/navigation";
@@ -48,17 +49,42 @@ function SenderArea() {
   const conversationId = params.slug;
 
   const router = useRouter();
-  const {
-    addUserMessage,
-    onStream,
-    replaceMessage,
-    stopStreaming,
-    model,
-    enableWebSearch,
-    setSharedState,
-  } = useChat();
+  const { addUserMessage, onStream, replaceMessage, stopStreaming } =
+    useChatSession();
+  const { model, enableWebSearch, setChat } = useChat();
   const { setConversation } = useConversation();
   const history = useHistory();
+
+  const onMetadata = (input: string, data: string) => {
+    const payload = JSON.parse(data) as MetaData;
+    router.replace(`/chat/${conversationId}`);
+    addUserMessage(
+      { message_id: payload.message_id, role: "user", content: input },
+      payload.next_assistant_id,
+    );
+  };
+
+  const onChunk = (data: string) => {
+    const payload = JSON.parse(data) as ChunkData;
+    onStream(payload.message_id, payload.chunk);
+  };
+
+  const onTitleGen = (data: string) => {
+    const payload = JSON.parse(data) as TitleData;
+    setConversation({ title: payload.title });
+
+    // Once the title has been generated, we can reload the recent
+    // conversation history.
+    history.refreshRecents();
+  };
+
+  const onTurnDone = (data: string) => {
+    // We get the final message includes annotations, we need to
+    // replace the message to enable rendering properly.
+    const payload = JSON.parse(data) as Message;
+    replaceMessage(payload);
+    stopStreaming();
+  };
 
   const sendMessage = async (text: string, controller: AbortController) => {
     if (!conversationId) {
@@ -81,40 +107,26 @@ function SenderArea() {
       signal: controller.signal,
       onmessage(ev) {
         switch (ev.event) {
-          case "meta": {
-            const payload = JSON.parse(ev.data) as MetaData;
-            router.replace(`/chat/${conversationId}`);
-            addUserMessage(
-              { message_id: payload.message_id, role: "user", content: text },
-              payload.next_assistant_id,
-            );
+          case "error": {
+            console.log("on error: ", ev.data);
             break;
           }
 
-          case "chunk": {
-            const payload = JSON.parse(ev.data) as ChunkData;
-            onStream(payload.message_id, payload.chunk);
+          case "meta":
+            onMetadata(text, ev.data);
             break;
-          }
 
-          case "title": {
-            const payload = JSON.parse(ev.data) as TitleData;
-            setConversation({ title: payload.title });
-
-            // Once the title has been generated, we can reload the recent
-            // conversation history.
-            history.refreshRecents();
+          case "chunk":
+            onChunk(ev.data);
             break;
-          }
 
-          case "done": {
-            // We get the final message includes annotations, we need to
-            // replace the message to enable rendering properly.
-            const payload = JSON.parse(ev.data) as Message;
-            replaceMessage(payload);
-            stopStreaming();
+          case "title":
+            onTitleGen(ev.data);
             break;
-          }
+
+          case "done":
+            onTurnDone(ev.data);
+            break;
 
           default:
             break;
@@ -124,8 +136,10 @@ function SenderArea() {
         // Server side closes the connection unexpectedly.
         stopStreaming();
       },
-      onerror() {
+      onerror(err) {
+        console.log(">>> ", err);
         stopStreaming();
+        throw err; // throw the error, otherwise sse connection will be reconnected.
       },
     });
   };
@@ -142,9 +156,7 @@ function SenderArea() {
         <ModelSelect />
         <WebSearchTool
           defaultChecked={enableWebSearch}
-          onSwitch={(checked: boolean) =>
-            setSharedState({ enableWebSearch: checked })
-          }
+          onSwitch={(checked: boolean) => setChat({ enableWebSearch: checked })}
         />
         <PlanUsage />
       </Sender>
@@ -161,7 +173,7 @@ export function ChatPage({
 }) {
   const senderWrapperRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const { messages, hydrate } = useChat();
+  const { messages, hydrate } = useChatSession();
   const params = useParams<{ slug?: string }>();
   const conversationId = params.slug;
   const newly = useSearchParams().get("n") === "1";

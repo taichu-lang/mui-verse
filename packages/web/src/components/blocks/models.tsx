@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/auth/auth";
 import { ModelsIcon, PinnedIcon, PinnerIcon } from "@/components/icons";
-import { useRouter } from "@/i18n/navigation";
+import { useConversationMutations } from "@/hooks/useConversationMutations";
 import { getModels } from "@/lib/apis/model";
 import { addPinnedModel, unPinModel } from "@/lib/apis/preference";
 import { Model, modelIcons, models } from "@/lib/types/model";
@@ -26,15 +26,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "./history/HistoryProvider";
 
 export function ModelMenuItem({ model }: { model: Model }) {
-  const router = useRouter();
   const { provider, name, pinned = false } = model;
-  const { setSharedState } = useChat();
   const { session } = useAuth();
   const history = useHistory();
+  const { switchConversation } = useConversationMutations();
 
   const switchModel = () => {
-    setSharedState({ model: model.id });
-    router.replace(`/chat`);
+    switchConversation({ model: model.id });
   };
 
   const handlePin = async () => {
@@ -84,15 +82,13 @@ function DropDownModelMenu({
   model: Model;
   onRefresh: () => void;
 }) {
-  const router = useRouter();
   const { provider, name, pinned = false } = model;
   const { onClose } = useDropdownMenu();
-  const { setSharedState } = useChat();
   const { session } = useAuth();
+  const { switchConversation } = useConversationMutations();
 
   const handleSelected = () => {
-    setSharedState({ model: model.id });
-    router.replace(`/chat`);
+    switchConversation({ model: model.id });
     onClose();
   };
 
@@ -183,8 +179,8 @@ export function ModelAccordion() {
 }
 
 export function ModelSelect() {
-  const router = useRouter();
-  const { model, setSharedState } = useChat();
+  const { model, setChat } = useChat();
+  const { switchConversation } = useConversationMutations();
   const selected = useMemo(
     () => models.find((v) => v.id === model) || models[0],
     [model],
@@ -192,13 +188,12 @@ export function ModelSelect() {
 
   useEffect(() => {
     if (!model) {
-      setSharedState({ model: selected.id });
+      setChat({ model: selected.id });
     }
-  }, [model, setSharedState, selected]);
+  }, [model, setChat, selected]);
 
   const handleSwitch = (id: string) => {
-    setSharedState({ model: id });
-    router.replace(`/chat`);
+    switchConversation({ model: id });
   };
 
   const Icon = modelIcons[selected.provider];

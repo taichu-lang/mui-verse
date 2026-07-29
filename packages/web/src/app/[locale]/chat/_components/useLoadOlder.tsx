@@ -1,6 +1,9 @@
 "use client";
 
-import { useChat, useChatScrollContainer } from "@mui-verse/ui/components/chat";
+import {
+  useChatScrollContainer,
+  useChatSession,
+} from "@mui-verse/ui/components/chat";
 import { useCallback, useEffect, useRef } from "react";
 import { flushSync } from "react-dom";
 import type { MessagesPage } from "./lib";
@@ -17,7 +20,7 @@ import type { MessagesPage } from "./lib";
 //     viewport up by their combined height.
 //
 //  2. Atomic in-flight guard via a ref.  IntersectionObserver can fire the
-//     sentinel callback multiple times per scroll event; `useChat()` state
+//     sentinel callback multiple times per scroll event; `useChatSession()` state
 //     reads are stale until React re-renders, so a state-based check would
 //     let two loads race. The ref is written synchronously.
 //
@@ -27,7 +30,8 @@ export function useLoadOlder(
   conversationId: string | undefined,
   newly: boolean,
 ) {
-  const { messages, hasMoreOlder, setLoadingOlder, prependOlder } = useChat();
+  const { messages, hasMoreOlder, setLoadingOlder, prependOlder } =
+    useChatSession();
   const scrollElement = useChatScrollContainer();
 
   const inFlightRef = useRef(false);

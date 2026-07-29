@@ -1,3 +1,5 @@
+"use client";
+
 import { useHistory } from "@/components/blocks/history/HistoryProvider";
 import {
   deleteConversation,
@@ -5,13 +7,16 @@ import {
   updateConversationTitle,
 } from "@/lib/apis/conversation";
 import { Conversation } from "@/lib/types/chat";
+import { genConversationID } from "@/lib/uuid";
+import { useChat } from "@mui-verse/ui/components/chat";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useConversation } from "./useConversation";
 
 // Sync conversation after operations.
 export function useConversationMutations() {
-  const { conversation: opened, setConversation } = useConversation();
+  const { conversation: opened, setConversation, reset } = useConversation();
+  const { setChat } = useChat();
   const history = useHistory();
   const router = useRouter();
 
@@ -74,5 +79,24 @@ export function useConversationMutations() {
     }
   };
 
-  return { rename, togglePin, remove };
+  const switchConversation = (ctx: {
+    model?: string;
+    conversationID?: string;
+  }) => {
+    if (ctx.model) {
+      setChat({ model: ctx.model });
+    }
+
+    reset();
+
+    if (ctx.conversationID) {
+      router.push(`/chat/${ctx.conversationID}`);
+    } else {
+      // new conversation.
+      const id = genConversationID();
+      router.push(`/chat/${id}?n=1`);
+    }
+  };
+
+  return { rename, togglePin, remove, switchConversation };
 }

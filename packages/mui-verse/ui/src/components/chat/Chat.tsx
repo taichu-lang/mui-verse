@@ -4,7 +4,7 @@ import { StreamingIcon } from "@mui-verse/ui/components/icons";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Bubble } from "./Bubble";
-import { useChat } from "./ChatContext";
+import { useChatSession } from "./ChatSessionContext";
 import { useChatScrollContainer } from "./ChatScrollContext";
 
 export function Conversation({
@@ -18,7 +18,7 @@ export function Conversation({
   // preservation can bracket the state update (see useLoadOlder).
   onReachTop?: () => void;
 }) {
-  const { pending, messages, hasMoreOlder, loadingOlder } = useChat();
+  const { pending, messages, hasMoreOlder, loadingOlder } = useChatSession();
 
   // Sentinel just after the last message. scrollIntoView scrolls the nearest
   // scrollable ancestor into view. The sentinel carries a scroll-margin-bottom
