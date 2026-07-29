@@ -4,6 +4,7 @@ import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
 import { PillTabs, useTabContext } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 export function PlanTabs({
@@ -35,6 +36,7 @@ export function PlanTabs({
 }
 
 export function MonthLabel({ variant = "md" }: { variant?: "sm" | "md" }) {
+  const t = useTranslations();
   const { value } = useTabContext();
   const active = value === "monthly";
 
@@ -47,12 +49,13 @@ export function MonthLabel({ variant = "md" }: { variant?: "sm" | "md" }) {
         "text-text-primary": !active,
       })}
     >
-      One Month
+      {t("duration.oneMonth")}
     </span>
   );
 }
 
 export function YearLabel({ variant = "md" }: { variant?: "sm" | "md" }) {
+  const t = useTranslations();
   const { value } = useTabContext();
   const { discountPercent } = useBenefit();
   const { currency } = useCheckout();
@@ -75,7 +78,7 @@ export function YearLabel({ variant = "md" }: { variant?: "sm" | "md" }) {
           "text-base": variant === "md",
         })}
       >
-        One Year
+        {t("duration.oneYear")}
       </span>
       <span
         className={cn("leading-4.5 font-medium", {
@@ -85,7 +88,7 @@ export function YearLabel({ variant = "md" }: { variant?: "sm" | "md" }) {
           "text-sm": variant === "sm",
         })}
       >
-        Save {discount}
+        {t("pricing.discount", { discount })}
       </span>
     </div>
   );

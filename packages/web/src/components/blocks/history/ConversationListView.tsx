@@ -14,6 +14,7 @@ import { useEffect, useRef } from "react";
 import { ChatMenuRow } from "./ChatRow";
 import { ConversationOpsProvider } from "./ConversationOps";
 import { useHistory } from "./HistoryProvider";
+import { useTranslations } from "next-intl";
 
 type ConversationItem = Model | Conversation;
 
@@ -21,6 +22,7 @@ export function ConversationListView() {
   const ref = useRef<InfiniteScrollViewHandle>(null);
   const { setScrollRef } = useHistory();
   const { session } = useAuth();
+  const t = useTranslations();
 
   useEffect(() => {
     if (ref.current) {
@@ -85,7 +87,11 @@ export function ConversationListView() {
         );
       }}
       renderHeader={(section, { collapsed, toggle }) => (
-        <SectionHeader title={section} collapsed={collapsed} onClick={toggle} />
+        <SectionHeader
+          title={t(`chat.sidebar.${section}`)}
+          collapsed={collapsed}
+          onClick={toggle}
+        />
       )}
     />
   );

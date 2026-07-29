@@ -1,12 +1,16 @@
 import { useAuth } from "@/auth/auth";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export function FreePlanButton({ className }: { className?: string }) {
+  const t = useTranslations();
   const { session } = useAuth();
   const title =
-    session?.plan_code === "pro" ? "Already included" : "Get started";
+    session?.plan_code === "pro"
+      ? t("pricing.free.actionPro")
+      : t("pricing.free.actionFree");
 
   return (
     <Button
@@ -23,8 +27,12 @@ export function FreePlanButton({ className }: { className?: string }) {
 }
 
 export function ProPlanButton({ className }: { className?: string }) {
+  const t = useTranslations();
   const { session } = useAuth();
-  const title = session?.plan_code === "pro" ? "Extend" : "Buy now";
+  const title =
+    session?.plan_code === "pro"
+      ? t("pricing.pro.actionPro")
+      : t("pricing.pro.actionFree");
 
   return (
     <Button

@@ -3,25 +3,31 @@ import { Benefit, Plan } from "@/lib/types/benefit";
 export async function getBenefits(): Promise<Benefit[]> {
   return [
     {
-      id: "b_001",
+      id: 1,
       code: "standard_chat",
       resources: [
         { type: "model", id: "gpt-4.1" },
         { type: "model", id: "claude-sonnet-4-5" },
       ],
-      limit: 1000,
-      unit: "request",
     },
     {
-      id: "b_002",
+      id: 2,
       code: "advanced_chat",
       resources: [
         { type: "model", id: "gpt-5.4" },
-        { type: "model", id: "gpt-5.5" },
-        { type: "model", id: "claude-opus-4-7" },
+        { type: "model", id: "gpt-5.3-codex" },
+        { type: "model", id: "claude-sonnet-4-6" },
       ],
-      limit: 1000_000,
-      unit: "token",
+    },
+    {
+      id: 3,
+      code: "frontier_chat",
+      resources: [
+        { type: "model", id: "gpt-5.4-pro" },
+        { type: "model", id: "claude-opus-4-7" },
+        { type: "model", id: "claude-opus-4-6" },
+        { type: "model", id: "claude-opus-4-5" },
+      ],
     },
   ];
 }
@@ -29,40 +35,64 @@ export async function getBenefits(): Promise<Benefit[]> {
 export async function getPlans(): Promise<Plan[]> {
   return [
     {
-      type: "free",
-      duration: "monthly",
-      prices: [],
-      benefits: ["standard_chat"],
-    },
-    {
-      type: "pro",
-      duration: "monthly",
-      prices: [
+      code: "free",
+      prices: {
+        monthly: [],
+        yearly: [],
+      },
+      benefits: [
         {
-          amount: 16,
-          currency: "USD",
-        },
-        {
-          amount: 150,
-          currency: "RUB",
+          code: "standard_chat",
+          unit: "request",
+          billing_cycle: "daily",
+          limit: 40,
         },
       ],
-      benefits: ["standard_chat", "advanced_chat"],
     },
     {
-      type: "pro",
-      duration: "yearly",
-      prices: [
+      code: "pro",
+      prices: {
+        monthly: [
+          {
+            amount: 16,
+            currency: "USD",
+          },
+          {
+            amount: 150,
+            currency: "RUB",
+          },
+        ],
+        yearly: [
+          {
+            amount: 160,
+            currency: "USD",
+          },
+          {
+            amount: 1500,
+            currency: "RUB",
+          },
+        ],
+      },
+      benefits: [
         {
-          amount: 180,
-          currency: "USD",
+          code: "standard_chat",
+          unit: "request",
+          billing_cycle: "monthly",
+          limit: 2000,
         },
         {
-          amount: 1500,
-          currency: "RUB",
+          code: "advanced_chat",
+          unit: "request",
+          billing_cycle: "monthly",
+          limit: 300,
+        },
+        {
+          code: "frontier_chat",
+          unit: "token",
+          billing_cycle: "monthly",
+          limit: 800,
         },
       ],
-      benefits: ["standard_chat", "advanced_chat"],
     },
   ];
 }

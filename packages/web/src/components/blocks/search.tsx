@@ -19,6 +19,7 @@ import { MenuItem } from "@mui-verse/ui/components/navigation";
 import { useDebounce } from "@mui-verse/ui/hooks/useDebounce";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { DialogContent } from "@mui/material";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -74,6 +75,7 @@ function NewChatMenu() {
 }
 
 export function SearchButton() {
+  const t = useTranslations();
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search);
 
@@ -82,7 +84,7 @@ export function SearchButton() {
     // will not destroyed.
     <DialogProvider onClose={() => setSearch("")}>
       <DialogTrigger>
-        <MenuButton title="Search" icon={<SearchIcon />} />
+        <MenuButton title={t("chat.sidebar.search")} icon={<SearchIcon />} />
       </DialogTrigger>
       <Dialog maxWidth="lg" sx={{ width: "680px", height: "438px" }}>
         <DialogTitle
@@ -99,7 +101,7 @@ export function SearchButton() {
             className="ml-3.5 text-base"
             size="small"
             variant="default"
-            placeholder="Search chats..."
+            placeholder={t("chat.sidebar.searchPlaceholder")}
             onValueChange={setSearch}
           />
         </DialogTitle>

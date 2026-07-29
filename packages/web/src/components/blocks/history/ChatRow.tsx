@@ -20,6 +20,7 @@ import {
   ConversationTitleEditor,
   useConversationOps,
 } from "./ConversationOps";
+import { useTranslations } from "next-intl";
 
 const MAX_ITEMS_IN_DROPDOWN = 8;
 
@@ -69,7 +70,8 @@ export function ChatMenuRow({
  * lives in SidebarSections (which owns the virtualized layout).
  */
 export function ChatHistoryDropdown({ pinned = false }: { pinned?: boolean }) {
-  const title = pinned ? "Pinned" : "Recents";
+  const t = useTranslations();
+  const title = pinned ? t("chat.sidebar.pinned") : t("chat.sidebar.recents");
   const [history, setHistory] = useState<Conversation[]>([]);
   const [isPending, startTransition] = useTransition();
 
@@ -88,7 +90,7 @@ export function ChatHistoryDropdown({ pinned = false }: { pinned?: boolean }) {
     <DropdownMenu side="right" align="start">
       <DropdownMenuTrigger>
         <MenuButton
-          title="history"
+          title={title}
           icon={pinned ? <PinnerIcon /> : <ChatIcon />}
         />
       </DropdownMenuTrigger>

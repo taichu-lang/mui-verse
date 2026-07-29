@@ -1,4 +1,5 @@
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Chip } from "./Chip";
 import { Section } from "./Section";
@@ -58,15 +59,16 @@ function Capability({
 }
 
 export function CapabilitiesSection() {
+  const t = useTranslations();
+
   const capabilities: CapabilityProps[] = [
     {
-      title: "Instant answers to everyday questions",
-      description:
-        "Whether it's a quick fact, life advice, or a tricky concept — get clear, accurate answers in seconds.",
+      title: t("landing.capabilities.instant.title"),
+      description: t("landing.capabilities.instant.description"),
       items: [
-        "Fast, reliable answers",
-        "Well-organized and easy to scan",
-        "Dig deeper with follow-up questions",
+        t("landing.capabilities.instant.item1"),
+        t("landing.capabilities.instant.item2"),
+        t("landing.capabilities.instant.item3"),
       ],
       img: "/images/landing-capability-01.png",
       height: 342,
@@ -77,13 +79,12 @@ export function CapabilitiesSection() {
       priority: true,
     },
     {
-      title: "End-to-end content creation",
-      description:
-        "From drafting to polishing, rewriting, and summarizing — handle your entire writing process in one workspace.",
+      title: t("landing.capabilities.creation.title"),
+      description: t("landing.capabilities.creation.description"),
       items: [
-        "Brainstorm ideas and draft content",
-        "Polish, rewrite, and expand",
-        "Summarize and extract key points",
+        t("landing.capabilities.creation.item1"),
+        t("landing.capabilities.creation.item2"),
+        t("landing.capabilities.creation.item3"),
       ],
       img: "/images/landing-capability-02.png",
       height: 344,
@@ -91,26 +92,24 @@ export function CapabilitiesSection() {
       reverse: true,
     },
     {
-      title: "Your AI coding partner",
-      description:
-        "Code explanations, snippets, and debugging tips — write code faster and with more confidence.",
+      title: t("landing.capabilities.coding.title"),
+      description: t("landing.capabilities.coding.description"),
       items: [
-        "Explain complex code and functions",
-        "Generate code snippets",
-        "Suggest debugging and optimization ideas",
+        t("landing.capabilities.coding.item1"),
+        t("landing.capabilities.coding.item2"),
+        t("landing.capabilities.coding.item3"),
       ],
       img: "/images/landing-capability-03.png",
       height: 268,
       width: 588,
     },
     {
-      title: "Real-time answers with cited sources",
-      description:
-        "Answers grounded in live search results — accurate on time-sensitive topics, always traceable back to the source.",
+      title: t("landing.capabilities.search.title"),
+      description: t("landing.capabilities.search.description"),
       items: [
-        "Real-time web search",
-        "Clickable source links",
-        "Answers with a reference list",
+        t("landing.capabilities.search.item1"),
+        t("landing.capabilities.search.item2"),
+        t("landing.capabilities.search.item3"),
       ],
       img: "/images/landing-capability-04.png",
       height: 418,
@@ -120,10 +119,10 @@ export function CapabilitiesSection() {
   ];
   return (
     <Section id="capabilities" white>
-      <Chip label="Product capabilities" />
-      <h2 className="mt-7.5">From quick questions to complex tasks</h2>
+      <Chip label={t("landing.capabilities.chip")} />
+      <h2 className="mt-7.5">{t("landing.capabilities.title")}</h2>
       <p className="text-text-secondary mt-5 text-base">
-        Four core capabilities for learning, work, development & beyond.
+        {t("landing.capabilities.subtitle")}
       </p>
       <div className="mt-17.5 flex flex-col gap-15">
         {capabilities.map((c, index) => (

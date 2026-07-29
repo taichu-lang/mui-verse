@@ -4,11 +4,13 @@ import { useAuth } from "@/auth/auth";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitchRounded } from "@/components/ui/LanguageSwitch";
 import { usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnchorLink } from "./AnchorLink";
 
 export function Navbar() {
+  const t = useTranslations();
   const { session } = useAuth();
   const pathname = usePathname();
   const [hash, setHash] = useState("");
@@ -30,19 +32,19 @@ export function Navbar() {
       </Link>
       <div className="absolute left-1/2 flex -translate-x-1/2 gap-11.5">
         <AnchorLink href={section("product")} active={sectionActive("product")}>
-          Product
+          {t("nav.product")}
         </AnchorLink>
         <AnchorLink
           href={section("capabilities")}
           active={sectionActive("capabilities")}
         >
-          Capabilities
+          {t("nav.capabilities")}
         </AnchorLink>
         <AnchorLink href={section("faq")} active={sectionActive("faq")}>
-          FAQ
+          {t("nav.faq")}
         </AnchorLink>
         <AnchorLink href="/pricing" active={pathname === "/pricing"}>
-          Pricing
+          {t("nav.pricing")}
         </AnchorLink>
       </div>
       <div className="flex gap-5.25">
@@ -52,7 +54,7 @@ export function Navbar() {
           color="dark"
           href={session ? "/chat?modal=settings/account" : "/signin"}
         >
-          {session ? session.name : "Get started"}
+          {session ? session.name : t("nav.getStarted")}
         </Button>
       </div>
     </div>

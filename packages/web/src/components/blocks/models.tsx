@@ -24,6 +24,7 @@ import { cn } from "@mui-verse/ui/utils/cn";
 import { Chip, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "./history/HistoryProvider";
+import { useTranslations } from "next-intl";
 
 export function ModelMenuItem({ model }: { model: Model }) {
   const { provider, name, pinned = false } = model;
@@ -137,6 +138,7 @@ function DropDownModelMenu({
 }
 
 export function ModelAccordion() {
+  const t = useTranslations();
   const { collapsed } = useSidebar();
   const { session } = useAuth();
   const [models, setModels] = useState<Model[]>([]);
@@ -153,10 +155,12 @@ export function ModelAccordion() {
     return (
       <DropdownMenu side="right" align="start">
         <DropdownMenuTrigger>
-          <MenuButton title="Models" icon={<ModelsIcon />} />
+          <MenuButton title={t("chat.sidebar.models")} icon={<ModelsIcon />} />
         </DropdownMenuTrigger>
         <DropdownMenuContent sx={{ minWidth: "230px", px: "8px" }}>
-          <p className="mb-2 ml-2.5 text-sm font-semibold">Models</p>
+          <p className="mb-2 ml-2.5 text-sm font-semibold">
+            {t("chat.sidebar.models")}
+          </p>
           {models.map((model) => (
             <DropDownModelMenu
               key={model.id}

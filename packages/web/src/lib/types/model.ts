@@ -39,6 +39,11 @@ export const models: Model[] = [
     provider: "anthropic",
   },
   {
+    id: "claude-opus-4-5",
+    name: "Claude Opus 4.5",
+    provider: "anthropic",
+  },
+  {
     id: "gpt-5.5",
     name: "GPT-5.5",
     provider: "openai",

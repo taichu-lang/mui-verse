@@ -1,8 +1,9 @@
 import { CurrencyCode } from "./currency";
 
-type BenefitCode = "standard_chat" | "advanced_chat";
+type BenefitCode = "standard_chat" | "advanced_chat" | "frontier_chat";
 type ResourceType = "model" | "tool";
 type BillingUnit = "request" | "token";
+type BillingCycle = "daily" | "monthly";
 export type PlanCode = "free" | "pro";
 export type PlanDuration = "monthly" | "yearly";
 
@@ -12,11 +13,9 @@ export interface Resource {
 }
 
 export interface Benefit {
-  id: string;
+  id: number;
   code: BenefitCode;
   resources: Resource[];
-  limit: number;
-  unit: BillingUnit;
 }
 
 export interface Balance {
@@ -30,9 +29,22 @@ export interface Price {
   amount: number;
 }
 
+export interface PlanBenefit {
+  code: BenefitCode;
+  unit: BillingUnit;
+  limit: number;
+  billing_cycle: BillingCycle;
+}
+
 export interface Plan {
-  type: PlanCode;
-  duration: PlanDuration;
-  prices: Price[];
-  benefits: string[];
+  code: PlanCode;
+  prices: Record<PlanDuration, Price[]>;
+  benefits: PlanBenefit[];
+}
+
+export function getPlanBenefit(
+  code: BenefitCode,
+  plan?: Plan,
+): PlanBenefit | undefined {
+  return plan?.benefits.find((b) => b.code === code);
 }

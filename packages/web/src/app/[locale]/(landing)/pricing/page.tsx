@@ -3,14 +3,16 @@ import { BenefitTableList } from "./_blocks/BenefitTable";
 import { FeatureHeader } from "./_blocks/FeatureHeader";
 import { PlanPanels } from "./_blocks/PlanPanel";
 import { MonthLabel, PlanTabs, YearLabel } from "./_blocks/PlanTab";
+import { useTranslations } from "next-intl";
 
 export default function PricingPage() {
+  const t = useTranslations();
+
   return (
     <div className="w-pricing-width mx-auto flex flex-col items-center">
-      <h1 className="mt-15">One tab. Infinite intelligence.</h1>
+      <h1 className="mt-15">{t("pricing.hero")}</h1>
       <p className="text-text-secondary mt-5 text-base">
-        Stop switching between apps. Every leading AI model, one seamless
-        experience.
+        {t("pricing.subtitle")}
       </p>
       <TabContext defaultValue="monthly">
         <PlanTabs className="mt-4">
@@ -26,8 +28,11 @@ export default function PricingPage() {
           />
         </PlanTabs>
         <PlanPanels />
-        <div className="mt-20 mb-15 w-full">
-          <h2 className="text-center">Plan features</h2>
+        <div
+          id="features"
+          className="scroll-mt-landing-navbar mt-20 mb-15 w-full"
+        >
+          <h2 className="text-center">{t("pricing.features")}</h2>
           <FeatureHeader />
           <BenefitTableList />
         </div>

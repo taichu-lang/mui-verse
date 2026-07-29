@@ -1,11 +1,11 @@
 "use client";
 
-import { CheckIcon } from "@/components/icons";
-import { CheckXIcon } from "@/components/icons/Check";
+import { CheckIcon, XIcon } from "@/components/icons";
 import { useBenefit } from "@/hooks/useBenefit";
-import { Benefit } from "@/lib/types/benefit";
+import { Benefit, getPlanBenefit } from "@/lib/types/benefit";
 import { modelIcons, modelMap } from "@/lib/types/model";
 import { Divider } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 function Model({ model_id }: { model_id: string }) {
   const model = modelMap[model_id];
@@ -20,17 +20,40 @@ function Model({ model_id }: { model_id: string }) {
 }
 
 export function BenefitTable({ benefit }: { benefit: Benefit }) {
-  const { plans } = useBenefit();
-  const free = plans.find((p) => p.type === "free");
-  const pro = plans.find((p) => p.type === "pro");
-  const freeEnabled = free?.benefits.includes(benefit.code);
-  const proEnabled = pro?.benefits.includes(benefit.code);
+  const t = useTranslations();
+  const { plans, basicQuota, advancedQuota, frontierQuota } = useBenefit();
+  const free = plans.find((p) => p.code === "free");
+  const pro = plans.find((p) => p.code === "pro");
+  const freeBenefit = getPlanBenefit(benefit.code, free);
+  const proBenefit = getPlanBenefit(benefit.code, pro);
+
+  const stringifyFreeQuota = () => {
+    switch (benefit.code) {
+      case "standard_chat":
+        return basicQuota("free");
+      case "advanced_chat":
+        return 0;
+      case "frontier_chat":
+        return 0;
+    }
+  };
+
+  const stringifyProQuota = () => {
+    switch (benefit.code) {
+      case "standard_chat":
+        return basicQuota("pro");
+      case "advanced_chat":
+        return advancedQuota();
+      case "frontier_chat":
+        return frontierQuota();
+    }
+  };
 
   return (
     <>
       <div className="grid grid-cols-4 items-center">
         <div className="col-span-2 flex flex-col items-start gap-7.5">
-          <p className="text-base">{benefit.code}</p>
+          <p className="text-base">{t(`pricing.${benefit.code}.title`)}</p>
           {benefit.resources.map((r) => {
             if (r.type === "model") {
               return <Model model_id={r.id} key={r.id} />;
@@ -40,15 +63,13 @@ export function BenefitTable({ benefit }: { benefit: Benefit }) {
           })}
         </div>
         <div className="col-span-1 flex flex-col items-start gap-7.5">
-          <p className="text-base">
-            {benefit.limit}/{free?.duration}
-          </p>
+          <p className="text-base">{stringifyFreeQuota()}</p>
           {benefit.resources.map((r) => {
             if (r.type === "model") {
-              if (freeEnabled) {
+              if (freeBenefit) {
                 return <CheckIcon key={`free-${r.id}`} className="h-6" />;
               } else {
-                return <CheckXIcon key={`free-${r.id}`} className="h-6" />;
+                return <XIcon key={`free-${r.id}`} className="h-6" />;
               }
             }
 
@@ -56,15 +77,13 @@ export function BenefitTable({ benefit }: { benefit: Benefit }) {
           })}
         </div>
         <div className="col-span-1 flex flex-col items-start gap-7.5">
-          <p className="text-base">
-            {benefit.limit}/{pro?.duration}
-          </p>
+          <p className="text-base">{stringifyProQuota()}</p>
           {benefit.resources.map((r) => {
             if (r.type === "model") {
-              if (proEnabled) {
+              if (proBenefit) {
                 return <CheckIcon key={`pro-${r.id}`} className="h-6" />;
               } else {
-                return <CheckXIcon key={`pro-${r.id}`} className="h-6" />;
+                return <XIcon key={`pro-${r.id}`} className="h-6" />;
               }
             }
 
@@ -73,8 +92,7 @@ export function BenefitTable({ benefit }: { benefit: Benefit }) {
         </div>
       </div>
       <p className="text-text-secondary mt-7.5 text-sm">
-        Basic models consume Standard queries. Each request a user sends
-        consumes one Standard query.
+        {t(`pricing.${benefit.code}.description`)}
       </p>
     </>
   );

@@ -1,6 +1,6 @@
 export { AnthropicIcon } from "./Anthropic";
 export { ArrowRightIcon, ChevronLeftIcon } from "./Arrows";
-export { CheckIcon } from "./Check";
+export { CheckIcon, XIcon } from "./Check";
 export { CollapsedIcon } from "./Collapsed";
 export { DeleteIcon } from "./Delete";
 export { GeminiIcon } from "./Gemini";

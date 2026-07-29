@@ -1,4 +1,5 @@
 import { modelIcons, modelMap } from "@/lib/types/model";
+import { useTranslations } from "next-intl";
 import { Chip } from "./Chip";
 import { Section } from "./Section";
 
@@ -23,56 +24,51 @@ function ModelCard({ id, description }: ModelProps) {
 }
 
 export function ModelSection() {
+  const t = useTranslations();
+
   const models: ModelProps[] = [
     {
       id: "claude-opus-4-7",
-      description:
-        "Major gains in agentic coding, 1M-token context, and adaptive reasoning depth.",
+      description: t("landing.models.clade_opus_4_7"),
     },
     {
       id: "gpt-5.4-pro",
-      description:
-        "A high-performance tier for complex reasoning, focused on output quality and reliability.",
+      description: t("landing.models.gpt_5_4_pro"),
     },
     {
       id: "gemini-3.1-pro-preview",
-      description:
-        "Excels at hard reasoning tasks, leading on abstract-reasoning benchmarks.",
+      description: t("landing.models.gemini_3_1_pro"),
     },
     {
       id: "gpt-5.3-codex",
-      description:
-        "An agentic coding model — searches repos, runs commands, debugs autonomously.",
+      description: t("landing.models.gpt_5_3_codex"),
     },
     {
       id: "claude-opus-4-6",
-      description:
-        "Supports agent-team collaboration, suited for automating complex multi-step tasks.",
+      description: t("landing.models.claude_opus_4_6"),
     },
     {
       id: "claude-sonnet-4-6",
-      description:
-        "A balanced model with major coding and instruction-following gains at strong value.",
+      description: t("landing.models.claude_sonnet_4_6"),
     },
     {
       id: "gemini-3-flash-preview",
-      description:
-        "Runs 4x faster while excelling at coding and agentic-task benchmarks.",
+      description: t("landing.models.gemini_3_flash"),
     },
     {
       id: "gpt-5.4",
-      description:
-        "Unifies reasoning, coding, and agentic capabilities for professional workflows.",
+      description: t("landing.models.gpt_5_4"),
     },
   ];
 
   return (
     <Section>
-      <Chip label="Model matrix" gray />
-      <h2 className="mt-7.5">Supports multiple leading AI models</h2>
+      <Chip label={t("landing.models.chip")} gray />
+      <h2 className="mt-7.5">{t("landing.models.title")}</h2>
       <p className="text-text-secondary mt-5 text-base">
-        Pick the right model for each task — we support{" "}
-        <span className="font-semibold">20+</span> models.
+        {t("landing.models.subtitle1")}
+        <span className="font-semibold">20+</span>
+        {t("landing.models.subtitle2")}
       </p>
       <div className="mt-10 grid grid-cols-4 gap-5.5">
         {models.map((model) => (

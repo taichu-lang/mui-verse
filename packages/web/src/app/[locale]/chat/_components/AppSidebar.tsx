@@ -16,7 +16,7 @@ import {
   SidebarToggle,
 } from "@mui-verse/ui/layout/Sidebar";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 function ScrollArea() {
   const { collapsed } = useSidebar();
@@ -50,6 +50,7 @@ function ScrollArea() {
 }
 
 export function AppSidebar() {
+  const t = useTranslations();
   const { collapsed } = useSidebar();
   const locale = useLocale();
 
@@ -65,7 +66,7 @@ export function AppSidebar() {
         <div className="flex w-full flex-col items-center px-2">
           <MenuIntl
             href="/chat"
-            title="New chat"
+            title={t("chat.sidebar.new")}
             icon={<CirclePlusIcon />}
             locale={locale}
           />

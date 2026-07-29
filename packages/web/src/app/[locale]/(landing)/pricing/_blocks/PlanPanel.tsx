@@ -4,9 +4,8 @@ import {
   CheckIcon,
   FreeTierIcon,
   ProTierIcon,
-  SparkleFilledIcon,
+  XIcon,
 } from "@/components/icons";
-import { CheckXIcon } from "@/components/icons/Check";
 import { CurrencySwitch } from "@/components/ui/CurrencySwitch";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
@@ -14,27 +13,22 @@ import { PlanCode } from "@/lib/types/benefit";
 import { priceStringify } from "@/lib/types/currency";
 import { useTabContext } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { FreePlanButton, ProPlanButton } from "./Actions";
 
-function Header({
-  plan,
-  title,
-  price,
-  description,
-}: {
-  plan: PlanCode;
-  title: string;
-  price: string;
-  description: string;
-}) {
+function Header({ plan, price }: { plan: PlanCode; price: string }) {
   const Icon = plan === "free" ? FreeTierIcon : ProTierIcon;
+  const t = useTranslations();
   const { currency } = useCheckout();
+
   return (
     <>
       <div className="flex items-center gap-2">
         <Icon />
-        <span className="text-xl leading-6 font-medium">{title}</span>
+        <span className="text-xl leading-6 font-medium">
+          {t(`pricing.${plan}.title`)}
+        </span>
         <div className="flex-1" />
         <div
           className={cn(
@@ -49,9 +43,11 @@ function Header({
         <span className="text-[32px] leading-9.5 font-medium">
           {priceStringify(price, currency)}
         </span>
-        <span className="text-text-secondary text-sm">/mo</span>
+        <span className="text-text-secondary text-sm">/{t("duration.mo")}</span>
       </div>
-      <p className="text-text-secondary mt-2.5 text-sm">{description}</p>
+      <p className="text-text-secondary mt-2.5 text-sm">
+        {t(`pricing.${plan}.description`)}
+      </p>
     </>
   );
 }
@@ -76,40 +72,60 @@ function Feature({
 }
 
 export function FreePanel() {
+  const t = useTranslations();
+  const { basicQuota } = useBenefit();
+  const CheckedIcon = () => <CheckIcon className="text-primary-500" />;
+  const UncheckedIcon = () => <XIcon className="text-text-secondary" />;
+
   return (
     <div className="flex w-full flex-col rounded-[20px] bg-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
-      <Header
-        plan="free"
-        title="Free"
-        price={"0"}
-        description="Perfect for getting started"
-      />
+      <Header plan="free" price={"0"} />
       <FreePlanButton className="mt-3.5 font-medium" />
       <div className="mt-7.5 flex flex-col gap-3.25">
         <Feature
-          Icon={CheckIcon}
+          Icon={CheckedIcon}
           feature={
             <>
-              Basic models · <span className="font-semibold">40 / day</span>
+              {t("pricing.benefits.basic")}
+              {" · "}
+              <span className="font-semibold">{basicQuota("free")}</span>
             </>
           }
         />
-        <Feature Icon={CheckIcon} feature="Text conversations" />
-        <Feature Icon={CheckIcon} feature="Multi-turn dialogue" />
-        <Feature Icon={CheckIcon} feature="Chat history saved" />
-        <Feature Icon={CheckIcon} feature="Standard context window" />
-        <Feature Icon={CheckXIcon} feature="Advanced models" disabled />
-        <Feature Icon={CheckXIcon} feature="Frontier models" disabled />
-        <Feature Icon={CheckXIcon} feature="Web search" disabled />
+        <Feature Icon={CheckedIcon} feature={t("pricing.benefits.text")} />
+        <Feature Icon={CheckedIcon} feature={t("pricing.benefits.multiTurn")} />
+        <Feature Icon={CheckedIcon} feature={t("pricing.benefits.history")} />
+        <Feature
+          Icon={CheckedIcon}
+          feature={t("pricing.benefits.standardContext")}
+        />
+        <Feature
+          Icon={UncheckedIcon}
+          feature={t("pricing.benefits.advanced")}
+          disabled
+        />
+        <Feature
+          Icon={UncheckedIcon}
+          feature={t("pricing.benefits.frontier")}
+          disabled
+        />
+        <Feature
+          Icon={UncheckedIcon}
+          feature={t("pricing.benefits.search")}
+          disabled
+        />
       </div>
     </div>
   );
 }
 
 export function ProPanel() {
+  const t = useTranslations();
   const { value } = useTabContext();
-  const { monthPrice, yearPrice } = useBenefit();
+  const { monthPrice, yearPrice, basicQuota, advancedQuota, frontierQuota } =
+    useBenefit();
   const { currency } = useCheckout();
+  const CheckedIcon = () => <CheckIcon className="text-primary-500" />;
 
   const price = useMemo(() => {
     if (value === "monthly") {
@@ -126,46 +142,37 @@ export function ProPanel() {
 
   return (
     <div className="flex w-full flex-col rounded-[20px] bg-linear-to-b from-[#F2FFFB] to-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
-      <Header
-        plan="pro"
-        title="Pro"
-        price={price || ""}
-        description="For power users"
-      />
+      <Header plan="pro" price={price || ""} />
       <ProPlanButton className="mt-3.5" />
       <div className="mt-7.5 flex flex-col gap-3.25">
         <Feature
-          Icon={CheckIcon}
+          Icon={CheckedIcon}
           feature={
             <>
-              Basic models · <span className="font-semibold">3000 / month</span>
+              {t("pricing.benefits.basic")}
+              {" · "}
+              <span className="font-semibold">{basicQuota("pro")}</span>
             </>
           }
         />
         <Feature
-          Icon={CheckIcon}
+          Icon={CheckedIcon}
           feature={
             <>
-              Advanced models ·{" "}
-              <span className="font-semibold">200 / month</span>
+              {t("pricing.benefits.advanced")}
+              {" · "}
+              <span className="font-semibold">{advancedQuota()}</span>
             </>
           }
         />
         <Feature
-          Icon={CheckIcon}
-          feature="Frontier models (use premium credits)"
+          Icon={CheckedIcon}
+          feature={<span className="font-semibold">{frontierQuota()}</span>}
         />
-        <Feature Icon={CheckIcon} feature="Web search" />
-        <Feature Icon={CheckIcon} feature="Extended context window" />
+        <Feature Icon={CheckedIcon} feature={t("pricing.benefits.search")} />
         <Feature
-          Icon={() => (
-            <SparkleFilledIcon className="text-primary-500 h-3 w-3" />
-          )}
-          feature={
-            <>
-              <span className="font-semibold">800 premium credits</span> / month
-            </>
-          }
+          Icon={CheckedIcon}
+          feature={t("pricing.benefits.extendedContext")}
         />
       </div>
     </div>

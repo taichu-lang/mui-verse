@@ -1,20 +1,23 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Chip } from "./Chip";
 import { Section } from "./Section";
 
 export function UiSection() {
+  const t = useTranslations();
+
   return (
     <Section id="product">
-      <Chip label="Product UI" gray />
-      <h2 className="mt-7.5">Clean, consistent interactions</h2>
+      <Chip label={t("landing.ui.chip")} gray />
+      <h2 className="mt-7.5">{t("landing.ui.title")}</h2>
       <span className="text-text-secondary mt-5 text-base">
-        AI workflows that feel familiar.
+        {t("landing.ui.subtitle")}
       </span>
       <div className="mt-15 grid grid-cols-2 gap-25">
         <div className="flex flex-col items-center gap-3">
-          <h3>Complete conversation history</h3>
+          <h3>{t("landing.ui.history.title")}</h3>
           <span className="text-text-secondary text-base">
-            Keeps full conversation history
+            {t("landing.ui.history.subtitle")}
           </span>
           <Image
             src={"/images/landing-ui-01.png"}
@@ -25,9 +28,9 @@ export function UiSection() {
           />
         </div>
         <div className="flex flex-col items-center gap-3">
-          <h3>Multiple leading AI models</h3>
+          <h3>{t("landing.ui.models.title")}</h3>
           <span className="text-text-secondary text-base">
-            This is only a partial list of available models
+            {t("landing.ui.models.subtitle")}
           </span>
           <Image
             src={"/images/landing-ui-02.png"}
@@ -39,9 +42,9 @@ export function UiSection() {
         </div>
       </div>
       <div className="mt-20 flex flex-col items-center gap-3">
-        <h3>Web search</h3>
+        <h3>{t("landing.ui.search.title")}</h3>
         <span className="text-text-secondary text-base">
-          Combine AI reasoning with real-time web results
+          {t("landing.ui.search.subtitle")}
         </span>
         <Image
           src={"/images/landing-ui-03.png"}
@@ -52,9 +55,9 @@ export function UiSection() {
         />
       </div>
       <div className="mt-20 flex flex-col items-center gap-3">
-        <h3>Sources</h3>
+        <h3>{t("landing.ui.sources.title")}</h3>
         <span className="text-text-secondary text-xl">
-          Reliable answers, backed by real sources
+          {t("landing.ui.sources.subtitle")}
         </span>
         <Image
           src={"/images/landing-ui-04.png"}

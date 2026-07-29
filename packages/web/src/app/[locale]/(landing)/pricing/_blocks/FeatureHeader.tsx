@@ -6,8 +6,10 @@ import { PillTab, useTabContext } from "@mui-verse/ui/components/navigation";
 import { useMemo } from "react";
 import { FreePlanButton, ProPlanButton } from "./Actions";
 import { MonthLabel, PlanTabs, YearLabel } from "./PlanTab";
+import { useTranslations } from "next-intl";
 
 export function FeatureHeader() {
+  const t = useTranslations();
   const { value } = useTabContext();
   const { currency } = useCheckout();
   const { monthPrice, yearPrice } = useBenefit();
@@ -28,7 +30,7 @@ export function FeatureHeader() {
   return (
     <div className="mt-10 grid w-full grid-cols-4 items-start">
       <div className="col-span-2 flex flex-col gap-2.5">
-        <p className="text-2xl">Plan</p>
+        <p className="text-2xl">{t("pricing.plan")}</p>
         <PlanTabs className="mt-2.5 w-fit">
           <PillTab
             value="monthly"
@@ -43,14 +45,16 @@ export function FeatureHeader() {
         </PlanTabs>
       </div>
       <div className="col-span-1 flex flex-col gap-2.5">
-        <p className="text-2xl">Free</p>
-        <span className="text-text-secondary text-base">{currency} 0/mo</span>
+        <p className="text-2xl">{t("pricing.free.title")}</p>
+        <span className="text-text-secondary text-base">
+          {currency} 0/{t("duration.mo")}
+        </span>
         <FreePlanButton className="w-fit" />
       </div>
       <div className="col-span-1 flex flex-col gap-2.5">
-        <p className="text-2xl">Pro</p>
+        <p className="text-2xl">{t("pricing.pro.title")}</p>
         <span className="text-text-secondary text-base">
-          {currency} {price}/mo
+          {currency} {price}/{t("duration.mo")}
         </span>
         <ProPlanButton className="w-fit" />
       </div>

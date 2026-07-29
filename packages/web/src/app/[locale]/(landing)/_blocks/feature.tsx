@@ -1,5 +1,6 @@
 import { UserIcon } from "@/components/icons";
 import { ArrowRightLeftIcon, GlobeIcon, MessageCircleIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Chip } from "./Chip";
 import { Section } from "./Section";
 
@@ -26,34 +27,35 @@ function FeatureCard({
 }
 
 export function FeatureSection() {
+  const t = useTranslations();
+
   return (
     <Section white>
-      <Chip label="Key features" />
-      <h2 className="mt-7.5">Why choose Plato</h2>
+      <Chip label={t("landing.features.chip")} />
+      <h2 className="mt-7.5">{t("landing.features.title")}</h2>
       <p className="text-text-secondary mt-5 text-base">
-        Stop switching between platforms. One account for your entire AI
-        workflow.
+        {t("landing.features.subtitle")}
       </p>
       <div className="mt-10 grid grid-cols-4 gap-5.5">
         <FeatureCard
           Icon={UserIcon}
-          title="One account, multiple models"
-          description="Skip the platform-hopping. Everything in one place."
+          title={t("landing.features.accountTitle")}
+          description={t("landing.features.accountDesc")}
         />
         <FeatureCard
           Icon={ArrowRightLeftIcon}
-          title="Switch models anytime"
-          description="Writing, coding, search, or summaries — pick the best model for each chat."
+          title={t("landing.features.modelTitle")}
+          description={t("landing.features.modelDesc")}
         />
         <FeatureCard
           Icon={GlobeIcon}
-          title="Web search built in"
-          description="Get current answers with cited sources."
+          title={t("landing.features.searchTitle")}
+          description={t("landing.features.searchDesc")}
         />
         <FeatureCard
           Icon={MessageCircleIcon}
-          title="Full chat history"
-          description="Every conversation saved and searchable — pick up right where you left off."
+          title={t("landing.features.historyTitle")}
+          description={t("landing.features.historyDesc")}
         />
       </div>
     </Section>
