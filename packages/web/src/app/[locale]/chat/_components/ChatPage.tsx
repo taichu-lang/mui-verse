@@ -23,6 +23,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { MessagesPage } from "./lib";
 import { useLoadOlder } from "./useLoadOlder";
+import { useTranslations } from "next-intl";
 
 // event: meta
 interface MetaData {
@@ -108,6 +109,7 @@ function SenderArea() {
       onmessage(ev) {
         switch (ev.event) {
           case "error": {
+            // TODO(Leo): render error.
             console.log("on error: ", ev.data);
             break;
           }
@@ -137,7 +139,6 @@ function SenderArea() {
         stopStreaming();
       },
       onerror(err) {
-        console.log(">>> ", err);
         stopStreaming();
         throw err; // throw the error, otherwise sse connection will be reconnected.
       },
@@ -171,6 +172,7 @@ export function ChatPage({
   initialMessages: MessagesPage;
   initialConversation: ConversationMeta;
 }) {
+  const t = useTranslations();
   const senderWrapperRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const { messages, hydrate } = useChatSession();
@@ -243,7 +245,7 @@ export function ChatPage({
       >
         <SenderArea />
         <div className="my-2 flex items-center justify-center text-xs">
-          AI can make mistakes. Please double-check responses.
+          {t("chat.accuracyReminder")}
         </div>
       </div>
     </div>
@@ -252,13 +254,15 @@ export function ChatPage({
 
 // DefaultChatPage is the skeleton of the chat page even though user hasn't signed in.
 export function DefaultChatPage() {
+  const t = useTranslations();
+
   return (
     <div className="max-w-chat-area mx-auto flex w-full flex-1 flex-col">
       <ModelBrandCard />
       <div className="z-navbar sticky bottom-0 bg-white/80 backdrop-blur">
         <SenderArea />
         <div className="my-2 flex items-center justify-center text-xs">
-          AI can make mistakes. Please double-check responses.
+          {t("chat.accuracyReminder")}
         </div>
       </div>
     </div>

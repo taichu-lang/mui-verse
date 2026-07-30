@@ -77,6 +77,8 @@ export function FreePanel() {
   const CheckedIcon = () => <CheckIcon className="text-primary-500" />;
   const UncheckedIcon = () => <XIcon className="text-text-secondary" />;
 
+  const { quota } = basicQuota("free");
+
   return (
     <div className="flex w-full flex-col rounded-[20px] bg-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
       <Header plan="free" price={"0"} />
@@ -88,7 +90,7 @@ export function FreePanel() {
             <>
               {t("pricing.benefits.basic")}
               {" · "}
-              <span className="font-semibold">{basicQuota("free")}</span>
+              <span className="font-semibold">{quota}</span>
             </>
           }
         />
@@ -140,6 +142,10 @@ export function ProPanel() {
     return undefined;
   }, [value, monthPrice, yearPrice, currency]);
 
+  const { quota: q1 } = basicQuota("pro");
+  const { quota: q2 } = advancedQuota();
+  const { quota: q3 } = frontierQuota();
+
   return (
     <div className="flex w-full flex-col rounded-[20px] bg-linear-to-b from-[#F2FFFB] to-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
       <Header plan="pro" price={price || ""} />
@@ -151,7 +157,7 @@ export function ProPanel() {
             <>
               {t("pricing.benefits.basic")}
               {" · "}
-              <span className="font-semibold">{basicQuota("pro")}</span>
+              <span className="font-semibold">{q1}</span>
             </>
           }
         />
@@ -161,13 +167,13 @@ export function ProPanel() {
             <>
               {t("pricing.benefits.advanced")}
               {" · "}
-              <span className="font-semibold">{advancedQuota()}</span>
+              <span className="font-semibold">{q2}</span>
             </>
           }
         />
         <Feature
           Icon={CheckedIcon}
-          feature={<span className="font-semibold">{frontierQuota()}</span>}
+          feature={<span className="font-semibold">{q3}</span>}
         />
         <Feature Icon={CheckedIcon} feature={t("pricing.benefits.search")} />
         <Feature

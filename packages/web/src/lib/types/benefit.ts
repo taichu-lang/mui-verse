@@ -20,8 +20,11 @@ export interface Benefit {
 
 export interface Balance {
   benefit_code: BenefitCode;
+  unit: BillingUnit;
   used: number;
   remaining: number;
+  limit: number;
+  next_period_start: number;
 }
 
 export interface Price {

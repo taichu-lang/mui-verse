@@ -13,7 +13,7 @@ import { stringifyDate } from "@/lib/time";
 import { priceStringify } from "@/lib/types/currency";
 import { Order } from "@/lib/types/order";
 import { Divider } from "@mui/material";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 function Feature({
@@ -57,10 +57,10 @@ function OrderInfo({ order }: { order?: Order }) {
 }
 
 export default function PlanPage() {
+  const t = useTranslations();
   const { currency, duration, order } = useCheckout();
-  const { benefits, monthPrice, yearPrice } = useBenefit();
-  const basic = benefits.find((b) => b.code === "standard_chat");
-  const advanced = benefits.find((b) => b.code === "advanced_chat");
+  const { monthPrice, yearPrice, basicQuota, advancedQuota, frontierQuota } =
+    useBenefit();
   const price = useMemo(() => {
     if (duration === "monthly") {
       return monthPrice(currency);
@@ -69,9 +69,9 @@ export default function PlanPage() {
     return yearPrice(currency);
   }, [duration, monthPrice, yearPrice, currency]);
 
-  if (!basic || !advanced) {
-    return null;
-  }
+  const { quota: q1 } = basicQuota("pro");
+  const { quota: q2 } = advancedQuota();
+  const { quota: q3 } = frontierQuota();
 
   return (
     <div className="checkout-plan flex w-full flex-col rounded-[40px] px-7 py-6.5">
@@ -82,17 +82,17 @@ export default function PlanPage() {
       <p className="mt-6 text-base">Top features</p>
       <div className="mt-5 flex flex-col gap-3.5">
         <Feature Icon={InfinityIcon}>
-          Basic models ·{" "}
-          <span className="font-semibold">{basic.limit} / month</span>
+          {t("pricing.benefits.basic")}
+          {" · "}
+          <span className="font-semibold">{q1}</span>
         </Feature>
         <Feature Icon={SparkleIcon}>
-          Advanced models ·{" "}
-          <span className="font-semibold">{advanced.limit} / month</span>
+          {t("pricing.benefits.advanced")}
+          {" · "}
+          <span className="font-semibold">{q2}</span>
         </Feature>
-        <Feature Icon={SparklesIcon}>
-          Frontier models (use premium credits)
-        </Feature>
-        <Feature Icon={GlobeCheckIcon}>Web search</Feature>
+        <Feature Icon={SparklesIcon}>{q3}</Feature>
+        <Feature Icon={GlobeCheckIcon}>{t("pricing.benefits.search")}</Feature>
       </div>
       <Divider flexItem className="my-7.5" />
       <div className="flex flex-col gap-1.5">

@@ -180,8 +180,10 @@
     "discount": "Save {discount}"
   },
   "duration": {
-    "daily": "day",
-    "monthly": "month",
+    "day": "day",
+    "month": "month",
+    "daily": "daily",
+    "monthly": "monthly",
     "mo": "mo",
     "oneMonth": "One month",
     "oneYear": "One year"
@@ -194,6 +196,30 @@
       "pinned": "Pinned",
       "recents": "Recents",
       "searchPlaceholder": "Search chats..."
+    },
+    "accuracyReminder": "AI can make mistakes. Please double-check responses.",
+    "textarea": {
+      "upgrade": "Upgrade",
+      "upgradeTip": "Get {discount} off the Pro annual plan",
+      "upgradeBtn": "Upgrade now",
+      "planLink": "View all plans & features"
+    }
+  },
+  "balance": {
+    "standard_chat": {
+      "title": "Standard queries",
+      "quotaLabel": "Available {cycle} queries",
+      "description": "Standard queries are used for basic models such as Claude 4.5 Haiku or Gemini 3.1 Flash-Lite. Free queries reset {cycle}."
+    },
+    "advanced_chat": {
+      "title": "Advanced queries",
+      "quotaLabel": "Available {cycle} queries",
+      "description": "Credits are used for frontier models such as GPT-5.4 Pro or Claude 4.7 Opus. Monthly queries reset on the 1st of each month."
+    },
+    "frontier_chat": {
+      "title": "Credits",
+      "quotaLabel": "Available {cycle} credits",
+      "description": "Credits enable access to various premium features. Monthly credits reset on the 1st of each month."
     }
   }
 }

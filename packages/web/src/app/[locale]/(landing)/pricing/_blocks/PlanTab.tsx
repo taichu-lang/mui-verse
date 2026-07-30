@@ -5,7 +5,6 @@ import { useCheckout } from "@/hooks/useCheckout";
 import { PillTabs, useTabContext } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
 
 export function PlanTabs({
   children,
@@ -61,9 +60,7 @@ export function YearLabel({ variant = "md" }: { variant?: "sm" | "md" }) {
   const { currency } = useCheckout();
 
   const active = value === "yearly";
-  const discount = useMemo(() => {
-    return discountPercent(currency);
-  }, [discountPercent, currency]);
+  const discount = discountPercent(currency);
 
   return (
     <div

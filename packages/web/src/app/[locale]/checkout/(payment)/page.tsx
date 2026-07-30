@@ -19,7 +19,6 @@ import { Backdrop } from "@mui/material";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
 import toast from "react-hot-toast";
 
 function PlanRadio({ duration }: { duration: PlanDuration }) {
@@ -27,17 +26,9 @@ function PlanRadio({ duration }: { duration: PlanDuration }) {
   const active = selected === duration;
   const { monthPrice, yearPrice, discountPercent } = useBenefit();
 
-  const month = useMemo(() => {
-    return monthPrice(currency) || 0;
-  }, [monthPrice, currency]);
-
-  const year = useMemo(() => {
-    return yearPrice(currency) || 0;
-  }, [yearPrice, currency]);
-
-  const discount = useMemo(() => {
-    return discountPercent(currency);
-  }, [discountPercent, currency]);
+  const month = monthPrice(currency) || 0;
+  const year = yearPrice(currency) || 0;
+  const discount = discountPercent(currency);
 
   const perMonth = (year / 12).toFixed(1);
   const title = duration === "monthly" ? "One month plan" : "One year plan";

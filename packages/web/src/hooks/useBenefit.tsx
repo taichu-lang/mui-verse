@@ -72,65 +72,83 @@ export function useBenefit() {
   );
 
   const basicQuota = useCallback(
-    (code: PlanCode) => {
+    (code: PlanCode): { quota: string; cycle: string } => {
       const plan = plans.find((p) => p.code === code);
       if (!plan) {
-        return "";
+        return { quota: "", cycle: "" };
       }
 
       const benefit = plan.benefits.find((b) => b.code === "standard_chat");
       if (!benefit) {
-        return "";
+        return { quota: "", cycle: "" };
       }
 
       switch (benefit.billing_cycle) {
         case "daily":
-          return `${benefit.limit} / ${t("duration.daily")}`;
+          return {
+            quota: `${benefit.limit} / ${t("duration.day")}`,
+            cycle: t("duration.daily"),
+          };
 
         case "monthly":
-          return `${benefit.limit} / ${t("duration.monthly")}`;
+          return {
+            quota: `${benefit.limit} / ${t("duration.month")}`,
+            cycle: t("duration.monthly"),
+          };
       }
     },
     [t, plans],
   );
 
-  const advancedQuota = useCallback(() => {
+  const advancedQuota = useCallback((): { quota: string; cycle: string } => {
     const plan = plans.find((p) => p.code === "pro");
     if (!plan) {
-      return "";
+      return { quota: "", cycle: "" };
     }
 
     const benefit = plan.benefits.find((b) => b.code === "advanced_chat");
     if (!benefit) {
-      return "";
+      return { quota: "", cycle: "" };
     }
 
     switch (benefit.billing_cycle) {
       case "daily":
-        return `${benefit.limit} / ${t("duration.daily")}`;
+        return {
+          quota: `${benefit.limit} / ${t("duration.day")}`,
+          cycle: t("duration.daily"),
+        };
 
       case "monthly":
-        return `${benefit.limit} / ${t("duration.monthly")}`;
+        return {
+          quota: `${benefit.limit} / ${t("duration.month")}`,
+          cycle: t("duration.monthly"),
+        };
     }
   }, [plans, t]);
 
-  const frontierQuota = useCallback(() => {
+  const frontierQuota = useCallback((): { quota: string; cycle: string } => {
     const plan = plans.find((p) => p.code === "pro");
     if (!plan) {
-      return "";
+      return { quota: "", cycle: "" };
     }
 
     const benefit = plan.benefits.find((b) => b.code === "frontier_chat");
     if (!benefit) {
-      return "";
+      return { quota: "", cycle: "" };
     }
 
     switch (benefit.billing_cycle) {
       case "daily":
-        return `${benefit.limit} ${t("pricing.credits")} / ${t("duration.daily")}`;
+        return {
+          quota: `${benefit.limit} ${t("pricing.credits")} / ${t("duration.day")}`,
+          cycle: t("duration.daily"),
+        };
 
       case "monthly":
-        return `${benefit.limit} ${t("pricing.credits")} / ${t("duration.monthly")}`;
+        return {
+          quota: `${benefit.limit} ${t("pricing.credits")} / ${t("duration.month")}`,
+          cycle: t("duration.monthly"),
+        };
     }
   }, [plans, t]);
 
