@@ -5,10 +5,11 @@ import {
   QuestionIcon,
   SettingsIcon,
   SignOutIcon,
+  SparkleIcon,
   SparklesIcon,
   UserIcon,
 } from "@/components/icons";
-import { usePathname } from "@/i18n/navigation";
+import { useSettingsLink } from "@/hooks/useSettingsLink";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,14 +18,15 @@ import {
   DropdownMenuTrigger,
   MenuItem,
 } from "@mui-verse/ui/components/navigation";
-import { Menu } from "@mui-verse/ui/layout/Menu";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { Avatar, Button } from "@mui/material";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 function SigninPanel() {
+  const t = useTranslations();
   const { collapsed } = useSidebar();
-  const pathname = usePathname();
+  const { navigateLink } = useSettingsLink();
 
   if (collapsed) {
     return (
@@ -38,22 +40,26 @@ function SigninPanel() {
 
   return (
     <div className="px-2">
-      <Menu title={"See plans and pricing"} icon={<SparklesIcon />} />
-      <MenuItem component={Link} href={`${pathname}?modal=settings`}>
-        <SettingsIcon />
-        Settings
+      <MenuItem component={Link} href={`/pricing#features`}>
+        <SparklesIcon />
+        {t("chat.sidebar.planLink")}
       </MenuItem>
-      <MenuItem component={Link} href={`${pathname}?modal=settings/help`}>
+      <MenuItem component={Link} href={navigateLink("settings")}>
+        <SettingsIcon />
+        {t("chat.sidebar.settings")}
+      </MenuItem>
+      <MenuItem component={Link} href={navigateLink("settings/help")}>
         <QuestionIcon />
-        Help
+        {t("chat.sidebar.help")}
       </MenuItem>
       <div className="flex px-1.25 py-5">
         <Button
           className="text-text-primary rounded-2xl"
           variant="outlined"
           fullWidth
+          href="/signin"
         >
-          Sign in
+          {t("chat.sidebar.signin")}
         </Button>
       </div>
     </div>
@@ -61,43 +67,48 @@ function SigninPanel() {
 }
 
 function UserProfile() {
+  const t = useTranslations();
   const { collapsed } = useSidebar();
   const { session } = useAuth();
+  const { navigateLink } = useSettingsLink();
 
   if (!session) {
     return null;
   }
 
   const firstLetter = session.name ? session.name[0].toUpperCase() : "";
+  const plan = session.subscription.plan_code;
 
   const Content = () => {
     return (
       <DropdownMenuContent sx={{ width: "260px", py: "6px" }}>
-        <div className="flex h-13.5 items-center">
+        <div className="flex h-13.5 items-center px-2">
           <Avatar className="h-8.5 w-8.5">{firstLetter}</Avatar>
           <span className="text-text-primary ml-2.5 text-sm">
             {session.name}
           </span>
           <div className="flex-1" />
-          <span className="text-text-secondary text-sm">Free plan</span>
+          <span className="text-text-secondary text-sm">
+            {t(`profile.${plan}.plan`)}
+          </span>
         </div>
         <DropdownMenuSeparator className="my-1.5" />
-        <MenuItem>
-          <SparklesIcon />
-          {"See plans and pricing"}
-        </MenuItem>
-        <DropdownMenuItem component={Link} href="/chat?modal=settings">
-          <SettingsIcon />
-          Settings
+        <DropdownMenuItem component={Link} href={"/checkout"}>
+          <SparkleIcon />
+          {t(`profile.${plan}.upgradePlan`)}
         </DropdownMenuItem>
-        <MenuItem>
+        <DropdownMenuItem component={Link} href={navigateLink("settings")}>
+          <SettingsIcon />
+          {t("chat.sidebar.settings")}
+        </DropdownMenuItem>
+        <DropdownMenuItem component={Link} href={navigateLink("settings/help")}>
           <QuestionIcon />
-          {"Help"}
-        </MenuItem>
+          {t("chat.sidebar.help")}
+        </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1.5" />
         <MenuItem className="text-error-500 hover:bg-error-200">
           <SignOutIcon />
-          Sign out
+          {t("chat.sidebar.signout")}
         </MenuItem>
       </DropdownMenuContent>
     );
@@ -126,15 +137,18 @@ function UserProfile() {
             <Avatar className="h-8.5 w-8.5">{firstLetter}</Avatar>
             <div className="ml-2.5 flex flex-col gap-1.5">
               <span className="text-text-primary text-sm">{session.name}</span>
-              <span className="text-text-secondary text-sm">Free plan</span>
+              <span className="text-text-secondary text-sm">
+                {t(`profile.${plan}.plan`)}
+              </span>
             </div>
             <div className="flex-1" />
             <Button
               variant="outlined"
               className="text-text-primary h-7 w-18 text-xs"
               onClick={(e) => e.stopPropagation()}
+              href="/checkout"
             >
-              Upgrade
+              {t(`profile.${plan}.upgrade`)}
             </Button>
           </div>
         </DropdownMenuTrigger>

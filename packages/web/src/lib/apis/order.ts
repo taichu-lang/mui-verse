@@ -1,16 +1,21 @@
 import { LOCALE_HEADER } from "@/lib/types/api";
-import { Order, OrderRequest, OrderResponse } from "@/lib/types/order";
+import {
+  Checkout,
+  CheckoutRequest,
+  CheckoutResponse,
+  Order,
+} from "@/lib/types/order";
 
 export async function createOrder(
-  request: OrderRequest,
+  request: CheckoutRequest,
   locale: string,
-): Promise<Order | null> {
+): Promise<Checkout | null> {
   const client = await fetch("/api/payments/checkout", {
     method: "POST",
     headers: { "Content-Type": "application/json", [LOCALE_HEADER]: locale },
     body: JSON.stringify(request),
   });
-  const response = (await client.json()) as OrderResponse;
+  const response = (await client.json()) as CheckoutResponse;
   // if (response.code !== 0) {
   //   return null;
   // }
@@ -35,15 +40,15 @@ export async function createOrder(
 
 export async function getOrder(orderID: string): Promise<Order | null> {
   return {
+    id: 1,
     order_id: "001",
     payment_id: "001",
-    type: "external",
-    external: {
-      checkout_url: "https://example.com/checkout",
-    },
-    period_start: Date.now() / 1000,
-    period_end: Date.now() / 1000 + 3600,
     status: "pending",
+    plan_code: "pro",
+    plan_duration: "monthly",
+    created_at: Date.now() / 1000,
+    currency: "RUB",
+    amount: 123,
   };
 }
 
@@ -77,4 +82,47 @@ export async function checkOrder(
   });
 
   return checkOrder(orderID, abort);
+}
+
+export async function getOrders(
+  from: number,
+  limit: number,
+  signal?: AbortSignal,
+): Promise<Order[]> {
+  const orders: Order[] = [];
+  orders.push({
+    id: from + 1,
+    order_id: "001",
+    plan_code: "pro",
+    plan_duration: "monthly",
+    currency: "RUB",
+    amount: 123,
+    status: "pending",
+    created_at: Date.now() / 1000,
+    payment_id: "001",
+  });
+  orders.push({
+    id: from + 2,
+    order_id: "001",
+    plan_code: "pro",
+    plan_duration: "monthly",
+    currency: "RUB",
+    amount: 233,
+    status: "success",
+    created_at: Date.now() / 1000,
+    payment_id: "001",
+  });
+  orders.push({
+    id: from + 3,
+    order_id: "001",
+    plan_code: "pro",
+    plan_duration: "monthly",
+    currency: "USD",
+    amount: 12,
+    status: "failed",
+    created_at: Date.now() / 1000,
+    payment_id: "001",
+  });
+
+  return orders;
 }

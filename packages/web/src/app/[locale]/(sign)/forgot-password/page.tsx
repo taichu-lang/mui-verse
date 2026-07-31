@@ -2,7 +2,7 @@
 
 import { VerificationCode } from "@/components/blocks/signin/VerificationCode";
 import { Button } from "@/components/ui/Button";
-import { useSetPasswordContext } from "@/hooks/useSetPassword";
+import { useChangePassword } from "@/hooks/useChangePassword";
 import { Divider } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -10,14 +10,14 @@ export default function ForgotPasswordPage() {
   const router = useRouter();
   const search = useSearchParams();
   const email = search.get("email");
-  const { setValue } = useSetPasswordContext();
+  const { setValue } = useChangePassword();
 
   if (!email) {
     return null;
   }
 
   const handleCodeVerified = (t: string) => {
-    setValue({ token: t, email });
+    setValue({ token: t, email, action: "reset" });
     router.replace("/reset-password");
   };
 

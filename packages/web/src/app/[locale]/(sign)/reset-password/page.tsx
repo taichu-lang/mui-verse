@@ -3,7 +3,7 @@
 import { SignCard } from "@/components/blocks/signin/SignCard";
 import { Title } from "@/components/blocks/signin/Title";
 import { Button } from "@/components/ui/Button";
-import { useSetPasswordContext } from "@/hooks/useSetPassword";
+import { useChangePassword } from "@/hooks/useChangePassword";
 import { updatePassword } from "@/lib/apis/profile";
 import { checkPassword } from "@/lib/schema";
 import {
@@ -21,9 +21,7 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ResetPassword() {
-  const {
-    value: { token, action, email },
-  } = useSetPasswordContext();
+  const { token, action, email } = useChangePassword();
   const router = useRouter();
 
   const [password, setPassword] = useState<string>("");

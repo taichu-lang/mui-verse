@@ -2,8 +2,8 @@
 
 import { useAuth } from "@/auth/auth";
 import { ModelsIcon, PinnedIcon, PinnerIcon } from "@/components/icons";
+import { useBenefit } from "@/hooks/useBenefit";
 import { useConversationMutations } from "@/hooks/useConversationMutations";
-import { getModels } from "@/lib/apis/model";
 import { addPinnedModel, unPinModel } from "@/lib/apis/preference";
 import { Model, modelIcons, models } from "@/lib/types/model";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
@@ -22,9 +22,9 @@ import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Chip, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "./history/HistoryProvider";
 import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState, useTransition } from "react";
+import { useHistory } from "./history/HistoryProvider";
 
 export function ModelMenuItem({ model }: { model: Model }) {
   const { provider, name, pinned = false } = model;
@@ -140,12 +140,12 @@ function DropDownModelMenu({
 export function ModelAccordion() {
   const t = useTranslations();
   const { collapsed } = useSidebar();
-  const { session } = useAuth();
   const [models, setModels] = useState<Model[]>([]);
+  const { getModels } = useBenefit();
 
   const refresh = useCallback(() => {
-    getModels(session?.id).then(setModels);
-  }, [session]);
+    getModels().then(setModels);
+  }, [getModels]);
 
   useEffect(() => {
     refresh();
@@ -185,22 +185,31 @@ export function ModelAccordion() {
 export function ModelSelect() {
   const { model, setChat } = useChat();
   const { switchConversation } = useConversationMutations();
-  const selected = useMemo(
-    () => models.find((v) => v.id === model) || models[0],
-    [model],
-  );
+  const { getModels } = useBenefit();
+  const [models, setModels] = useState<Model[]>([]);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (!model) {
-      setChat({ model: selected.id });
-    }
-  }, [model, setChat, selected]);
+    startTransition(async () => {
+      const ms = await getModels();
+      setModels(ms);
+
+      if (!model) {
+        setChat({ model: ms[0].id });
+      }
+    });
+  }, [getModels, setModels, setChat, model]);
+
+  if (isPending || models.length === 0) {
+    return null;
+  }
 
   const handleSwitch = (id: string) => {
     switchConversation({ model: id });
   };
 
-  const Icon = modelIcons[selected.provider];
+  const selectedModel = models.find((m) => m.id === model) || models[0];
+  const Icon = modelIcons[selectedModel.provider];
 
   const modelIcon = (m: Model) => {
     const Comp = modelIcons[m.provider];
@@ -212,7 +221,7 @@ export function ModelSelect() {
       <DropdownMenuTrigger>
         <div className="flex cursor-pointer items-center">
           <Icon className="h-4 w-4" />
-          <span className="pr-2.5 pl-1.5 text-sm">{selected.name}</span>
+          <span className="pr-2.5 pl-1.5 text-sm">{selectedModel.name}</span>
           <ChevronDownIcon />
         </div>
       </DropdownMenuTrigger>
@@ -221,7 +230,7 @@ export function ModelSelect() {
           <DropdownMenuItem
             key={m.id}
             className="gap-2.5"
-            selected={selected.id === m.id}
+            selected={model === m.id}
             onClick={() => handleSwitch(m.id)}
           >
             {modelIcon(m)}

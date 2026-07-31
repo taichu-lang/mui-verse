@@ -3,8 +3,8 @@
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
 import { createOrder } from "@/lib/apis/order";
-import { PlanDuration } from "@/lib/types/benefit";
-import { priceStringify } from "@/lib/types/currency";
+import { stringifyPrice } from "@/lib/types/currency";
+import { PlanDuration } from "@/lib/types/enums";
 import {
   PaymentMethodProvider,
   usePaymentMethod,
@@ -34,8 +34,8 @@ function PlanRadio({ duration }: { duration: PlanDuration }) {
   const title = duration === "monthly" ? "One month plan" : "One year plan";
   const price =
     duration === "monthly"
-      ? priceStringify(month.toString(), currency)
-      : priceStringify(perMonth, currency);
+      ? stringifyPrice(month.toString(), currency)
+      : stringifyPrice(perMonth, currency);
 
   return (
     <div
@@ -85,7 +85,7 @@ function CheckoutBackdrop() {
 export default function CheckoutPage() {
   const router = useRouter();
   const locale = useLocale();
-  const { duration, currency, updateCheckout, order } = useCheckout();
+  const { duration, currency, updateCheckout, checkout } = useCheckout();
   const renderTitle = (method: PaymentMethodType) => {
     switch (method) {
       case "card":
@@ -101,7 +101,7 @@ export default function CheckoutPage() {
     provider: PaymentProviderType,
   ) => {
     console.log(method, provider);
-    const order = await createOrder(
+    const checkout = await createOrder(
       {
         method,
         provider,
@@ -111,8 +111,8 @@ export default function CheckoutPage() {
       },
       locale,
     );
-    if (order) {
-      updateCheckout({ order });
+    if (checkout) {
+      updateCheckout({ checkout });
     } else {
       toast.error("network issue");
     }
@@ -134,13 +134,13 @@ export default function CheckoutPage() {
       >
         <CheckoutBackdrop />
       </PaymentMethodProvider>
-      {order?.external?.checkout_url && (
+      {checkout?.external?.checkout_url && (
         <Link
-          href={order.external.checkout_url}
+          href={checkout.external.checkout_url}
           className="bg-primary-500 mt-5 flex h-11 items-center justify-center rounded-full text-base font-semibold text-white"
           target="_blank"
           onClick={() =>
-            router.replace(`/checkout/result?order_id=${order.order_id}`)
+            router.replace(`/checkout/result?order_id=${checkout.order_id}`)
           }
         >
           Buy now

@@ -1,13 +1,13 @@
-import { PlanDuration } from "@/lib/types/benefit";
 import { CurrencyCode } from "@/lib/types/currency";
-import { Order } from "@/lib/types/order";
+import { PlanDuration } from "@/lib/types/enums";
+import { Checkout } from "@/lib/types/order";
 import { create } from "zustand";
 
 export interface CheckoutState {
   currency: CurrencyCode;
   duration: PlanDuration;
   from: string;
-  order?: Order;
+  checkout?: Checkout;
 }
 
 export interface CheckoutValue extends CheckoutState {
@@ -19,7 +19,7 @@ const init: CheckoutState = {
   currency: "RUB",
   duration: "monthly",
   from: "",
-  order: undefined,
+  checkout: undefined,
 };
 
 export const useCheckout = create<CheckoutValue>()((set) => ({

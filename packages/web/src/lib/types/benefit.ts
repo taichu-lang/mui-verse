@@ -1,11 +1,12 @@
 import { CurrencyCode } from "./currency";
-
-type BenefitCode = "standard_chat" | "advanced_chat" | "frontier_chat";
-type ResourceType = "model" | "tool";
-type BillingUnit = "request" | "token";
-type BillingCycle = "daily" | "monthly";
-export type PlanCode = "free" | "pro";
-export type PlanDuration = "monthly" | "yearly";
+import {
+  BenefitCode,
+  BillingCycle,
+  BillingUnit,
+  PlanCode,
+  PlanDuration,
+  ResourceType,
+} from "./enums";
 
 export interface Resource {
   type: ResourceType;

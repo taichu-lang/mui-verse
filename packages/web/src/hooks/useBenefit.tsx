@@ -1,26 +1,41 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import { getBenefits, getPlans } from "@/lib/apis/benefits";
+import { getPreference } from "@/lib/apis/preference";
 import { Benefit, Plan, PlanCode } from "@/lib/types/benefit";
 import { CurrencyCode } from "@/lib/types/currency";
+import { Model, modelMap } from "@/lib/types/model";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { create } from "zustand";
+
+interface BenefitStore {
+  benefits: Benefit[];
+  plans: Plan[];
+  loading: boolean;
+  retrieve: () => Promise<void>;
+}
+
+export const useBenefitStore = create<BenefitStore>()((set) => ({
+  benefits: [],
+  plans: [],
+  loading: true,
+  retrieve: async () => {
+    const [b, p] = await Promise.all([getBenefits(), getPlans()]);
+    set({ benefits: b, plans: p, loading: false });
+  },
+}));
+
+if (typeof window !== "undefined") {
+  void useBenefitStore.getState().retrieve();
+}
 
 export function useBenefit() {
   const t = useTranslations();
-  const [benefits, setBenefits] = useState<Benefit[]>([]);
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const retriever = useCallback(() => {
-    Promise.all([getBenefits(), getPlans()]).then(([b, p]) => {
-      setBenefits(b);
-      setPlans(p);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => retriever(), [retriever]);
+  const benefits = useBenefitStore((s) => s.benefits);
+  const plans = useBenefitStore((s) => s.plans);
+  const loading = useBenefitStore((s) => s.loading);
 
   const monthPrice = useCallback(
     (currency: CurrencyCode) => {
@@ -152,6 +167,60 @@ export function useBenefit() {
     }
   }, [plans, t]);
 
+  const models = useMemo(() => {
+    const ms: Model[] = [];
+
+    benefits.forEach((benefit) => {
+      benefit.resources.forEach((resource) => {
+        if (resource.type === "model") {
+          const model = modelMap[resource.id];
+          ms.push({
+            ...model,
+            benefit_code: benefit.code,
+          });
+        }
+      });
+    });
+
+    return ms;
+  }, [benefits]);
+
+  const getModels = useCallback(async () => {
+    const session = useAuth.getState().session;
+    if (!session) {
+      return models;
+    }
+
+    try {
+      const preference = await getPreference(session.id);
+      const pinned = preference.pinned_models;
+      const pinIdxMap = new Map<string, number>();
+      pinned.forEach((id, index) => pinIdxMap.set(id, index));
+
+      return models
+        .map((model) => {
+          if (pinIdxMap.has(model.id)) {
+            return { ...model, pinned: true };
+          }
+
+          return model;
+        })
+        .sort((l, r) => {
+          const leftIdx = pinIdxMap.get(l.id);
+          const rightIdx = pinIdxMap.get(r.id);
+          const hasLeft = leftIdx !== undefined;
+          const hasRight = rightIdx !== undefined;
+
+          if (hasLeft && !hasRight) return -1;
+          if (!hasLeft && hasRight) return 1;
+
+          return 0;
+        });
+    } catch {
+      return models;
+    }
+  }, [models]);
+
   return {
     loading,
     plans,
@@ -162,5 +231,6 @@ export function useBenefit() {
     basicQuota,
     advancedQuota,
     frontierQuota,
+    getModels,
   };
 }

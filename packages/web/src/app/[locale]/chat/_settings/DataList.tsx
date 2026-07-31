@@ -3,17 +3,17 @@ import { Divider } from "@mui/material";
 
 export function DataItem({
   label,
-  value,
+  children,
   className,
 }: {
   label: string;
-  value: React.ReactNode;
+  children: React.ReactNode;
   className?: string;
 }) {
   return (
     <div className={cn("flex h-8 items-center justify-between", className)}>
       <span className="text-sm">{label}</span>
-      {value}
+      {children}
     </div>
   );
 }

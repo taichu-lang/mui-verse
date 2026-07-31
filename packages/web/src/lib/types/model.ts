@@ -1,4 +1,5 @@
 import { AnthropicIcon, GeminiIcon, OpenAIIcon } from "@/components/icons";
+import { BenefitCode } from "./benefit";
 
 type ModelProvider = "openai" | "google" | "anthropic";
 
@@ -10,9 +11,10 @@ export interface ModelMeta {
 
 export interface Model extends ModelMeta {
   pinned?: boolean;
+  benefit_code: BenefitCode;
 }
 
-export const models: Model[] = [
+export const models: ModelMeta[] = [
   {
     id: "claude-sonnet-4-6",
     name: "Claude Sonnet 4.6",

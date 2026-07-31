@@ -15,9 +15,3 @@ export interface ApiResponse {
   code: number;
   message?: string;
 }
-
-export type AuthMethod = "otp" | "password" | "google" | "apple";
-
-export interface AuthMethodsResponse extends ApiResponse {
-  data: AuthMethod[];
-}

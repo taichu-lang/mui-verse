@@ -19,7 +19,8 @@
     },
     "privacy": "Privacy Policy",
     "tos": "Terms of Service",
-    "refund": "Refund Policy"
+    "refund": "Refund Policy",
+    "contact": "Contact us"
   },
   "landing": {
     "hero": {
@@ -186,7 +187,8 @@
     "monthly": "monthly",
     "mo": "mo",
     "oneMonth": "One month",
-    "oneYear": "One year"
+    "oneYear": "One year",
+    "expires": "Expires on"
   },
   "chat": {
     "sidebar": {
@@ -195,7 +197,12 @@
       "models": "Models",
       "pinned": "Pinned",
       "recents": "Recents",
-      "searchPlaceholder": "Search chats..."
+      "searchPlaceholder": "Search chats...",
+      "settings": "Settings",
+      "help": "Help",
+      "signin": "Sign in",
+      "signout": "Sign out",
+      "planLink": "See plans and pricing"
     },
     "accuracyReminder": "AI can make mistakes. Please double-check responses.",
     "textarea": {
@@ -209,17 +216,65 @@
     "standard_chat": {
       "title": "Standard queries",
       "quotaLabel": "Available {cycle} queries",
-      "description": "Standard queries are used for basic models such as Claude 4.5 Haiku or Gemini 3.1 Flash-Lite. Free queries reset {cycle}."
+      "description": "Standard queries are used for basic models such as Claude 4.5 Haiku or Gemini 3.1 Flash-Lite. Free queries reset {cycle}.",
+      "availableLabel": "Available standard queries"
     },
     "advanced_chat": {
       "title": "Advanced queries",
       "quotaLabel": "Available {cycle} queries",
-      "description": "Credits are used for frontier models such as GPT-5.4 Pro or Claude 4.7 Opus. Monthly queries reset on the 1st of each month."
+      "description": "Credits are used for frontier models such as GPT-5.4 Pro or Claude 4.7 Opus. Monthly queries reset on the 1st of each month.",
+      "availableLabel": "Available advanced queries"
     },
     "frontier_chat": {
       "title": "Credits",
       "quotaLabel": "Available {cycle} credits",
-      "description": "Credits enable access to various premium features. Monthly credits reset on the 1st of each month."
+      "description": "Credits enable access to various premium features. Monthly credits reset on the 1st of each month.",
+      "availableLabel": "Available credits"
+    }
+  },
+  "profile": {
+    "free": {
+      "plan": "Free plan",
+      "upgrade": "Upgrade",
+      "upgradePlan": "Upgrade plan"
+    },
+    "pro": {
+      "plan": "Pro plan",
+      "upgrade": "Extend",
+      "upgradePlan": "Extend plan"
+    }
+  },
+  "payment": {
+    "billing": {
+      "success": "Paid",
+      "pending": "Pending",
+      "failed": "Failed"
+    }
+  },
+  "settings": {
+    "account": {
+      "nav": "Account",
+      "name": "Name",
+      "email": "Email",
+      "usage": "Plan usage",
+      "viewUsage": "View credit usage history"
+    },
+    "general": {
+      "nav": "General",
+      "language": "Language"
+    },
+    "billing": {
+      "nav": "Billing",
+      "history": "Billing history"
+    },
+    "security": {
+      "nav": "Security",
+      "password": "Password",
+      "add": "Add",
+      "reset": "Reset"
+    },
+    "help": {
+      "nav": "Help"
     }
   }
 }

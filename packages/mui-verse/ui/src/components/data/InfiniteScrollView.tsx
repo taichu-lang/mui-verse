@@ -25,6 +25,14 @@ import {
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+// Sentinel prefetch band, in pixels. Fetches trigger when a sentinel comes
+// within this distance of the viewport, so the next page is loading before
+// the user hits the edge. The auto-fill loop below uses the same value to
+// decide whether the initial content leaves the sentinel already inside the
+// band — if so, IntersectionObserver's isIntersecting never flips and we
+// have to nudge the fetch manually.
+const SENTINEL_ROOT_MARGIN_PX = 200;
+
 export type InfinitePage<T> = T[];
 
 export interface InfiniteSection<T> {
@@ -667,6 +675,25 @@ export function InfiniteScrollView<T>({
     if (delta !== 0) scrollEl.scrollBy(0, delta);
   });
 
+  // Auto-fill until scrollable. IntersectionObserver only fires on
+  // `isIntersecting` transitions — if the initial page leaves the bottom
+  // sentinel already inside the rootMargin band (short list in a tall
+  // container), it never flips back out and `loadBottom` never runs. Nudge
+  // it here whenever content isn't tall enough to push the sentinel past
+  // the prefetch band.
+  useEffect(() => {
+    const scrollEl = scrollRef.current;
+    if (!scrollEl) return;
+    if (scrollEl.scrollHeight > scrollEl.clientHeight + SENTINEL_ROOT_MARGIN_PX)
+      return;
+    for (const section of sections) {
+      const s = state[section.key];
+      if (!s?.initialized || !s.hasMoreBottom) continue;
+      if (s.loadingInit || s.loadingBottom) continue;
+      loadBottom(section.key);
+    }
+  }, [sections, state, loadBottom]);
+
   const { rows, headerIndexBySection, headerIndices } = useMemo(() => {
     const rows: Row<T>[] = [];
     const headerMap = new Map<string, number>();
@@ -1017,7 +1044,7 @@ function Sentinel({
           }
         }
       },
-      { root, rootMargin: "200px 0px" },
+      { root, rootMargin: `${SENTINEL_ROOT_MARGIN_PX}px 0px` },
     );
     observer.observe(node);
     return () => observer.disconnect();

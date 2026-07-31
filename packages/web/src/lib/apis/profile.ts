@@ -35,6 +35,12 @@ export async function signinWithCode(
   const response = (await client.json()) as UserProfileResponse;
   if (response.code === 0) {
     const profile = response.data;
+    // TODO(Leo): mock data, remove!!!
+    profile.subscription = {
+      plan_code: "free",
+      period_start: 0,
+      period_end: 0,
+    };
     setSession({
       ...profile,
       token: profile.auth.token,

@@ -69,6 +69,13 @@ const createChatSessionStore = () =>
     hasMoreOlder: false,
     loadingOlder: false,
 
+    // Client uses AbortController to interrupt the streaming. Once the
+    // AbortController is aborted, client drops the connection, which means
+    // client does not receive any more data from the server. However, the
+    // server might not close the connection to llm provider immediately. We
+    // can not get the balance after abort the connection, as there is a time
+    // delay between the aborting and usage calculation in the server side. The
+    // balance should be updated after the next turn.
     stopStreaming: (interrupted?: boolean) =>
       set((state) => {
         if (!interrupted) {

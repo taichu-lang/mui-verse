@@ -9,8 +9,8 @@ import {
 import { CurrencySwitch } from "@/components/ui/CurrencySwitch";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
-import { PlanCode } from "@/lib/types/benefit";
-import { priceStringify } from "@/lib/types/currency";
+import { stringifyPrice } from "@/lib/types/currency";
+import { PlanCode } from "@/lib/types/enums";
 import { useTabContext } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { useTranslations } from "next-intl";
@@ -41,7 +41,7 @@ function Header({ plan, price }: { plan: PlanCode; price: string }) {
       </div>
       <div className="mt-4.5 flex items-baseline gap-1">
         <span className="text-[32px] leading-9.5 font-medium">
-          {priceStringify(price, currency)}
+          {stringifyPrice(price, currency)}
         </span>
         <span className="text-text-secondary text-sm">/{t("duration.mo")}</span>
       </div>

@@ -3,6 +3,7 @@
 import { useAuth } from "@/auth/auth";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitchRounded } from "@/components/ui/LanguageSwitch";
+import { useSettingsLink } from "@/hooks/useSettingsLink";
 import { usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -14,6 +15,7 @@ export function Navbar() {
   const { session } = useAuth();
   const pathname = usePathname();
   const [hash, setHash] = useState("");
+  const { navigateLink } = useSettingsLink();
 
   useEffect(() => {
     const sync = () => setHash(window.location.hash);
@@ -52,7 +54,7 @@ export function Navbar() {
         <Button
           className="px-3 py-1.5"
           color="dark"
-          href={session ? "/chat?modal=settings/account" : "/signin"}
+          href={session ? navigateLink("settings/account") : "/signin"}
         >
           {session ? session.name : t("nav.getStarted")}
         </Button>

@@ -5,7 +5,7 @@ export const currencySymbols: Record<CurrencyCode, string> = {
   RUB: "₽",
 };
 
-export function priceStringify(price: string, currency: CurrencyCode): string {
+export function stringifyPrice(price: string, currency: CurrencyCode): string {
   switch (currency) {
     case "RUB":
       return `${price} ₽`;

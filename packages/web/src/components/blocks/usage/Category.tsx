@@ -1,6 +1,7 @@
 import { QuestionCircleIcon } from "@/components/icons";
 import { useBenefit } from "@/hooks/useBenefit";
-import { Balance, PlanCode } from "@/lib/types/benefit";
+import { Balance } from "@/lib/types/benefit";
+import { PlanCode } from "@/lib/types/enums";
 import {
   Popover,
   PopoverContent,

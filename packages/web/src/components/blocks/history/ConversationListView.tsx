@@ -1,7 +1,6 @@
-import { useAuth } from "@/auth/auth";
 import { ModelMenuItem } from "@/components/blocks/models";
+import { useBenefit } from "@/hooks/useBenefit";
 import { getConversations } from "@/lib/apis/conversation";
-import { getModels } from "@/lib/apis/model";
 import { Conversation } from "@/lib/types/chat";
 import { Model } from "@/lib/types/model";
 import {
@@ -10,19 +9,19 @@ import {
 } from "@mui-verse/ui/components/data";
 import { ChevronDownIcon } from "@mui-verse/ui/components/icons";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { ChatMenuRow } from "./ChatRow";
 import { ConversationOpsProvider } from "./ConversationOps";
 import { useHistory } from "./HistoryProvider";
-import { useTranslations } from "next-intl";
 
 type ConversationItem = Model | Conversation;
 
 export function ConversationListView() {
+  const t = useTranslations();
   const ref = useRef<InfiniteScrollViewHandle>(null);
   const { setScrollRef } = useHistory();
-  const { session } = useAuth();
-  const t = useTranslations();
+  const { getModels, loading } = useBenefit();
 
   useEffect(() => {
     if (ref.current) {
@@ -30,10 +29,13 @@ export function ConversationListView() {
     }
   }, [setScrollRef]);
 
+  if (loading) {
+    return null;
+  }
+
   return (
     <InfiniteScrollView<ConversationItem>
       handleRef={ref}
-      limit={10}
       className="px-2"
       sections={[
         {
@@ -43,7 +45,7 @@ export function ConversationListView() {
             return model.id;
           },
           fetch: async () => {
-            return await getModels(session?.id);
+            return await getModels();
           },
           collapsible: true,
           marginBottom: 24,

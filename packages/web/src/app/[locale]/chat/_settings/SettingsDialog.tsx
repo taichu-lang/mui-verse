@@ -1,7 +1,14 @@
 "use client";
 
-import { QuestionIcon, SettingsIcon, UserIcon } from "@/components/icons";
-import { usePathname } from "@/i18n/navigation";
+import { AuthFilter } from "@/auth/AuthFilter";
+import {
+  QuestionIcon,
+  SettingsIcon,
+  ShieldAlertIcon,
+  UserIcon,
+  WalletIcon,
+} from "@/components/icons";
+import { useSettingsLink } from "@/hooks/useSettingsLink";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { DefaultDialog } from "@mui-verse/ui/components/feedback";
 import { CloseXIcon } from "@mui-verse/ui/components/icons";
@@ -13,35 +20,40 @@ import {
 import { DialogContent, Divider } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
+import { Account } from "./Account";
+import { Billing } from "./Billing";
 import { General } from "./General";
 import { Help } from "./Help";
 import { parseHash } from "./lib";
-import { AuthFilter } from "@/auth/AuthFilter";
-import { Account } from "./Account";
+import { Security } from "./Security";
+import { useTranslations } from "next-intl";
 
 function TabTitle() {
   const { title } = useTabMenuContext();
   return (
     <>
       <span className="my-5 text-lg">{title}</span>
-      <Divider flexItem />
+      <Divider flexItem className="mb-2.25" />
     </>
   );
 }
 
 export default function SettingsDialog() {
+  const t = useTranslations();
   const router = useRouter();
-  const pathname = usePathname();
   const search = useSearchParams();
   const modal = search.get("modal");
   const hash = useMemo(() => parseHash(modal), [modal]);
+  const { navigateLink, backLink } = useSettingsLink();
 
   const handleClose = () => {
-    router.replace(pathname);
+    const target = backLink();
+    router.replace(target);
   };
 
   const handleTabSwitch = (tab: string) => {
-    router.replace(`${pathname}?modal=settings/${tab}`);
+    const target = navigateLink(`settings/${tab}`);
+    router.replace(target);
   };
 
   return (
@@ -54,7 +66,7 @@ export default function SettingsDialog() {
         padding: 0,
       }}
     >
-      <DialogContent className="h-settings-height flex p-0">
+      <DialogContent className="h-settings-height flex overflow-hidden p-0">
         <TabMenuContext
           defaultIndex={hash.slug || "general"}
           onChange={handleTabSwitch}
@@ -68,18 +80,40 @@ export default function SettingsDialog() {
             </IconGhostButton>
             <AuthFilter>
               <TabMenu
-                title="Account"
+                title={t("settings.account.nav")}
                 icon={<UserIcon className="h-4.5 w-4.5" />}
                 value="account"
               />
             </AuthFilter>
-            <TabMenu title="General" icon={<SettingsIcon />} value="general" />
-            <TabMenu title="Help" icon={<QuestionIcon />} value="help" />
+            <TabMenu
+              title={t("settings.general.nav")}
+              icon={<SettingsIcon />}
+              value="general"
+            />
+            <AuthFilter>
+              <TabMenu
+                title={t("settings.billing.nav")}
+                icon={<WalletIcon />}
+                value="billing"
+              />
+              <TabMenu
+                title={t("settings.security.nav")}
+                icon={<ShieldAlertIcon className="h-4.5 w-4.5" />}
+                value="security"
+              />
+            </AuthFilter>
+            <TabMenu
+              title={t("settings.help.nav")}
+              icon={<QuestionIcon />}
+              value="help"
+            />
           </div>
           <div className="mx-7.5 flex flex-1 flex-col">
             <TabTitle />
             <Account />
             <General />
+            <Billing />
+            <Security />
             <Help />
           </div>
         </TabMenuContext>

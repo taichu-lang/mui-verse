@@ -10,8 +10,8 @@ import { CurrencySwitch } from "@/components/ui/CurrencySwitch";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
 import { stringifyDate } from "@/lib/time";
-import { priceStringify } from "@/lib/types/currency";
-import { Order } from "@/lib/types/order";
+import { stringifyPrice } from "@/lib/types/currency";
+import { Checkout } from "@/lib/types/order";
 import { Divider } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -31,25 +31,25 @@ function Feature({
   );
 }
 
-function OrderInfo({ order }: { order?: Order }) {
+function CheckoutInfo({ checkout }: { checkout?: Checkout }) {
   const locale = useLocale();
-  if (!order) {
+  if (!checkout) {
     return null;
   }
 
   return (
     <>
       <p className="text-text-secondary text-sm">
-        Order Number: {order.order_id}
+        Order Number: {checkout.order_id}
       </p>
-      {order.period_start > 0 && (
+      {checkout.period_start > 0 && (
         <p className="text-text-secondary text-sm">
-          Start date: {stringifyDate(order.period_start, locale)}
+          Start date: {stringifyDate(checkout.period_start, locale)}
         </p>
       )}
-      {order.period_end > 0 && (
+      {checkout.period_end > 0 && (
         <p className="text-text-secondary text-sm">
-          New expiry: {stringifyDate(order.period_end, locale)}
+          New expiry: {stringifyDate(checkout.period_end, locale)}
         </p>
       )}
     </>
@@ -58,7 +58,7 @@ function OrderInfo({ order }: { order?: Order }) {
 
 export default function PlanPage() {
   const t = useTranslations();
-  const { currency, duration, order } = useCheckout();
+  const { currency, duration, checkout } = useCheckout();
   const { monthPrice, yearPrice, basicQuota, advancedQuota, frontierQuota } =
     useBenefit();
   const price = useMemo(() => {
@@ -99,10 +99,10 @@ export default function PlanPage() {
         <p className="text-text-secondary text-sm">
           {duration === "monthly" ? "One month plan" : "One year plan"}
         </p>
-        <OrderInfo order={order} />
+        <CheckoutInfo checkout={checkout} />
       </div>
       <p className="mt-5 text-base">
-        Total: {priceStringify(price.toString(), currency)}
+        Total: {stringifyPrice(price.toString(), currency)}
       </p>
     </div>
   );

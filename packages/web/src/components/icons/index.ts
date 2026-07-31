@@ -1,5 +1,6 @@
 export { AnthropicIcon } from "./Anthropic";
-export { ArrowRightIcon, ChevronLeftIcon } from "./Arrows";
+export { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "./Arrows";
+export { WalletIcon } from "./Billing";
 export { CheckIcon, XIcon } from "./Check";
 export { CollapsedIcon } from "./Collapsed";
 export { DeleteIcon } from "./Delete";
@@ -16,8 +17,9 @@ export { QuestionCircleIcon, QuestionIcon } from "./Question";
 export { RocketIcon } from "./Rocket";
 export { SearchIcon } from "./Search";
 export { SettingsIcon } from "./Settings";
+export { ShieldAlertIcon } from "./Shield";
 export { SignOutIcon } from "./Sign";
-export { SparkleIcon, SparklesIcon, SparkleFilledIcon } from "./Sparkle";
+export { SparkleFilledIcon, SparkleIcon, SparklesIcon } from "./Sparkle";
 export { FreeTierIcon, ProTierIcon } from "./Tier";
 export { UserIcon } from "./User";
 export { EyeOff, EyeOn } from "./Visibility";

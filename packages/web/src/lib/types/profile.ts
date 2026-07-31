@@ -1,5 +1,11 @@
-import { ApiResponse, AuthMethod } from "./api";
-import { Balance, PlanCode } from "./benefit";
+import { ApiResponse } from "./api";
+import { PlanCode, PlanDuration } from "./enums";
+
+export type AuthMethod = "otp" | "password" | "google" | "apple";
+
+export interface AuthMethodsResponse extends ApiResponse {
+  data: AuthMethod[];
+}
 
 export interface OtpCredential {
   code: string;
@@ -20,13 +26,20 @@ export interface AuthToken {
   expires_in: number;
 }
 
+export interface Subscription {
+  plan_code: PlanCode;
+  period?: PlanDuration;
+  period_start: number;
+  period_end: number;
+}
+
 export interface UserProfile {
   id: number;
   name: string;
   email: string;
   auth: AuthToken;
-  plan_code: PlanCode;
-  balances: Balance[];
+  auth_methods: AuthMethod[];
+  subscription: Subscription;
 }
 
 export interface UserProfileResponse extends ApiResponse {
