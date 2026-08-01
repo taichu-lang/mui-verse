@@ -31,6 +31,13 @@ export function Select<T>({ sx, ...props }: SelectProps<T>) {
         },
         ...sx,
       }}
+      slotProps={{
+        input: {
+          sx: {
+            padding: "14px 16px", // medium
+          },
+        },
+      }}
       {...props}
     ></MuiSelect>
   );

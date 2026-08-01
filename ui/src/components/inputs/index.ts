@@ -1,4 +1,5 @@
 export { ClipboardButton } from "./ClipboardButton";
+export { FormControlLabel } from "./FormControlLabel";
 export { InlineEditInput } from "./InlineEditInput";
 export {
   FormError,
@@ -17,6 +18,7 @@ export { DropdownSelect, DropdownSelectOption, Select } from "./Select";
 export { Switch, type SwitchProps, type SwitchVariant } from "./Switch";
 export {
   Input,
+  InputGroup,
   TextField,
   type InputProps,
   type TextFieldProps,
