@@ -20,7 +20,27 @@ import {
   useState,
 } from "react";
 
-export function Select<T>({ sx, ...props }: SelectProps<T>) {
+interface SelectPreset {
+  padding: string;
+}
+
+export function Select<T>({ sx, size = "small", ...props }: SelectProps<T>) {
+  const presets: Record<string, SelectPreset> = {
+    small: {
+      // pt and pb are different, to enable text in center vertically.
+      padding: "12px 14px 8px",
+    },
+    medium: {
+      padding: "16px 16px 12px",
+    },
+  };
+
+  // Enable Select to be vertical aligned.
+  const margin: Record<string, string> = {
+    small: "4px",
+    medium: "4px",
+  };
+
   return (
     <MuiSelect
       IconComponent={ChevronsUpDownIcon}
@@ -29,12 +49,13 @@ export function Select<T>({ sx, ...props }: SelectProps<T>) {
           width: 16,
           height: 16,
         },
+        marginBottom: margin[size],
         ...sx,
       }}
       slotProps={{
         input: {
           sx: {
-            padding: "14px 16px", // medium
+            ...presets[size],
           },
         },
       }}
