@@ -191,13 +191,15 @@ export function InputRule({
 
   const isError = phase === "validating" && !fn(value);
   const shouldShow = visible === "always" || isError;
+  if (!shouldShow) {
+    return null;
+  }
 
   return (
     <span
       className={cn(
         "text-text-secondary text-sm",
         isError && "text-error-500",
-        !shouldShow && "invisible",
         className,
       )}
     >

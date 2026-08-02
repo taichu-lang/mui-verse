@@ -4,7 +4,7 @@ import {
   type FormControlLabelProps as MuiFormControlLabelProps,
 } from "@mui/material";
 
-type Placement = "start" | "end" | "bottom-start" | "bottom-end";
+type Placement = "start" | "end" | "bottom-start" | "bottom-end" | "top";
 
 interface FormControlLabelProps extends Omit<
   MuiFormControlLabelProps,
@@ -35,13 +35,19 @@ export function FormControlLabel({
       display: "flex",
       flexDirection: "column",
       alignItems: "start",
-      gap: "2px",
+      gap: "8px",
     },
     "bottom-end": {
       display: "flex",
       flexDirection: "column",
       alignItems: "end",
-      gap: "2px",
+      gap: "8px",
+    },
+    top: {
+      display: "flex",
+      flexDirection: "column-reverse",
+      alignItems: "start",
+      gap: "8px",
     },
   };
 
