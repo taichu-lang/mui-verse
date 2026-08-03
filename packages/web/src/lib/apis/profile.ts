@@ -1,6 +1,7 @@
 import { useAuth } from "@/auth/auth";
-import { ApiResponse, AuthMethodsResponse } from "@/lib/types/api";
+import { ApiResponse } from "@/lib/types/api";
 import {
+  AuthMethodsResponse,
   SigninRequest,
   UpdateProfileRequest,
   UserProfileResponse,
@@ -37,10 +38,12 @@ export async function signinWithCode(
     const profile = response.data;
     // TODO(Leo): mock data, remove!!!
     profile.subscription = {
-      plan_code: "free",
-      period_start: 0,
-      period_end: 0,
+      plan_code: "pro",
+      period: "monthly",
+      period_start: Date.now() / 1000,
+      period_end: Date.now() / 1000 + 30 * 24 * 60 * 60,
     };
+    profile.auth_methods = ["otp"];
     setSession({
       ...profile,
       token: profile.auth.token,

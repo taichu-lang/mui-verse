@@ -3,6 +3,7 @@ import { ChevronRightIcon } from "@/components/icons";
 import { useChangePassword } from "@/hooks/useChangePassword";
 import { TabMenuPanel } from "@mui-verse/ui/layout/TabMenu";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect } from "react";
 import { DataItem } from "./DataList";
 
@@ -31,10 +32,10 @@ export function Security() {
   return (
     <TabMenuPanel value="security">
       <DataItem label={t("settings.security.password")}>
-        <div className="flex items-center gap-1 text-sm">
+        <Link className="flex items-center gap-1 text-sm" href={"/verify"}>
           {t(`settings.security.${action}`)}
           <ChevronRightIcon className="h-4.5 w-4.5" />
-        </div>
+        </Link>
       </DataItem>
     </TabMenuPanel>
   );

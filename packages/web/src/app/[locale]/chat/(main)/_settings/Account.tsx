@@ -42,7 +42,7 @@ export function Account() {
         <UsageProgress balance={frontier} plan={plan} className="mt-3.5" />
       )}
       <Link
-        href={"/"}
+        href={"/usage"}
         className="text-text-secondary mt-3.5 flex items-center gap-1.5 text-xs"
       >
         {t("settings.account.viewUsage")}

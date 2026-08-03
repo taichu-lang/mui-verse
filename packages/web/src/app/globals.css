@@ -72,6 +72,7 @@
   --spacing-landing-navbar: 68px;
   --spacing-faq-width: 800px;
   --spacing-pricing-width: 874px;
+  --spacing-usage-width: 820px;
 }
 
 html[data-mui-color-scheme="light"] {

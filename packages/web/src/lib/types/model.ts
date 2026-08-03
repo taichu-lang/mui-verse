@@ -1,5 +1,5 @@
 import { AnthropicIcon, GeminiIcon, OpenAIIcon } from "@/components/icons";
-import { BenefitCode } from "./benefit";
+import { BenefitCode } from "./enums";
 
 type ModelProvider = "openai" | "google" | "anthropic";
 

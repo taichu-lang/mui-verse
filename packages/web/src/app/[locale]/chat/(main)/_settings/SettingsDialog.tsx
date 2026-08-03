@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import { AuthFilter } from "@/auth/AuthFilter";
 import {
   QuestionIcon,
@@ -18,6 +19,7 @@ import {
   useTabMenuContext,
 } from "@mui-verse/ui/layout/TabMenu";
 import { DialogContent, Divider } from "@mui/material";
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { Account } from "./Account";
@@ -26,7 +28,6 @@ import { General } from "./General";
 import { Help } from "./Help";
 import { parseHash } from "./lib";
 import { Security } from "./Security";
-import { useTranslations } from "next-intl";
 
 function TabTitle() {
   const { title } = useTabMenuContext();
@@ -45,6 +46,8 @@ export default function SettingsDialog() {
   const modal = search.get("modal");
   const hash = useMemo(() => parseHash(modal), [modal]);
   const { navigateLink, backLink } = useSettingsLink();
+  const hasAuthorization = useAuth.useHasAuthorization();
+  const defaultPanel = hash.slug || (hasAuthorization ? "account" : "general");
 
   const handleClose = () => {
     const target = backLink();
@@ -67,10 +70,7 @@ export default function SettingsDialog() {
       }}
     >
       <DialogContent className="h-settings-height flex overflow-hidden p-0">
-        <TabMenuContext
-          defaultIndex={hash.slug || "general"}
-          onChange={handleTabSwitch}
-        >
+        <TabMenuContext defaultIndex={defaultPanel} onChange={handleTabSwitch}>
           <div className="ml-2 flex w-42 flex-col">
             <IconGhostButton
               className="hover:bg-action-hover mt-2.5 mb-1.5 ml-px h-8 w-8"
