@@ -1,7 +1,15 @@
 export { AvatarCard } from "./AvatarCard";
 export { DataItem } from "./DataItem";
-export { Pagination } from "./Pagination";
-export { Table, type ColumnDef, type RowDef } from "./Table";
+export {
+  InfiniteScrollView,
+  type InfinitePage,
+  type InfiniteScrollViewHandle,
+  type InfiniteScrollViewProps,
+  type InfiniteSection,
+} from "./InfiniteScrollView";
+export { TablePagination } from "./Pagination";
+export { type TableColumn } from "./Table";
+export { TableContextProvider, type TableContextHandle } from "./TableContext";
 export {
   VirtualSectionList,
   type Section,
@@ -9,10 +17,3 @@ export {
   type VirtualSectionListHandle,
   type VirtualSectionListProps,
 } from "./VirtualSectionList";
-export {
-  InfiniteScrollView,
-  type InfinitePage,
-  type InfiniteSection,
-  type InfiniteScrollViewHandle,
-  type InfiniteScrollViewProps,
-} from "./InfiniteScrollView";
