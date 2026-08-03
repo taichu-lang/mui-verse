@@ -3,12 +3,14 @@
 import { getCreditUsages } from "@/lib/apis/usage";
 import { stringifyDate } from "@/lib/time";
 import { modelMap } from "@/lib/types/model";
-import { Pagination } from "@/lib/types/pagination";
 import { Usage, UsageMetadata } from "@/lib/types/usage";
-import { ColumnDef, Table } from "@mui-verse/ui/components/data";
-import { Loading } from "@mui-verse/ui/components/effects";
+import {
+  TableColumn,
+  TableContextProvider,
+  TablePagination,
+} from "@mui-verse/ui/components/data";
 import { useLocale } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback } from "react";
 
 function stringifyToken(metadata?: UsageMetadata) {
   if (!metadata) {
@@ -29,34 +31,16 @@ function stringifyToken(metadata?: UsageMetadata) {
 
 export default function UsagePage() {
   const locale = useLocale();
-  const [page, setPage] = useState<number>(1);
-  const [usages, setUsages] = useState<Pagination<Usage>>({
-    total: 0,
-    page,
-    limit: 10,
-    items: [],
-  });
-  const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    startTransition(async () => {
-      const items = await getCreditUsages(page);
-      setUsages(items);
-    });
-  }, [page]);
-
-  const columns: ColumnDef<unknown>[] = [
+  const columns: TableColumn<Usage>[] = [
     {
-      field: "",
-      headerName: "Date",
+      header: <span className="text-text-primary font-medium">Date</span>,
       render: (row: unknown) => {
         const usage = row as Usage;
         return stringifyDate(usage.created_at, locale);
       },
     },
     {
-      field: "",
-      headerName: "Feature",
+      header: <span className="text-text-primary font-medium">Feature</span>,
       render: (row: unknown) => {
         const usage = row as Usage;
 
@@ -66,10 +50,10 @@ export default function UsagePage() {
 
         return "Chat";
       },
+      align: "center",
     },
     {
-      field: "",
-      headerName: "Details",
+      header: <span className="text-text-primary font-medium">Details</span>,
       render: (row: unknown) => {
         const usage = row as Usage;
 
@@ -80,10 +64,12 @@ export default function UsagePage() {
         const model = modelMap[usage.resource_id].name || "-";
         return `${stringifyToken(usage.metadata)} (${model})`;
       },
+      align: "center",
     },
     {
-      field: "",
-      headerName: "Change of credits",
+      header: (
+        <span className="text-text-primary font-medium">Change of credits</span>
+      ),
       render: (row: unknown) => {
         const usage = row as Usage;
 
@@ -93,12 +79,25 @@ export default function UsagePage() {
 
         return `-${usage.amount}`;
       },
+      align: "right",
     },
   ];
 
-  if (isPending) {
-    return <Loading />;
-  }
+  const getUsagesCallback = useCallback(
+    async (page: number, limit: number, signal: AbortSignal) => {
+      return await getCreditUsages(page, limit, signal);
+    },
+    [],
+  );
 
-  return <Table columns={columns} rows={usages} onPageSwitch={setPage} />;
+  return (
+    <TableContextProvider<Usage>
+      columns={columns}
+      fetch={getUsagesCallback}
+      stickyHeader
+      className="gap-15"
+    >
+      <TablePagination placement="center" shape="rounded" />
+    </TableContextProvider>
+  );
 }

@@ -12,6 +12,8 @@
      * this on the sender wrapper; the default here is only a fallback for
      * first paint / SSR before hydration. */
     --chat-sender-offset: 195px;
+
+    --mui-table-head-bg: var(--mui-palette-action-hover);
   }
 }
 

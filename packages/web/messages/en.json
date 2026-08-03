@@ -276,5 +276,14 @@
     "help": {
       "nav": "Help"
     }
+  },
+  "usage": {
+    "back": "Back",
+    "title": "Credits usage history",
+    "upgrade": "<link>Upgrade</link> to Pro to continue using credits.",
+    "date": "Date",
+    "feature": "Feature",
+    "detail": "Details",
+    "usage": "Change of credits"
   }
 }
