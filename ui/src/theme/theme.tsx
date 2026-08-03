@@ -225,12 +225,12 @@ const createBaseTheme = (palette: PaletteOptions) =>
             paddingBottom: spaces[3],
           },
           outlined: {
-            borderColor: "var(--mui-palette-divider)",
-            boxShadow: "none",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
             "&:hover": {
-              borderColor: "var(--mui-palette-text-secondary)",
               backgroundColor: "var(--mui-palette-action-hover)",
-              boxShadow: "none",
+              boxShadow: "var(--mui-shadow-border)",
+              border: 0,
             },
           },
           text: {
@@ -254,6 +254,14 @@ const createBaseTheme = (palette: PaletteOptions) =>
           // would paint text+border in `dark.main` (near-black) — invisible on
           // the dark background — so fall back to the scheme's text color.
           {
+            props: { variant: "contained", color: "dark" },
+            style: {
+              "&:hover": {
+                backgroundColor: "var(--mui-palette-text-secondary)",
+              },
+            },
+          },
+          {
             props: { variant: "outlined", color: "dark" },
             style: {
               color: "var(--mui-palette-text-primary)",
@@ -271,6 +279,20 @@ const createBaseTheme = (palette: PaletteOptions) =>
               "&:hover": {
                 backgroundColor: "var(--mui-palette-action-hover)",
               },
+            },
+          },
+          {
+            props: { variant: "outlined", size: "small" },
+            style: {
+              border: 0,
+              boxShadow: "inset 0 0 0 1px var(--color-divider)",
+            },
+          },
+          {
+            props: { variant: "outlined", size: "large" },
+            style: {
+              border: 0,
+              boxShadow: "inset 0 0 0 1px var(--color-divider)",
             },
           },
         ],
@@ -331,6 +353,17 @@ const createBaseTheme = (palette: PaletteOptions) =>
             letterSpacing: 0,
             lineHeight: "20px",
           },
+          input: {
+            padding: 0,
+            height: "unset",
+            "&:-webkit-autofill": {
+              WebkitBoxShadow:
+                "0 0 0 100px var(--mui-palette-background-paper) inset",
+              WebkitTextFillColor: "var(--mui-palette-text-primary)",
+              caretColor: "var(--mui-palette-text-primary)",
+              borderRadius: "inherit",
+            },
+          },
         },
       },
       MuiOutlinedInput: {
@@ -390,8 +423,8 @@ const createBaseTheme = (palette: PaletteOptions) =>
         styleOverrides: {
           paper: {
             borderRadius: spaces[3],
-            border: "1px solid var(--mui-palette-divider)",
-            boxShadow: "var(--mui-shadow-surface-md)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
           },
         },
       },
@@ -484,13 +517,11 @@ const createBaseTheme = (palette: PaletteOptions) =>
             },
           },
           track: {
-            backgroundColor: "var(--mui-palette-action-disabledBackground)",
-            border: "1px solid var(--mui-palette-divider)",
+            backgroundColor: "var(--mui-palette-divider)",
             opacity: 1,
-            boxShadow: "var(--mui-shadow-inset)",
           },
           thumb: {
-            backgroundColor: "var(--mui-palette-text-primary)",
+            backgroundColor: "var(--mui-palette-primary-contrastText)",
             boxShadow: "var(--mui-shadow-surface-sm)",
           },
         },
@@ -507,12 +538,12 @@ const createBaseTheme = (palette: PaletteOptions) =>
           },
           track: {
             backgroundColor: "var(--mui-palette-primary-main)",
-            border: "none",
+            border: 0,
           },
           thumb: {
             backgroundColor: "var(--mui-palette-background-paper)",
-            border: "1px solid var(--mui-palette-divider)",
-            boxShadow: "var(--mui-shadow-surface-sm)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border), var(--mui-shadow-surface-sm)",
             "&:hover, &.Mui-focusVisible": {
               boxShadow: "var(--mui-shadow-surface-md)",
             },
@@ -539,23 +570,26 @@ const createBaseTheme = (palette: PaletteOptions) =>
             lineHeight: "20px",
           },
           outlined: {
-            borderColor: "var(--mui-palette-divider)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
           },
           filled: {
-            border: "1px solid var(--mui-palette-divider)",
+            border: 0,
+            boxShadow: "var(--mui-shadow-border)",
           },
         },
       },
       MuiMenu: {
+        // Also container of Select Options.
         defaultProps: {
           slotProps: {
             paper: {
               sx: {
-                borderRadius: 2,
                 margin: 0,
-                paddingX: 2,
-                border: "1px solid var(--mui-palette-divider)",
-                boxShadow: "var(--mui-shadow-surface-md)",
+                padding: 0.5,
+                border: 0,
+                boxShadow:
+                  "var(--mui-shadow-border), var(--mui-shadow-surface-md)",
               },
             },
           },
@@ -571,7 +605,7 @@ const createBaseTheme = (palette: PaletteOptions) =>
             margin: 0,
             padding: 2,
             borderRadius: 2,
-            height: spaces[6],
+            height: "32px",
           },
         },
       },
@@ -600,7 +634,8 @@ const createBaseTheme = (palette: PaletteOptions) =>
       },
       MuiList: {
         defaultProps: {
-          dense: true,
+          dense: false,
+          disablePadding: true,
         },
       },
       MuiTable: {
@@ -618,7 +653,7 @@ const createBaseTheme = (palette: PaletteOptions) =>
         styleOverrides: {
           root: {
             backgroundImage: "none",
-            border: "1px solid var(--mui-palette-divider)",
+            border: 0,
             boxShadow: "var(--mui-shadow-surface-sm)",
             transition:
               "background-color 200ms, box-shadow 200ms, border-color 200ms",
@@ -646,11 +681,13 @@ const createBaseTheme = (palette: PaletteOptions) =>
         },
       },
       MuiCardContent: {
-        defaultProps: {
-          sx: {
-            py: 0,
-            px: 2,
+        styleOverrides: {
+          root: {
             margin: 0,
+            padding: 0,
+            ":last-child": {
+              paddingBottom: 0,
+            },
           },
         },
       },

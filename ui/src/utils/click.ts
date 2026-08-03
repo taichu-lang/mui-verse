@@ -19,3 +19,33 @@ export function extendClickable(
     },
   });
 }
+
+export type HoverProps = {
+  onMouseEnter?: (e: React.MouseEvent<HTMLElement>) => void;
+  onMouseLeave?: (e: React.MouseEvent<HTMLElement>) => void;
+};
+
+export function extendHover(
+  element: React.ReactElement<HoverProps>,
+  onEnter: (e: React.MouseEvent<HTMLElement>) => void,
+  onLevel?: (e: React.MouseEvent<HTMLElement>) => void,
+) {
+  return cloneElement(element, {
+    onMouseEnter: (e) => {
+      element.props.onMouseEnter?.(e);
+      if (e.defaultPrevented) {
+        return;
+      }
+
+      onEnter(e);
+    },
+    onMouseLeave: (e) => {
+      element.props.onMouseLeave?.(e);
+      if (e.defaultPrevented) {
+        return;
+      }
+
+      onLevel?.(e);
+    },
+  });
+}

@@ -1,5 +1,11 @@
-import { createContext, useCallback, useContext, useState } from "react";
-import { DesktopMenu } from "./Menu";
+import { MenuItem } from "@mui-verse/ui/components/navigation";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface TabMenuContextValue {
   value: string;
@@ -24,16 +30,22 @@ export function useTabMenuContext() {
 export function TabMenuContext({
   defaultIndex,
   children,
+  onChange,
 }: {
   defaultIndex: string;
   children: React.ReactNode;
+  onChange?: (value: string) => void;
 }) {
   const [selected, setSelected] = useState<string>(defaultIndex);
   const [title, setTitle] = useState<string | null>(null);
 
-  const handleClick = useCallback((value: string) => {
-    setSelected(value);
-  }, []);
+  const handleClick = useCallback(
+    (value: string) => {
+      setSelected(value);
+      onChange?.(value);
+    },
+    [onChange],
+  );
 
   const handleTitleChange = useCallback((title: string) => {
     setTitle(title);
@@ -62,20 +74,22 @@ export interface TabMenuProps {
 export function TabMenu({ title, icon, value: tabValue }: TabMenuProps) {
   const { value, onClick, setTitle } = useTabMenuContext();
 
+  useEffect(() => {
+    if (value === tabValue) {
+      setTitle(title);
+    }
+  }, [value, tabValue, title, setTitle]);
+
   const handleClick = () => {
     onClick(tabValue);
     setTitle(title);
   };
 
   return (
-    <DesktopMenu
-      title={title}
-      icon={icon}
-      controlled={{
-        active: value === tabValue,
-        onClick: handleClick,
-      }}
-    />
+    <MenuItem onClick={handleClick} selected={value === tabValue}>
+      {icon}
+      {title}
+    </MenuItem>
   );
 }
 

@@ -1,16 +1,22 @@
 "use client";
 
+import { CloseXIcon } from "@mui-verse/ui/components/icons";
 import { extendClickable, TriggerProps } from "@mui-verse/ui/utils/click";
+import { cn } from "@mui-verse/ui/utils/cn";
 import {
   Button,
-  Divider,
   IconButton,
   Dialog as MuiDialog,
   DialogProps as MuiDialogProps,
   DialogTitle as MuiDialogTitle,
 } from "@mui/material";
-import { XIcon } from "lucide-react";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 interface DialogValue {
   open: boolean;
@@ -58,46 +64,81 @@ export function DialogProvider({
 
 export type DialogProps = Omit<MuiDialogProps, "open" | "onClose">;
 
-export function Dialog({
+export function DefaultDialog({
   fullWidth = true,
   maxWidth = "xs",
+  sx,
   ...props
-}: DialogProps) {
-  const { open, setOpen } = useDialogContext();
-
+}: MuiDialogProps) {
   return (
     <MuiDialog
-      open={open}
-      onClose={() => setOpen(false)}
       fullWidth={fullWidth}
       maxWidth={maxWidth}
+      slotProps={{
+        paper: {
+          elevation: 0,
+          sx: {
+            margin: 0,
+            borderRadius: "18px",
+            ...sx,
+          },
+        },
+      }}
       {...props}
-    ></MuiDialog>
+    />
   );
+}
+
+export function Dialog(props: DialogProps) {
+  const { open, setOpen } = useDialogContext();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return <DefaultDialog open={open} onClose={handleClose} {...props} />;
 }
 
 export function DialogTitle({
   children,
   enableCloseTrigger = false,
   useSeparator = true,
+  className,
 }: {
   children: React.ReactNode;
-  enableCloseTrigger?: boolean;
+  enableCloseTrigger?: boolean | React.ReactElement<TriggerProps>;
   useSeparator?: boolean;
+  className?: string;
 }) {
   const { setOpen } = useDialogContext();
 
+  let trigger = null;
+  if (enableCloseTrigger) {
+    if (typeof enableCloseTrigger !== "boolean") {
+      trigger = cloneElement(enableCloseTrigger, {
+        onClick: () => setOpen(false),
+      });
+    } else {
+      trigger = (
+        <IconButton onClick={() => setOpen(false)}>
+          <CloseXIcon className="h-4 w-4" />
+        </IconButton>
+      );
+    }
+  }
+
   return (
-    <MuiDialogTitle className="flex flex-col gap-2">
-      <div className="font-subtitle1 flex items-center justify-between">
-        {children}
-        {enableCloseTrigger && (
-          <IconButton onClick={() => setOpen(false)}>
-            <XIcon className="h-3 w-3" />
-          </IconButton>
-        )}
-      </div>
-      {useSeparator && <Divider flexItem variant="fullWidth" />}
+    <MuiDialogTitle
+      className={cn(
+        "flex items-center",
+        {
+          "shadow-(--mui-shadow-border)": useSeparator,
+        },
+        className,
+      )}
+    >
+      {children}
+      {enableCloseTrigger && trigger}
     </MuiDialogTitle>
   );
 }

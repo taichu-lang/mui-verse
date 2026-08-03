@@ -11,6 +11,7 @@
     "./components/icons": "./src/components/icons/index.ts",
     "./components/buttons": "./src/components/buttons/index.ts",
     "./components/feedback": "./src/components/feedback/index.ts",
+    "./components/chat": "./src/components/chat/index.ts",
     "./theme": "./src/theme/index.ts",
     "./utils/*": "./src/utils/*.ts",
     "./hooks/*": "./src/hooks/*.tsx",
@@ -66,9 +67,12 @@
     "unrs-resolver"
   ],
   "dependencies": {
+    "@tanstack/react-virtual": "^3.13.0",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.7.0",
+    "lucide-react": "^1.28.0",
     "pino": "^10.3.1",
-    "tailwind-merge": "^3.5.0"
+    "streamdown": "^2.5.0",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.4.3"
   }
 }

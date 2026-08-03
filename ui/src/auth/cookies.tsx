@@ -1,6 +1,5 @@
 "use server";
 
-import { logger } from "@mui-verse/ui/utils/logger";
 import { cookies } from "next/headers";
 import { BaseSession } from "./types";
 
@@ -31,13 +30,13 @@ export async function getSessionCookie<T extends BaseSession = BaseSession>(
   // If the cookie has expired, it will be deleted automatically.
   const sessionData = cookieStore.get(cookie_name)?.value;
   if (!sessionData) {
-    logger.warn("session is not found from cookie");
+    console.warn("session is not found from cookie");
     return null;
   }
 
   const session = JSON.parse(sessionData) as T;
   if (session.expires_at * 1000 < Date.now()) {
-    logger.warn({ expired_at: session.expires_at }, "session expired");
+    console.warn({ expired_at: session.expires_at }, "session expired");
     cookieStore.delete(cookie_name);
     return null;
   }

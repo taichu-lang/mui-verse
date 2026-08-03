@@ -1,10 +1,16 @@
 "use client";
 
+import { IconGhostButton } from "@mui-verse/ui/components/buttons";
+import { cn } from "@mui-verse/ui/utils/cn";
 import {
+  Divider,
   InputAdornment,
+  InputBase,
+  InputBaseProps,
   TextField as MuiTextField,
   TextFieldProps as MuiTextProps,
 } from "@mui/material";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 // Refer to ValidityState.
@@ -221,5 +227,155 @@ export function TextField(props: TextFieldProps) {
       type={type === "number" ? "text" : type}
       slotProps={buildSlotProps()}
     />
+  );
+}
+
+export type InputProps = Omit<InputBaseProps, "value"> & {
+  onValueChange?: (value: string) => void;
+  variant?: "default" | "outlined";
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+};
+
+export function Input({
+  defaultValue,
+  onValueChange,
+  size = "small",
+  variant = "outlined",
+  type: defaultType = "text",
+  startIcon,
+  endIcon,
+  className,
+  autoCapitalize = "none",
+  autoComplete = "on",
+  autoCorrect = "off",
+  spellCheck = "false",
+  error = false,
+  ...props
+}: InputProps) {
+  const [value, setValue] = useState<string>((defaultValue as string) ?? "");
+  const [type, setType] = useState<string>(defaultType);
+  const isComposingRef = useRef(false);
+
+  const classes = {
+    small: "text-sm leading-4.5 py-2.25 px-3",
+    medium: "text-sm leading-4.5 py-3.25 px-4",
+    default: "hover:ring-text-primary text-sm leading-4.5",
+    outlined:
+      "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
+  };
+
+  const buildEndIcon = () => {
+    if (endIcon) {
+      return endIcon;
+    }
+
+    if (defaultType === "password") {
+      return (
+        <IconGhostButton
+          onClick={() =>
+            setType((prev) => (prev === "text" ? "password" : "text"))
+          }
+        >
+          {type === "password" ? (
+            <EyeOffIcon className="h-4 w-4" />
+          ) : (
+            <EyeIcon className="h-4 w-4" />
+          )}
+        </IconGhostButton>
+      );
+    }
+
+    return null;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    setValue(v);
+
+    if (!isComposingRef.current) {
+      onValueChange?.(v);
+    }
+  };
+
+  // IME composition (e.g. Chinese Pinyin, Japanese Kana, Korean Hangul) fires
+  // `onChange` events for each intermediate keystroke before the user commits a
+  // character. Forwarding those transient values via `onValueChange` causes
+  // downstream consumers — debounced searches, network requests, validators —
+  // to react to text the user has not actually confirmed yet.
+  //
+  // We swallow `onValueChange` while composition is active and emit a single
+  // final value on `compositionend`. The visible input value is still updated
+  // on every change so the IME candidate UI keeps working normally.
+  //
+  // Consumers that genuinely need the in-flight composition text (custom
+  // candidate panels, collaborative cursors, typing analytics, full-fledged
+  // editors) should not rely on this component and read composition events
+  // directly instead.
+  const handleCompositionStart = () => {
+    isComposingRef.current = true;
+  };
+
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLDivElement>) => {
+    isComposingRef.current = false;
+    onValueChange?.((e.target as HTMLInputElement).value);
+  };
+
+  return (
+    <InputBase
+      {...props}
+      value={value}
+      type={type}
+      className={cn(
+        "rounded-[10px]",
+        classes[size],
+        classes[variant],
+        {
+          "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
+            error,
+        },
+        className,
+      )}
+      onChange={handleChange}
+      onCompositionStart={handleCompositionStart}
+      onCompositionEnd={handleCompositionEnd}
+      startAdornment={
+        startIcon && (
+          <InputAdornment position="start">{startIcon}</InputAdornment>
+        )
+      }
+      endAdornment={
+        <InputAdornment position="end">{buildEndIcon()}</InputAdornment>
+      }
+      autoCapitalize={autoCapitalize}
+      autoComplete={autoComplete}
+      autoCorrect={autoCorrect}
+      spellCheck={spellCheck}
+    />
+  );
+}
+
+export function InputGroup({
+  children,
+  error = false,
+  ...props
+}: {
+  children: React.ReactNode;
+} & InputProps) {
+  return (
+    <div
+      className={cn(
+        "flex w-full items-center rounded-[10px]",
+        "ring-divider hover:ring-text-primary focus-within:ring-text-primary ring-1 ring-inset",
+        {
+          "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
+            error,
+        },
+      )}
+    >
+      {children}
+      <Divider flexItem orientation="vertical" />
+      <Input {...props} variant="default" />
+    </div>
   );
 }

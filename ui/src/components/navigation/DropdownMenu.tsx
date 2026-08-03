@@ -1,16 +1,14 @@
 "use client";
 
-import {
-  Divider,
-  Menu,
-  MenuItem,
-  type MenuItemProps,
-  type MenuProps,
-} from "@mui/material";
+import { extendClickable, TriggerProps } from "@mui-verse/ui/utils/click";
+import { Divider, Menu, type MenuProps } from "@mui/material";
 import { createContext, useCallback, useContext, useState } from "react";
+import { MenuItem, MenuItemProps } from "./MenuItem";
 
-type Align = "start" | "center" | "end";
-type Side = "top" | "right" | "bottom" | "left";
+export type Align = "start" | "center" | "end";
+
+// `cover` means that only the first item covers the trigger.
+export type Side = "top" | "right" | "bottom" | "left" | "cover";
 
 interface DropdownMenuContextValue {
   open: boolean;
@@ -26,13 +24,14 @@ const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(
   null,
 );
 
-function useDropdownMenu() {
+export function useDropdownMenu() {
   const ctx = useContext(DropdownMenuContext);
   if (!ctx) {
     throw new Error(
       "DropdownMenu compound components must be used within <DropdownMenu>",
     );
   }
+
   return ctx;
 }
 
@@ -75,6 +74,7 @@ export function DropdownMenu({
   );
 
   const onClose = useCallback(() => {
+    setAnchorEl(null);
     setOpen(false);
     onOpenChange?.(false);
   }, [onOpenChange]);
@@ -91,27 +91,23 @@ export function DropdownMenu({
 // --- Trigger ---
 
 export interface DropdownMenuTriggerProps {
-  children: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
+  children: React.ReactElement<TriggerProps>;
 }
 
 export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
   const { onOpen } = useDropdownMenu();
 
-  return (
-    <div
-      style={{ display: "inline-flex" }}
-      onClick={(e) => {
-        onOpen(e.currentTarget);
-      }}
-    >
-      {children}
-    </div>
-  );
+  const trigger = extendClickable(children, (e) => {
+    e.stopPropagation();
+    onOpen(e.currentTarget);
+  });
+
+  return trigger;
 }
 
 // --- Content ---
 
-const anchorOriginMap: Record<
+export const AnchorOriginMap: Record<
   Side,
   Record<Align, MenuProps["anchorOrigin"]>
 > = {
@@ -135,9 +131,14 @@ const anchorOriginMap: Record<
     center: { vertical: "center", horizontal: "right" },
     end: { vertical: "bottom", horizontal: "right" },
   },
+  cover: {
+    start: { vertical: "top", horizontal: "left" },
+    center: { vertical: "top", horizontal: "center" },
+    end: { vertical: "top", horizontal: "right" },
+  },
 };
 
-const transformOriginMap: Record<
+export const TransformOriginMap: Record<
   Side,
   Record<Align, MenuProps["transformOrigin"]>
 > = {
@@ -161,44 +162,72 @@ const transformOriginMap: Record<
     center: { vertical: "center", horizontal: "left" },
     end: { vertical: "bottom", horizontal: "left" },
   },
+  cover: {
+    start: { vertical: "top", horizontal: "left" },
+    center: { vertical: "top", horizontal: "center" },
+    end: { vertical: "top", horizontal: "right" },
+  },
 };
+
+type ShadowLevel = "none" | "xs" | "sm" | "md" | "lg";
 
 export interface DropdownMenuContentProps extends Omit<
   MenuProps,
   "open" | "anchorEl" | "onClose"
 > {
   children: React.ReactNode;
+  shadow?: ShadowLevel;
 }
 
 export function DropdownMenuContent({
   children,
+  shadow = "lg",
   sx,
-  ...menuProps
+  ...props
 }: DropdownMenuContentProps) {
   const { open, anchorEl, onClose, side, align } = useDropdownMenu();
+  const shadows: Record<ShadowLevel, string> = {
+    none: "var(--mui-shadow-border)",
+    xs: "var(--mui-shadow-border), var(--mui-shadow-surface-xs)",
+    sm: "var(--mui-shadow-border), var(--mui-shadow-surface-sm)",
+    md: "var(--mui-shadow-border), var(--mui-shadow-surface-md)",
+    lg: "var(--mui-shadow-border), var(--mui-shadow-surface-lg)",
+  };
 
   return (
     <Menu
+      // If autoFocus is true, the first item will be focused once the menu is
+      // opened. It might be confused if the background color of selected item
+      // is same as `hover` action.
+      autoFocus={false}
       open={open}
       anchorEl={anchorEl}
       onClose={onClose}
-      anchorOrigin={anchorOriginMap[side][align]}
-      transformOrigin={transformOriginMap[side][align]}
+      anchorOrigin={AnchorOriginMap[side][align]}
+      transformOrigin={TransformOriginMap[side][align]}
+      // MUI Popover keeps the menu at least `marginThreshold` px (default 16)
+      // from every viewport edge, nudging it inward when the computed position
+      // is closer than that. For triggers near the edge (e.g. inside a sidebar
+      // flush with the viewport), this offsets the menu from the trigger and
+      // breaks left/right alignment. Disable the safeguard so the menu sits
+      // exactly where `anchorOrigin` / `transformOrigin` ask.
+      marginThreshold={0}
       slotProps={{
         paper: {
           elevation: 0,
           sx: {
             minWidth: 160,
-            borderRadius: "10px",
-            border: "0.5px solid",
+            borderRadius: "18px",
+            border: 0,
             borderColor: "divider",
-            boxShadow: "var(--mui-shadow-surface-lg)",
-            py: 0.5,
+            boxShadow: shadows[shadow],
+            py: "8px",
+            px: "8px",
             ...sx,
           },
         },
       }}
-      {...menuProps}
+      {...props}
     >
       {children}
     </Menu>
@@ -207,47 +236,42 @@ export function DropdownMenuContent({
 
 // --- Item ---
 
-export interface DropdownMenuItemProps extends MenuItemProps {
-  closeOnClick?: boolean;
-}
+/**
+ * Polymorphic `DropdownMenuItem` props.
+ *
+ * Same `component` mechanism as `MenuItem`: pass `component={Link}` or
+ * `component="a"` and TypeScript will accept the destination element's props
+ * (e.g. `href`). Defaults to `"li"` — the same default as MUI's `MenuItem`.
+ */
+export type DropdownMenuItemProps<C extends React.ElementType = "li"> =
+  MenuItemProps<C> & {
+    closeOnClick?: boolean;
+  };
 
-export function DropdownMenuItem({
+export function DropdownMenuItem<C extends React.ElementType = "li">({
   closeOnClick = true,
   onClick,
-  sx,
   ...props
-}: DropdownMenuItemProps) {
+}: DropdownMenuItemProps<C>) {
   const { onClose } = useDropdownMenu();
 
+  // The `onClick` we receive is typed against `C`'s DOM node, but internally
+  // we hand it to a non-polymorphic `MenuItem`. Wrap once and cast at the
+  // boundary — runtime is unaffected because MUI passes the same event object
+  // through regardless of the root element.
+  const handleClick: React.MouseEventHandler = (e) => {
+    (onClick as React.MouseEventHandler | undefined)?.(e);
+    if (closeOnClick) onClose();
+  };
+
   return (
-    <MenuItem
-      onClick={(e) => {
-        onClick?.(e);
-        if (closeOnClick) onClose();
-      }}
-      sx={{
-        fontSize: "0.875rem",
-        lineHeight: 1,
-        borderRadius: "4px",
-        mx: 0.5,
-        px: 1.5,
-        py: 0.75,
-        minHeight: "unset",
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        "&:hover": {
-          backgroundColor: "action.hover",
-        },
-        ...sx,
-      }}
-      {...props}
-    />
+    <MenuItem onClick={handleClick} {...(props as unknown as MenuItemProps)} />
   );
 }
 
 // --- Separator ---
 
-export function DropdownMenuSeparator() {
-  return <Divider sx={{ my: 0.5 }} />;
+// Using `my-xx` to override the default margin of `Divider`.
+export function DropdownMenuSeparator({ className }: { className?: string }) {
+  return <Divider flexItem className={className} />;
 }

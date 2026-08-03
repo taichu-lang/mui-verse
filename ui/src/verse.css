@@ -1,6 +1,8 @@
 @layer theme, base, mui, components, utilities;
 @import "tailwindcss";
 
+@source "../node_modules/streamdown/dist/*.js";
+
 /* Base font stack — emitted as a real CSS variable in :root so MUI can
    reference it via var(--font-sans). Kept out of `@theme inline` because
    inline tokens are not written to :root. */
@@ -13,6 +15,7 @@
 @theme {
   --z-index-navbar: 50;
   --z-index-fab: 999;
+  --spacing-navbar: 56px;
 }
 
 /*
@@ -54,6 +57,8 @@
   --mui-shadow-surface-lg:
     inset 0 1px 0 rgb(255 255 255 / 0.14), 0 4px 8px rgb(0 0 0 / 0.65),
     0 8px 18px rgb(0 0 0 / 0.35);
+
+  --mui-shadow-border: inset 0 0 0 1px var(--mui-palette-divider);
 }
 
 [data-mui-color-scheme="light"] {
@@ -76,6 +81,23 @@
 
   --mui-shadow-surface-lg:
     0 4px 8px rgb(0 0 0 / 0.08), 0 8px 18px rgb(0 0 0 / 0.06);
+
+  /** 
+    Use box-shadow for border.
+    Params: inset | offset-x | offset-y | blur-radius | spread-radius | color
+      - inset:         paint the shadow inside the element (like an inner border)
+      - offset-x:      horizontal offset; positive shifts the shadow to the right
+      - offset-y:      vertical offset; positive shifts the shadow downward
+      - blur-radius:   0 = sharp edge, higher = softer
+      - spread-radius: expands (positive) or contracts (negative) the shadow; with inset,
+                       a positive spread thickens the border evenly on all sides
+      - color:         shadow color 
+
+    Ex: 
+      - inset 0 0 0 1px => all border
+      - inset 1px 0 0 0 => left border
+  */
+  --mui-shadow-border: inset 0 0 0 1px var(--mui-palette-divider);
 }
 
 @theme inline {
@@ -539,6 +561,18 @@
   }
 }
 
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -553,8 +587,8 @@
 @layer components {
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
   }
 
   ::-webkit-scrollbar-track {
@@ -562,12 +596,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--mui-palette-divider);
+    background: var(--mui-palette-action-hover);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--mui-palette-text-secondary);
+    background: var(--mui-palette-divider);
   }
 
   .transition-cubic {
