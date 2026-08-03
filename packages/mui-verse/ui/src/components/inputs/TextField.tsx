@@ -3,6 +3,7 @@
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { cn } from "@mui-verse/ui/utils/cn";
 import {
+  Divider,
   InputAdornment,
   InputBase,
   InputBaseProps,
@@ -257,7 +258,7 @@ export function Input({
   const isComposingRef = useRef(false);
 
   const classes = {
-    small: "text-sm leading-4.5 py-0.75",
+    small: "text-sm leading-4.5 py-2.25 px-3",
     medium: "text-sm leading-4.5 py-3.25 px-4",
     default: "hover:ring-text-primary text-sm leading-4.5",
     outlined:
@@ -289,7 +290,7 @@ export function Input({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = e.currentTarget.value;
+    const v = e.target.value;
     setValue(v);
 
     if (!isComposingRef.current) {
@@ -351,5 +352,30 @@ export function Input({
       autoCorrect={autoCorrect}
       spellCheck={spellCheck}
     />
+  );
+}
+
+export function InputGroup({
+  children,
+  error = false,
+  ...props
+}: {
+  children: React.ReactNode;
+} & InputProps) {
+  return (
+    <div
+      className={cn(
+        "flex w-full items-center rounded-[10px]",
+        "ring-divider hover:ring-text-primary focus-within:ring-text-primary ring-1 ring-inset",
+        {
+          "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
+            error,
+        },
+      )}
+    >
+      {children}
+      <Divider flexItem orientation="vertical" />
+      <Input {...props} variant="default" />
+    </div>
   );
 }

@@ -580,13 +580,13 @@ const createBaseTheme = (palette: PaletteOptions) =>
         },
       },
       MuiMenu: {
+        // Also container of Select Options.
         defaultProps: {
           slotProps: {
             paper: {
               sx: {
-                borderRadius: 2,
                 margin: 0,
-                paddingX: 2,
+                padding: 0.5,
                 border: 0,
                 boxShadow:
                   "var(--mui-shadow-border), var(--mui-shadow-surface-md)",
@@ -605,7 +605,7 @@ const createBaseTheme = (palette: PaletteOptions) =>
             margin: 0,
             padding: 2,
             borderRadius: 2,
-            height: spaces[6],
+            height: "32px",
           },
         },
       },
