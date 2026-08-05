@@ -1,119 +1,162 @@
 "use client";
 
+import { AnimatedSpinner } from "@mui-verse/ui/components/effects";
 import {
   Table as MuiTable,
-  Paper,
-  styled,
-  TableBody,
-  TableCell,
+  TableBody as MuiTableBody,
+  TableCell as MuiTableCell,
+  TableHead as MuiTableHead,
+  TableRow as MuiTableRow,
   tableCellClasses,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
+  TableCellProps,
+  TableRowProps,
 } from "@mui/material";
-import { useTranslations } from "next-intl";
-import { ColumnDef, RowDef, TableContentProps } from "./Table";
+import { IdOriented, TableColumn } from "./Table";
+import { useTableContext } from "./TableContext";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor:
-      theme.palette.mode === "light"
-        ? "var(--mui-palette-secondary-400)"
-        : "var(--mui-palette-secondary-500)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: 14,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(even)": {
-    backgroundColor: theme.palette.grey[100],
-  },
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-function getCellValue(row: RowDef, column: ColumnDef<RowDef>) {
-  if (column.render) {
-    return column.render(row);
-  }
-  return row[column.field] as React.ReactNode;
+export function TableDesktop<T extends IdOriented>({
+  stickyHeader,
+  columns,
+}: {
+  stickyHeader?: boolean;
+  columns: TableColumn<T>[];
+  emptyState?: React.ReactNode;
+}) {
+  return (
+    <MuiTable stickyHeader={stickyHeader} size="medium">
+      <TableHead columns={columns} />
+      <MuiTableBody>
+        <TableBody columns={columns} />
+      </MuiTableBody>
+    </MuiTable>
+  );
 }
 
-export function TableDesktop({ columns, rows }: TableContentProps) {
-  const tc = useTranslations("common");
+function TableHead<T>({ columns }: { columns: TableColumn<T>[] }) {
+  return (
+    <MuiTableHead>
+      <TableRow>
+        {columns.map((column, index) => (
+          <TableCell
+            key={`head-${index}`}
+            sx={{}}
+            align={column.align || "left"}
+          >
+            {column.header}
+          </TableCell>
+        ))}
+      </TableRow>
+    </MuiTableHead>
+  );
+}
 
-  const renderBody = () => {
-    if (rows.items.length === 0) {
-      return (
-        <StyledTableRow>
-          <StyledTableCell colSpan={columns.length} align="center">
-            <Typography variant="caption" className="text-[14px]">
-              {tc("noData")}
-            </Typography>
-          </StyledTableCell>
-        </StyledTableRow>
-      );
+function TableBody<T extends IdOriented>({
+  columns,
+  emptyState,
+}: {
+  columns: TableColumn<T>[];
+  emptyState?: React.ReactNode;
+}) {
+  const { loading, rows } = useTableContext();
+
+  if (loading) {
+    return (
+      <TableRow>
+        <TableCell colSpan={columns.length} align="center">
+          <div className="flex justify-center">
+            <AnimatedSpinner />
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  if (rows.items.length === 0) {
+    if (emptyState) {
+      <TableRow>
+        <TableCell colSpan={columns.length} align="center">
+          {emptyState}
+        </TableCell>
+      </TableRow>;
     }
 
-    return rows.items.map((item, rid) => {
-      const row = item as RowDef;
-      return (
-        <StyledTableRow key={row.id}>
-          {columns.map((column, cid) => {
-            if (cid === 0) {
-              return (
-                <StyledTableCell
-                  key={`r-${rid}-c-${cid}`}
-                  component="th"
-                  scope="row"
-                >
-                  {getCellValue(row, column)}
-                </StyledTableCell>
-              );
-            }
+    return (
+      <TableRow>
+        {columns.map((c, index) => (
+          <TableCell key={`empty-${index}`} align={c.align || "left"}>
+            {"-"}
+          </TableCell>
+        ))}
+      </TableRow>
+    );
+  }
 
-            return (
-              <StyledTableCell
-                key={`r-${rid}-c-${cid}`}
-                align="center"
-                width={column.width ? `${column.width!}%` : ""}
-                sx={{
-                  maxWidth: `${column.width || 100}vw`,
-                }}
-              >
-                {getCellValue(row, column)}
-              </StyledTableCell>
-            );
-          })}
-        </StyledTableRow>
-      );
-    });
-  };
+  const items = rows.items as T[];
+  return items.map((item) => (
+    <TableRow key={`row-${item.id}`}>
+      {columns.map((column, ci) => {
+        const align = column.align || "left";
+        if (ci === 0) {
+          <TableCell
+            key={`row-${item.id}-cell-${ci}`}
+            align={align}
+            component="th"
+            scope="row"
+            width={column.width}
+          >
+            {column.render(item)}
+          </TableCell>;
+        }
 
+        return (
+          <TableCell
+            key={`row-${item.id}-cell-${ci}`}
+            align={align}
+            width={column.width}
+          >
+            {column.render(item)}
+          </TableCell>
+        );
+      })}
+    </TableRow>
+  ));
+}
+
+function TableRow({ sx, ...props }: TableRowProps) {
   return (
-    <TableContainer component={Paper}>
-      <MuiTable stickyHeader size="medium">
-        <TableHead>
-          <StyledTableRow>
-            {columns.map((column, index) => (
-              <StyledTableCell
-                key={`column-${index}`}
-                align={index === 0 ? "left" : "center"}
-              >
-                {column.headerName}
-              </StyledTableCell>
-            ))}
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>{renderBody()}</TableBody>
-      </MuiTable>
-    </TableContainer>
+    <MuiTableRow
+      {...props}
+      sx={{
+        "&:nth-of-type(even)": {
+          bgcolor: "grey.100",
+        },
+        "&:last-child td, &:last-child th": {
+          border: 0,
+        },
+        ...sx,
+      }}
+    />
+  );
+}
+
+function TableCell({ sx, ...props }: TableCellProps) {
+  return (
+    <MuiTableCell
+      {...props}
+      sx={{
+        [`&.${tableCellClasses.head}`]: {
+          bgcolor: "var(--mui-table-head-bg, var(--mui-palette-secondary-500))",
+          fontSize: "14px",
+          lineHeight: "18px",
+          fontWeight: "medium",
+          color: "white",
+        },
+        [`&.${tableCellClasses.body}`]: {
+          fontSize: "14px",
+          lineHeight: "18px",
+        },
+        ...sx,
+      }}
+    />
   );
 }
