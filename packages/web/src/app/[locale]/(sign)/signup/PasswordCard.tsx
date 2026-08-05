@@ -7,11 +7,13 @@ import { Title } from "@/components/blocks/signin/Title";
 import { Button } from "@/components/ui/Button";
 import { updatePassword } from "@/lib/apis/profile";
 import { InputControlRef } from "@mui-verse/ui/components/inputs";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 export function PasswordCard({ email }: { email: string }) {
+  const t = useTranslations();
   const router = useRouter();
   const { session } = useAuth();
   const [password, setPassword] = useState<string | null>(null);
@@ -34,7 +36,7 @@ export function PasswordCard({ email }: { email: string }) {
       await updatePassword(session.email, password, session.token);
       router.replace("/chat");
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
     }
   };
 
@@ -47,7 +49,7 @@ export function PasswordCard({ email }: { email: string }) {
         ref={passwordRef}
       />
       <Button onClick={getStarted} disabled={!password}>
-        Get started
+        {t("sign.signup.submit")}
       </Button>
     </SignCard>
   );

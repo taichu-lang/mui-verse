@@ -26,7 +26,7 @@ export function NameCard({ onSwitch }: { onSwitch: () => void }) {
     }
 
     try {
-      await updateUser(session.id, { name });
+      await updateUser({ name });
     } catch {
       toast.error("network error");
       return;
@@ -41,7 +41,7 @@ export function NameCard({ onSwitch }: { onSwitch: () => void }) {
     }
 
     try {
-      await updateUser(session.id, { name });
+      await updateUser({ name });
     } catch {
       toast.error("network error");
       return;

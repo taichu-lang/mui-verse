@@ -8,3 +8,11 @@ export const useAuth = createAuthStore<UserSession>({
   cookieName,
   adapter: authCookie,
 });
+
+export function getUserName(session: UserSession) {
+  if (session.name) {
+    return session.name;
+  }
+
+  return session.email.split("@")[0];
+}

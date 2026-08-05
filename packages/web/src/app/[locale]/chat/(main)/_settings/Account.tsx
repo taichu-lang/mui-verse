@@ -1,4 +1,4 @@
-import { useAuth } from "@/auth/auth";
+import { getUserName, useAuth } from "@/auth/auth";
 import { UsageProgress } from "@/components/blocks/usage/UsageProgress";
 import { ArrowRightIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
@@ -18,10 +18,11 @@ export function Account() {
   }
 
   const plan = session.subscription.plan_code;
+  const userName = getUserName(session);
 
   return (
     <TabMenuPanel value="account">
-      <DataItem label={t("settings.account.name")}>{session.name}</DataItem>
+      <DataItem label={t("settings.account.name")}>{userName}</DataItem>
       <DataSeparator />
       <DataItem label={t("settings.account.email")}>{session.email}</DataItem>
       <DataSeparator />

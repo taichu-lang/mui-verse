@@ -21,6 +21,7 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ResetPassword() {
+  const t = useTranslations();
   const { token, action, email } = useChangePassword();
   const router = useRouter();
 
@@ -28,7 +29,6 @@ export default function ResetPassword() {
   const [confirmed, setConfirmed] = useState<string>("");
   const [mismatch, setMismatch] = useState<boolean>(false);
   const passwordRef = useRef<InputControlRef>(null);
-  const t = useTranslations();
 
   const handlePasswordChange = (v: string) => {
     setPassword(v);
@@ -50,45 +50,47 @@ export default function ResetPassword() {
           router.replace("/chat");
         }
       } else {
-        toast.error("system error");
+        toast.error(t("error.system"));
       }
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
     }
   };
 
   return (
     <SignCard>
-      <Title>{action === "add" ? "Add password" : "Reset password"}</Title>
+      <Title>
+        {action === "add" ? t("sign.reset.add") : t("sign.reset.reset")}
+      </Title>
       <InputControl
         className={"mt-7.5"}
         onValueChange={handlePasswordChange}
         ref={passwordRef}
       >
-        <InputLabel>{"New Password"}</InputLabel>
+        <InputLabel>{t("sign.reset.label")}</InputLabel>
         <FormInput
           type="password"
           size="medium"
-          placeholder="Enter your password"
+          placeholder={t("sign.reset.placeholder")}
         />
         <InputRule
           fn={(value) => checkPassword(value) !== "lengthRule"}
           visible="always"
           className="mt-3"
         >
-          {t(`sign.password.lengthRule`)}
+          {t("sign.password.ruleLength")}
         </InputRule>
         <InputRule
           fn={(value) => checkPassword(value) !== "charRule"}
           visible="always"
         >
-          {t(`sign.password.charRule`)}
+          {t("sign.password.ruleChar")}
         </InputRule>
       </InputControl>
-      <InputLabel className="mt-3.5">Confirm password</InputLabel>
+      <InputLabel className="mt-3.5">{t("sign.reset.confirmLabel")}</InputLabel>
       <Input
         size="medium"
-        placeholder="Enter your password"
+        placeholder={t("sign.reset.confirmPlaceholder")}
         type="password"
         onValueChange={setConfirmed}
         onBlur={() => {
@@ -97,14 +99,14 @@ export default function ResetPassword() {
         error={mismatch}
       />
       <FormError className="mt-3">
-        {mismatch ? "Passwords do not match" : ""}
+        {mismatch ? t("sign.reset.mismatch") : ""}
       </FormError>
       <Button
         className="mt-4"
         disabled={!password || password !== confirmed}
         onClick={handleSubmit}
       >
-        Continue
+        {t("sign.reset.submit")}
       </Button>
     </SignCard>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/auth/auth";
+import { getUserName, useAuth } from "@/auth/auth";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitchRounded } from "@/components/ui/LanguageSwitch";
 import { useSettingsLink } from "@/hooks/useSettingsLink";
@@ -56,7 +56,7 @@ export function Navbar() {
           color="dark"
           href={session ? navigateLink("settings/account") : "/signin"}
         >
-          {session ? session.name : t("nav.getStarted")}
+          {session ? getUserName(session) : t("nav.getStarted")}
         </Button>
       </div>
     </div>

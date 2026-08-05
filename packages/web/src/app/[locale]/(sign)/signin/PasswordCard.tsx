@@ -14,6 +14,7 @@ import {
   InputRule,
 } from "@mui-verse/ui/components/inputs";
 import { Divider } from "@mui/material";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -26,6 +27,7 @@ export function PasswordCard({
   email: string;
   onSwitch: () => void;
 }) {
+  const t = useTranslations();
   const router = useRouter();
   const [error, setError] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
@@ -53,11 +55,11 @@ export function PasswordCard({
           break;
 
         default:
-          toast.error("network error");
+          toast.error(t("error.system"));
           break;
       }
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
     }
   };
 
@@ -75,29 +77,29 @@ export function PasswordCard({
         onValueChange={handleChange}
         className="mt-7.5"
       >
-        <InputLabel>Password</InputLabel>
+        <InputLabel>{t("sign.password.label")}</InputLabel>
         <FormInput size="medium" type="password" />
         <div className="mt-3 flex">
           <InputRule fn={(v) => !error && checkPassword(v) === null}>
-            Wrong password
+            {t("sign.password.wrong")}
           </InputRule>
           <div className="flex-1" />
           <div
             className="cursor-pointer text-sm underline"
             onClick={() => setForgot(true)}
           >
-            Forgot password
+            {t("sign.forgot.link")}
           </div>
         </div>
       </InputControl>
       <Button className="mt-3.5" disabled={!password} onClick={handleSubmit}>
-        Continue
+        {t("sign.password.submit")}
       </Button>
       <Divider flexItem className="my-3.5">
-        Or
+        {t("sign.or")}
       </Divider>
       <Button variant="outlined" onClick={onSwitch}>
-        Sign in with a one-time code
+        {t("sign.password.otp")}
       </Button>
     </SignCard>
   );

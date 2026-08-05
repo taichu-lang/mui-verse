@@ -21,7 +21,7 @@ import {
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Chip, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useHistory } from "./history/HistoryProvider";
@@ -250,9 +250,11 @@ export function ModelBrandCard() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-5">
       <Icon className="h-10 w-10" />
-      <div className="flex items-center gap-2.5">
+      <div className="flex shrink-0 items-center gap-2.5">
         <span className="text-xl">{selected.name}</span>
-        <Chip label={"Official"} />
+        <div className="bg-action-hover flex items-center self-stretch rounded-lg px-1.5">
+          <span className="text-xs">Official</span>
+        </div>
       </div>
       <span className="text-sm">
         Built on {selected.name}, the Pro version is optimized for high-demand

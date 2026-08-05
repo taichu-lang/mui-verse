@@ -11,12 +11,10 @@ import {
 import { useTranslations } from "next-intl";
 
 export function DefaultPasswordField({
-  label,
   className,
   onChange,
   ref,
 }: {
-  label?: string;
   className?: string;
   onChange: (value: string) => void;
   ref?: React.Ref<InputControlRef>;
@@ -25,24 +23,24 @@ export function DefaultPasswordField({
 
   return (
     <InputControl className={className} onValueChange={onChange} ref={ref}>
-      <InputLabel>{label ?? "Password"}</InputLabel>
+      <InputLabel>{t("sign.password.label")}</InputLabel>
       <FormInput
         type="password"
         size="medium"
-        placeholder="Enter your password"
+        placeholder={t("sign.password.placeholder")}
       />
       <InputRule
         fn={(value) => checkPassword(value) !== "lengthRule"}
         visible="always"
         className="mt-3"
       >
-        {t(`sign.password.lengthRule`)}
+        {t(`sign.password.ruleLength`)}
       </InputRule>
       <InputRule
         fn={(value) => checkPassword(value) !== "charRule"}
         visible="always"
       >
-        {t(`sign.password.charRule`)}
+        {t(`sign.password.ruleChar`)}
       </InputRule>
     </InputControl>
   );

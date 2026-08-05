@@ -17,6 +17,7 @@ import {
 } from "@mui-verse/ui/layout/Sidebar";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 
 function ScrollArea() {
   const { collapsed } = useSidebar();
@@ -58,9 +59,15 @@ export function AppSidebar() {
     <Sidebar className="border-sidebar-divider gap-0 border-r px-0">
       <SidebarHeader className={collapsed ? "" : "flex justify-between px-2"}>
         {collapsed || (
-          <span className="text-xl leading-6 font-semibold">Anna</span>
+          <Link href={"/"} className="ml-2 text-xl leading-6 font-semibold">
+            Anna
+          </Link>
         )}
-        <SidebarToggle icon={<CollapsedIcon />} variant="ghost" />
+        <SidebarToggle
+          icon={<CollapsedIcon />}
+          variant="ghost"
+          className="h-8 w-8"
+        />
       </SidebarHeader>
       <AuthZone>
         <div className="flex w-full flex-col items-center px-2">

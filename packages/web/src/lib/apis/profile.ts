@@ -83,7 +83,6 @@ export async function signinWithPassword(
 }
 
 export async function updateUser(
-  user_id: number,
   request: UpdateProfileRequest,
 ): Promise<boolean> {
   if (!request.name) {
@@ -91,8 +90,7 @@ export async function updateUser(
   }
 
   const { updateSession } = useAuth.getState();
-
-  const client = await fetch(`/api/users/${user_id}`, {
+  const client = await fetch(`/api/users`, {
     method: "POST",
     body: JSON.stringify(request),
   });

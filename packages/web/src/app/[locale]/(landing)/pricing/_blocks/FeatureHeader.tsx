@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import { FreePlanButton, ProPlanButton } from "./Actions";
 import { MonthLabel, PlanTabs, YearLabel } from "./PlanTab";
 import { useTranslations } from "next-intl";
+import { cn } from "@mui-verse/ui/utils/cn";
 
 export function FeatureHeader() {
   const t = useTranslations();
@@ -28,7 +29,12 @@ export function FeatureHeader() {
   }, [value, monthPrice, yearPrice, currency]);
 
   return (
-    <div className="mt-10 grid w-full grid-cols-4 items-start">
+    <div
+      className={cn(
+        "grid w-full grid-cols-4 items-start pt-10 pb-7.5",
+        "top-landing-navbar bg-background-gray sticky z-10",
+      )}
+    >
       <div className="col-span-2 flex flex-col gap-2.5">
         <p className="text-2xl">{t("pricing.plan")}</p>
         <PlanTabs className="mt-2.5 w-fit">

@@ -109,9 +109,9 @@ export function BenefitTableList() {
   const { benefits } = useBenefit();
   return (
     <>
-      {benefits.map((benefit) => (
+      {benefits.map((benefit, index) => (
         <div key={benefit.code} className="w-full">
-          <Divider flexItem className="my-7.5" />
+          <Divider flexItem className={index === 0 ? "mb-7.5" : "my-7.5"} />
           <BenefitTable benefit={benefit} />
         </div>
       ))}

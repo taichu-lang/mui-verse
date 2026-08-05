@@ -1,8 +1,46 @@
 {
   "sign": {
+    "title": "Sign in or sign up with email",
+    "placeholder": "Email address",
+    "submit": "Next",
+    "or": "Or",
+    "verification": {
+      "title": "Check your inbox",
+      "tips": "Enter the verification code we just sent to {email}",
+      "placeholder": "Enter your verification code",
+      "resend": "Resend",
+      "submit": "Continue",
+      "error": "Invalid verification code"
+    },
     "password": {
-      "lengthRule": "Password must be 8-20 characters",
-      "charRule": "Password must include at least 1 letter and 1 number"
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "submit": "Continue",
+      "otp": "Sign in with a one-time code",
+      "wrong": "Wrong password",
+      "ruleLength": "Password must be 8-20 characters",
+      "ruleChar": "Password must include at least 1 letter and 1 number"
+    },
+    "forgot": {
+      "link": "Forgot password",
+      "title": "Reset password",
+      "tips": "Click “Continue” to reset your password for {email}",
+      "submit": "Continue",
+      "back": "Back to sign in",
+      "cancel": "Continue with password"
+    },
+    "reset": {
+      "add": "New password",
+      "reset": "Reset password",
+      "label": "New password",
+      "confirmLabel": "Confirm password",
+      "placeholder": "Enter your password",
+      "confirmPlaceholder": "Enter your password",
+      "mismatch": "Passwords do not match",
+      "submit": "Continue"
+    },
+    "signup": {
+      "submit": "Get started"
     }
   },
   "nav": {
@@ -119,9 +157,7 @@
       },
       "which": {
         "q": "Which models does Plato AI support?",
-        "a1": "We support the latest models from ChatGPT, Claude, Gemini, and more. Our model list is updated in real time as new models are released. ",
-        "link": "Click here",
-        "a2": " to view the full list."
+        "a": "We support the latest models from ChatGPT, Claude, Gemini, and more. Our model list is updated in real time as new models are released. <link>Click here</link> to view the full list."
       },
       "history": {
         "q": "How long are chat histories saved?",
@@ -285,5 +321,9 @@
     "feature": "Feature",
     "detail": "Details",
     "usage": "Change of credits"
+  },
+  "error": {
+    "network": "Network error, please try again.",
+    "system": "Something went wrong. If this issue persists please contact us."
   }
 }

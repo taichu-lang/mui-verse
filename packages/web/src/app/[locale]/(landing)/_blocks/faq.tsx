@@ -43,15 +43,15 @@ export function FaqSection() {
     },
     {
       title: t("landing.faq.which.q"),
-      description: (
-        <>
-          {t("landing.faq.which.a1")}
-          <AnchorLink href="/pricing#features" className="underline">
-            {t("landing.faq.which.link")}
-          </AnchorLink>
-          {t("landing.faq.which.a2")}
-        </>
-      ),
+      description: t.rich("landing.faq.which.a", {
+        link: (anchor) => {
+          return (
+            <AnchorLink href="/pricing#features" className="underline">
+              {anchor}
+            </AnchorLink>
+          );
+        },
+      }),
     },
     {
       title: t("landing.faq.history.q"),

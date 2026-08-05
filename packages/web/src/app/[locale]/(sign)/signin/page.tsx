@@ -1,17 +1,20 @@
 "use client";
 
 import { SignCard } from "@/components/blocks/signin/SignCard";
+import { Button } from "@/components/ui/Button";
 import { getAuthMethods } from "@/lib/apis/profile";
-import { apiCodeUserNotFound, AuthMethod } from "@/lib/types/api";
+import { apiCodeUserNotFound } from "@/lib/types/api";
+import { AuthMethod } from "@/lib/types/profile";
 import { Input } from "@mui-verse/ui/components/inputs";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { OtpCard } from "./OtpCard";
 import { PasswordCard } from "./PasswordCard";
-import { Button } from "@/components/ui/Button";
 
 export default function SigninPage() {
+  const t = useTranslations();
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,7 +40,7 @@ export default function SigninPage() {
         setMethod("otp");
       }
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
     } finally {
       setLoading(false);
     }
@@ -55,11 +58,10 @@ export default function SigninPage() {
 
   return (
     <SignCard>
-      <span className="mt-9 text-start text-base">
-        Sign in or signup with email
-      </span>
+      <span className="mt-9 text-start text-base">{t("sign.title")}</span>
+      {/* TODO(Leo): verification. */}
       <Input
-        placeholder="Email address"
+        placeholder={t("sign.placeholder")}
         size="medium"
         type="email"
         className="mt-2.5"
@@ -71,7 +73,7 @@ export default function SigninPage() {
         onClick={verifyEmail}
         loading={loading}
       >
-        Next
+        {t("sign.submit")}
       </Button>
     </SignCard>
   );

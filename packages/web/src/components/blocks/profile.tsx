@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/auth/auth";
+import { getUserName, useAuth } from "@/auth/auth";
 import {
   QuestionIcon,
   SettingsIcon,
@@ -76,7 +76,8 @@ function UserProfile() {
     return null;
   }
 
-  const firstLetter = session.name ? session.name[0].toUpperCase() : "";
+  const userName = getUserName(session);
+  const firstLetter = userName[0].toUpperCase();
   const plan = session.subscription.plan_code;
 
   const Content = () => {
@@ -84,9 +85,7 @@ function UserProfile() {
       <DropdownMenuContent sx={{ width: "260px", py: "6px" }}>
         <div className="flex h-13.5 items-center px-2">
           <Avatar className="h-8.5 w-8.5">{firstLetter}</Avatar>
-          <span className="text-text-primary ml-2.5 text-sm">
-            {session.name}
-          </span>
+          <span className="text-text-primary ml-2.5 text-sm">{userName}</span>
           <div className="flex-1" />
           <span className="text-text-secondary text-sm">
             {t(`profile.${plan}.plan`)}
@@ -136,7 +135,7 @@ function UserProfile() {
           <div className="flex h-16.5 cursor-pointer items-center pr-2.5 pl-4">
             <Avatar className="h-8.5 w-8.5">{firstLetter}</Avatar>
             <div className="ml-2.5 flex flex-col gap-1.5">
-              <span className="text-text-primary text-sm">{session.name}</span>
+              <span className="text-text-primary text-sm">{userName}</span>
               <span className="text-text-secondary text-sm">
                 {t(`profile.${plan}.plan`)}
               </span>

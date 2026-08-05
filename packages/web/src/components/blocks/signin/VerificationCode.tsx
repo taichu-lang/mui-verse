@@ -8,6 +8,7 @@ import { useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { SignCard } from "./SignCard";
 import { Title } from "./Title";
+import { useTranslations } from "next-intl";
 
 /**
  * This component is used for code verification in the following two cases:
@@ -36,6 +37,7 @@ export function VerificationCode({
   className?: string;
   children?: React.ReactNode;
 }) {
+  const t = useTranslations();
   const [isPending, startTransition] = useTransition();
   const [code, setCode] = useState<string | null>(null);
   const [error, setError] = useState<boolean>(false);
@@ -74,11 +76,11 @@ export function VerificationCode({
           break;
 
         default:
-          toast.error("system error");
+          toast.error(t("error.system"));
           break;
       }
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
     }
   };
 
@@ -95,7 +97,7 @@ export function VerificationCode({
         onLogin();
       }
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
     }
   };
 
@@ -115,12 +117,12 @@ export function VerificationCode({
 
   return (
     <SignCard>
-      <Title>Check your inbox</Title>
+      <Title>{t("sign.verification.title")}</Title>
       <span className="mt-9 text-center text-sm">
-        Enter the verification code we just sent to {email}
+        {t("sign.verification.tips", { email })}
       </span>
       <Input
-        placeholder="Enter your verification code"
+        placeholder={t("sign.verification.placeholder")}
         className="mt-7"
         size="medium"
         onValueChange={handleCodeChange}
@@ -129,11 +131,13 @@ export function VerificationCode({
       <div className="mt-3 flex items-center">
         {error && (
           <span className="text-error-500 text-sm">
-            Invalid verification code
+            {t("sign.verification.error")}
           </span>
         )}
         <div className="flex-1"></div>
-        <CountdownButton autoStart>Resend</CountdownButton>
+        <CountdownButton autoStart>
+          {t("sign.verification.resend")}
+        </CountdownButton>
       </div>
       <Button
         className="mt-3.5"
@@ -141,7 +145,7 @@ export function VerificationCode({
         onClick={handleSubmit}
         disabled={!code || code.length !== 4}
       >
-        Continue
+        {t("sign.verification.submit")}
       </Button>
       {children}
     </SignCard>
