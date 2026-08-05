@@ -325,5 +325,24 @@
   "error": {
     "network": "Network error, please try again.",
     "system": "Something went wrong. If this issue persists please contact us."
+  },
+  "models": {
+    "official": "Official",
+    "gpt-4-1-nano": "The lightest and most cost-effective model launched by OpenAI, optimized for low-latency tasks, particularly suitable for applications requiring large-scale deployment, high-frequency calls, and cost sensitivity, providing the best value-for-money solution for simple AI tasks.",
+    "gpt-5-4-nano": "GPT-5.4 nano is OpenAI's ultra-lightweight model designed for high-throughput tasks like classification, data extraction, and automation, with fast responses ideal for simple and efficient everyday processing.",
+    "gpt-5-4-mini": "GPT-5.4 mini is OpenAI's latest lightweight model with text and image input support, featuring tool calling and web search capabilities. It excels at coding, reasoning, and instruction following, ideal for high-volume workflows.",
+    "o3": "First multi-modal reasoning system capable of thinking with images, providing excellent solutions for complex scenarios requiring deep analysis.",
+    "gpt-4o": "GPT-4o is an advanced leap in AI for deep language understanding and generation, excels in multi-lingual support and efficiency.",
+    "gpt-5-4": "Built on GPT-5.4, the Pro version is optimized for high-demand scenarios, supporting more complex tasks with exceptional professional performance.",
+    "gpt-5-3-codex": "GPT-5.3 Codex is OpenAI’s most capable coding model, covering the full dev workflow from writing to debugging and deployment.",
+    "gpt-5-5": "Built on GPT-5.4, the Pro version is optimized for high-demand scenarios, supporting more complex tasks with exceptional professional performance. (90 credits/1k tokens)",
+    "claude-haiku-4-5": "Claude Haiku 4.5 is a next-generation fast-response model delivering lightning-speed inference while maintaining high performance, ideal for everyday conversations and real-time interactions.",
+    "claude-sonnet-4-6": "Claude Sonnet 4.6 is Anthropic’s high-performance flagship model with breakthroughs in multimodal understanding, fast reasoning, and cost-effectiveness. It excels at real-time applications including content generation, customer service, and data analysis.",
+    "claude-sonnet-4-5": "Claude Sonnet 4.5 is a next-generation hybrid reasoning model with major advances in long-term autonomy, tool use, and complex task handling, offering stronger coding and multi-step reasoning with massive context support.",
+    "claude-opus-4-7": "Claude Opus 4.7 is Anthropic's latest flagship model with significant improvements in advanced software engineering, visual intelligence, and long-context reasoning. It excels at complex, long-running programming, document analysis, and enterprise knowledge work. (15 credits/1k tokens)",
+    "claude-opus-4-6": "Claude Opus 4.6 is Anthropic's latest flagship model with breakthroughs in agentic planning, coding, and reasoning. Featuring adaptive thinking, it excels at complex programming, financial analysis, and enterprise knowledge work. (15 credits/1k tokens)",
+    "claude-opus-4-5": "Claude Opus 4.5 is a next-generation flagship model with enhanced understanding and reasoning, built to handle complex tasks and support advanced professional use.(15 credits/1k tokens)",
+    "gemini-3-flash-preview": "Gemini 3 Flash is a next-generation fast-response model designed for low latency and high-throughput use cases, delivering quick and reliable performance for real-time interactions.",
+    "gemini-3-1-pro-preview": "Gemini 3.1 Pro is Google's latest flagship model with breakthroughs in multimodal reasoning, code generation, and complex problem-solving. It excels at advanced applications including software development, scientific research, and enterprise analytics."
   }
 }

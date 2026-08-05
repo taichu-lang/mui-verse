@@ -3,8 +3,9 @@
 import { useAuth } from "@/auth/auth";
 import { getBenefits, getPlans } from "@/lib/apis/benefits";
 import { getPreference } from "@/lib/apis/preference";
-import { Benefit, Plan, PlanCode } from "@/lib/types/benefit";
+import { Benefit, Plan } from "@/lib/types/benefit";
 import { CurrencyCode } from "@/lib/types/currency";
+import { PlanCode } from "@/lib/types/enums";
 import { Model, modelMap } from "@/lib/types/model";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";

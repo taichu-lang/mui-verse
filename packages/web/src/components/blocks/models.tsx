@@ -193,12 +193,18 @@ export function ModelSelect() {
     startTransition(async () => {
       const ms = await getModels();
       setModels(ms);
-
-      if (!model) {
-        setChat({ model: ms[0].id });
-      }
     });
-  }, [getModels, setModels, setChat, model]);
+  }, [getModels, setModels]);
+
+  useEffect(() => {
+    if (models.length === 0) {
+      return;
+    }
+
+    if (!model) {
+      setChat({ model: models[0].id });
+    }
+  }, [models, setChat, model]);
 
   if (isPending || models.length === 0) {
     return null;
@@ -243,6 +249,7 @@ export function ModelSelect() {
 }
 
 export function ModelBrandCard() {
+  const t = useTranslations();
   const { model } = useChat();
   const selected = models.find((v) => v.id === model) || models[0];
   const Icon = modelIcons[selected.provider];
@@ -253,14 +260,10 @@ export function ModelBrandCard() {
       <div className="flex shrink-0 items-center gap-2.5">
         <span className="text-xl">{selected.name}</span>
         <div className="bg-action-hover flex items-center self-stretch rounded-lg px-1.5">
-          <span className="text-xs">Official</span>
+          <span className="text-xs">{t("models.official")}</span>
         </div>
       </div>
-      <span className="text-sm">
-        Built on {selected.name}, the Pro version is optimized for high-demand
-        scenarios, supporting more complex tasks with exceptional professional
-        performance.
-      </span>
+      <span className="text-sm">{t(`models.${selected.i18n}`)}</span>
     </div>
   );
 }

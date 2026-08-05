@@ -7,6 +7,7 @@ export interface ModelMeta {
   id: string;
   name: string;
   provider: ModelProvider;
+  i18n: string;
 }
 
 export interface Model extends ModelMeta {
@@ -14,71 +15,103 @@ export interface Model extends ModelMeta {
   benefit_code: BenefitCode;
 }
 
+// `.` can not be keys of namespace in next-intl.
 export const models: ModelMeta[] = [
   {
-    id: "claude-sonnet-4-6",
-    name: "Claude Sonnet 4.6",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-sonnet-4-5",
-    name: "Claude Sonnet 4.5",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-haiku-4-5",
-    name: "Claude Haiku 4.5",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-opus-4-7",
-    name: "Claude Opus 4.7",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-opus-4-6",
-    name: "Claude Opus 4.6",
-    provider: "anthropic",
-  },
-  {
-    id: "claude-opus-4-5",
-    name: "Claude Opus 4.5",
-    provider: "anthropic",
-  },
-  {
-    id: "gpt-5.5",
-    name: "GPT-5.5",
+    id: "gpt-4.1-nano",
+    name: "GPT-4.1 nano",
     provider: "openai",
+    i18n: "gpt-4-1-nano",
+  },
+  {
+    id: "gpt-5.4-nano",
+    name: "GPT-5.4 nano",
+    provider: "openai",
+    i18n: "gpt-5-4-nano",
+  },
+  {
+    id: "gpt-5.4-mini",
+    name: "GPT-5.4 mini",
+    provider: "openai",
+    i18n: "gpt-5-4-mini",
+  },
+  {
+    id: "o3",
+    name: "o3",
+    provider: "openai",
+    i18n: "o3",
+  },
+  {
+    id: "gpt-4o",
+    name: "GPT-4o",
+    provider: "openai",
+    i18n: "gpt-4o",
   },
   {
     id: "gpt-5.4",
     name: "GPT-5.4",
     provider: "openai",
-  },
-  {
-    id: "gpt-5.4-pro",
-    name: "GPT-5.4 Pro",
-    provider: "openai",
+    i18n: "gpt-5-4",
   },
   {
     id: "gpt-5.3-codex",
     name: "GPT-5.3-Codex",
     provider: "openai",
+    i18n: "gpt-5-3-codex",
   },
   {
-    id: "gpt-4.1",
-    name: "GPT-4.1",
+    id: "gpt-5.5",
+    name: "GPT-5.5",
     provider: "openai",
+    i18n: "gpt-5-5",
+  },
+  {
+    id: "claude-haiku-4-5",
+    name: "Claude Haiku 4.5",
+    provider: "anthropic",
+    i18n: "claude-haiku-4-5",
+  },
+  {
+    id: "claude-sonnet-4-6",
+    name: "Claude Sonnet 4.6",
+    provider: "anthropic",
+    i18n: "claude-sonnet-4-6",
+  },
+  {
+    id: "claude-sonnet-4-5",
+    name: "Claude Sonnet 4.5",
+    provider: "anthropic",
+    i18n: "claude-sonnet-4-5",
+  },
+  {
+    id: "claude-opus-4-7",
+    name: "Claude Opus 4.7",
+    provider: "anthropic",
+    i18n: "claude-opus-4-7",
+  },
+  {
+    id: "claude-opus-4-6",
+    name: "Claude Opus 4.6",
+    provider: "anthropic",
+    i18n: "claude-opus-4-6",
+  },
+  {
+    id: "claude-opus-4-5",
+    name: "Claude Opus 4.5",
+    provider: "anthropic",
+    i18n: "claude-opus-4-5",
   },
   {
     id: "gemini-3.1-pro-preview",
     name: "Gemini 3.1 Pro",
     provider: "google",
+    i18n: "gemini-3-1-pro-preview",
   },
   {
     id: "gemini-3-flash-preview",
     name: "Gemini 3 Flash",
     provider: "google",
+    i18n: "gemini-3-flash-preview",
   },
 ];
 

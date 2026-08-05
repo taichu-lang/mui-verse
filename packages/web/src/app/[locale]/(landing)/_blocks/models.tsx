@@ -32,7 +32,7 @@ export function ModelSection() {
       description: t("landing.models.clade_opus_4_7"),
     },
     {
-      id: "gpt-5.4-pro",
+      id: "gpt-5.5",
       description: t("landing.models.gpt_5_4_pro"),
     },
     {
