@@ -25,6 +25,8 @@ export interface Balance {
   used: number;
   remaining: number;
   limit: number;
+  period_start: number;
+  period_end: number;
   next_period_start: number;
 }
 

@@ -26,9 +26,9 @@ export function Account() {
       <DataSeparator />
       <DataItem label={t("settings.account.email")}>{session.email}</DataItem>
       <DataSeparator />
-      <DataItem label={t(`profile.${plan}.plan`)}>
+      <DataItem label={t(`plans.${plan}.plan`)}>
         <Button className="h-6 px-2.5 py-1 text-xs">
-          {t(`profile.${plan}.upgrade`)}
+          {t(`plans.${plan}.upgrade`)}
         </Button>
       </DataItem>
       <DataSeparator />

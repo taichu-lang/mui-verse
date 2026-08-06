@@ -75,6 +75,7 @@ export function ConversationListView() {
             return await getConversations(from, limit, false, signal);
           },
           collapsible: true,
+          showWhenEmpty: false,
         },
       ]}
       renderItem={(item, meta) => {

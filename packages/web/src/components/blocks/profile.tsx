@@ -93,13 +93,13 @@ function UserProfile() {
           <span className="text-text-primary ml-2.5 text-sm">{userName}</span>
           <div className="flex-1" />
           <span className="text-text-secondary text-sm">
-            {t(`profile.${plan}.plan`)}
+            {t(`plans.${plan}.plan`)}
           </span>
         </div>
         <DropdownMenuSeparator className="my-1.5" />
         <DropdownMenuItem component={Link} href={"/checkout"}>
           <SparkleIcon />
-          {t(`profile.${plan}.upgradePlan`)}
+          {t(`plans.${plan}.upgradePlan`)}
         </DropdownMenuItem>
         <DropdownMenuItem component={Link} href={navigateLink("settings")}>
           <SettingsIcon />
@@ -145,7 +145,7 @@ function UserProfile() {
             <div className="ml-2.5 flex flex-col gap-1.5">
               <span className="text-text-primary text-sm">{userName}</span>
               <span className="text-text-secondary text-sm">
-                {t(`profile.${plan}.plan`)}
+                {t(`plans.${plan}.plan`)}
               </span>
             </div>
             <div className="flex-1" />
@@ -155,7 +155,7 @@ function UserProfile() {
               onClick={(e) => e.stopPropagation()}
               href="/checkout"
             >
-              {t(`profile.${plan}.upgrade`)}
+              {t(`plans.${plan}.upgrade`)}
             </Button>
           </div>
         </DropdownMenuTrigger>

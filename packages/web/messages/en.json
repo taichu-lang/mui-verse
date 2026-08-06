@@ -84,16 +84,15 @@
     "models": {
       "chip": "Model matrix",
       "title": "Supports multiple leading AI models",
-      "subtitle1": "Pick the right model for each task — we support ",
-      "subtitle2": " models.",
-      "clade_opus_4_7": "Major gains in agentic coding, 1M-token context, and adaptive reasoning depth.",
-      "gpt_5_4_pro": "A high-performance tier for complex reasoning, focused on output quality and reliability.",
-      "gemini_3_1_pro": "Excels at hard reasoning tasks, leading on abstract-reasoning benchmarks.",
-      "gpt_5_3_codex": "An agentic coding model — searches repos, runs commands, debugs autonomously.",
-      "claude_opus_4_6": "Supports agent-team collaboration, suited for automating complex multi-step tasks.",
-      "claude_sonnet_4_6": "A balanced model with major coding and instruction-following gains at strong value.",
-      "gemini_3_flash": "Runs 4x faster while excelling at coding and agentic-task benchmarks.",
-      "gpt_5_4": "Unifies reasoning, coding, and agentic capabilities for professional workflows."
+      "subtitle": "Pick the right model for each task — we support <strong>20+</strong> models",
+      "claude-opus-4-7": "Major gains in agentic coding, 1M-token context, and adaptive reasoning depth.",
+      "gpt-5-5": "A high-performance tier for complex reasoning, focused on output quality and reliability.",
+      "gemini-3-1-pro-preview": "Excels at hard reasoning tasks, leading on abstract-reasoning benchmarks.",
+      "gpt-5-3-codex": "An agentic coding model — searches repos, runs commands, debugs autonomously.",
+      "claude-opus-4-6": "Supports agent-team collaboration, suited for automating complex multi-step tasks.",
+      "claude-sonnet-4-6": "A balanced model with major coding and instruction-following gains at strong value.",
+      "gemini-3-flash-preview": "Runs 4x faster while excelling at coding and agentic-task benchmarks.",
+      "gpt-5-4": "Unifies reasoning, coding, and agentic capabilities for professional workflows."
     },
     "capabilities": {
       "chip": "Product capabilities",
@@ -221,7 +220,6 @@
     "month": "month",
     "daily": "daily",
     "monthly": "monthly",
-    "mo": "mo",
     "oneMonth": "One month",
     "oneYear": "One year",
     "expires": "Expires on"
@@ -246,7 +244,8 @@
       "upgradeTip": "Get {discount} off the Pro annual plan",
       "upgradeBtn": "Upgrade now",
       "planLink": "View all plans & features",
-      "search": "Web search"
+      "search": "Web search",
+      "placeholder": "Ask anything"
     },
     "search": {
       "title": "Upgrade to the Pro plan to unlock web search",
@@ -260,23 +259,24 @@
     "standard_chat": {
       "title": "Standard queries",
       "quotaLabel": "Available {cycle} queries",
-      "description": "Standard queries are used for basic models such as Claude 4.5 Haiku or Gemini 3.1 Flash-Lite. Free queries reset {cycle}.",
+      "tip": "Standard queries are used for basic models such as Claude Haiku 4.5 or GPT-5.4 mini. Queries will reset on {expire}.",
+      "freeTip": "Standard queries are used for basic models such as Claude Haiku 4.5 or GPT-5.4 mini. Queries reset daily.",
       "availableLabel": "Available standard queries"
     },
     "advanced_chat": {
       "title": "Advanced queries",
       "quotaLabel": "Available {cycle} queries",
-      "description": "Credits are used for frontier models such as GPT-5.4 Pro or Claude 4.7 Opus. Monthly queries reset on the 1st of each month.",
+      "description": "Advanced queries are used for advanced models such as Claude Sonnet 4.6 or GPT-5.3-Codex. Queries will reset on {expire}.",
       "availableLabel": "Available advanced queries"
     },
     "frontier_chat": {
       "title": "Credits",
       "quotaLabel": "Available {cycle} credits",
-      "description": "Credits enable access to various premium features. Monthly credits reset on the 1st of each month.",
+      "description": "Credits are used for frontier models such as Claude Opus 4.7 or GPT-5.5. Credits will reset on {expire}.",
       "availableLabel": "Available credits"
     }
   },
-  "profile": {
+  "plans": {
     "free": {
       "plan": "Free plan",
       "upgrade": "Upgrade",
@@ -293,6 +293,24 @@
       "success": "Paid",
       "pending": "Pending",
       "failed": "Failed"
+    },
+    "method": {
+      "card": "Bank card"
+    },
+    "checkout": {
+      "title": "Configure your plan",
+      "plans": "Plan details",
+      "methods": "Payment",
+      "buy": "Buy now",
+      "terms": "By making this payment, you accept the <link>terms and conditions of the service</link>.",
+      "oneMonth": "One month plan",
+      "oneYear": "One year plan",
+      "proPlan": "Pro plan",
+      "features": "Top features",
+      "total": "Total",
+      "orderNumber": "Order Number:",
+      "orderStart": "Start date:",
+      "orderEnd": "New expiry:"
     }
   },
   "settings": {
@@ -339,11 +357,13 @@
     "gpt-4-1-nano": "The lightest and most cost-effective model launched by OpenAI, optimized for low-latency tasks, particularly suitable for applications requiring large-scale deployment, high-frequency calls, and cost sensitivity, providing the best value-for-money solution for simple AI tasks.",
     "gpt-5-4-nano": "GPT-5.4 nano is OpenAI's ultra-lightweight model designed for high-throughput tasks like classification, data extraction, and automation, with fast responses ideal for simple and efficient everyday processing.",
     "gpt-5-4-mini": "GPT-5.4 mini is OpenAI's latest lightweight model with text and image input support, featuring tool calling and web search capabilities. It excels at coding, reasoning, and instruction following, ideal for high-volume workflows.",
-    "o3": "First multi-modal reasoning system capable of thinking with images, providing excellent solutions for complex scenarios requiring deep analysis.",
     "gpt-4o": "GPT-4o is an advanced leap in AI for deep language understanding and generation, excels in multi-lingual support and efficiency.",
     "gpt-5-4": "Built on GPT-5.4, the Pro version is optimized for high-demand scenarios, supporting more complex tasks with exceptional professional performance.",
     "gpt-5-3-codex": "GPT-5.3 Codex is OpenAI’s most capable coding model, covering the full dev workflow from writing to debugging and deployment.",
     "gpt-5-5": "Built on GPT-5.4, the Pro version is optimized for high-demand scenarios, supporting more complex tasks with exceptional professional performance. (90 credits/1k tokens)",
+    "gpt-5-6-luna": "Built on GPT-5.6 Luna is optimized for speed and efficiency, making it ideal for everyday conversations, writing, coding, and quick problem-solving.",
+    "gpt-5-6-terra": "Built on GPT-5.6, Terra offers enhanced reasoning and accuracy for research, programming, data analysis, and other demanding professional tasks.",
+    "gpt-5-6-sol": "Built on GPT-5.6 Sol delivers the highest level of reasoning and multimodal capabilities, designed for the most complex workflows, deep analysis, and expert-level problem-solving. (15 credits/1k tokens)",
     "claude-haiku-4-5": "Claude Haiku 4.5 is a next-generation fast-response model delivering lightning-speed inference while maintaining high performance, ideal for everyday conversations and real-time interactions.",
     "claude-sonnet-4-6": "Claude Sonnet 4.6 is Anthropic’s high-performance flagship model with breakthroughs in multimodal understanding, fast reasoning, and cost-effectiveness. It excels at real-time applications including content generation, customer service, and data analysis.",
     "claude-sonnet-4-5": "Claude Sonnet 4.5 is a next-generation hybrid reasoning model with major advances in long-term autonomy, tool use, and complex task handling, offering stronger coding and multi-step reasoning with massive context support.",

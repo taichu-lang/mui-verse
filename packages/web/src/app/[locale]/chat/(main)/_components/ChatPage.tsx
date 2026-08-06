@@ -44,6 +44,8 @@ interface TitleData {
 }
 
 function SenderArea() {
+  const t = useTranslations();
+
   // The id is set in the URL before the first send (generated in /chat/page.tsx
   // and pushed as /chat/<id>?n=1), so this is the single source of truth.
   const params = useParams<{ slug?: string }>();
@@ -58,6 +60,7 @@ function SenderArea() {
 
   const onMetadata = (input: string, data: string) => {
     const payload = JSON.parse(data) as MetaData;
+    // remove `n` search parameter.
     router.replace(`/chat/${conversationId}`);
     addUserMessage(
       { message_id: payload.message_id, role: "user", content: input },
@@ -153,6 +156,7 @@ function SenderArea() {
         onSend={sendMessage}
         className="chat-sender"
         inputClassName="chat-sender-input"
+        placeholder={t("chat.textarea.placeholder")}
       >
         <ModelSelect />
         <WebSearchTool

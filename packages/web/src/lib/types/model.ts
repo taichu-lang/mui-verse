@@ -36,12 +36,6 @@ export const models: ModelMeta[] = [
     i18n: "gpt-5-4-mini",
   },
   {
-    id: "o3",
-    name: "o3",
-    provider: "openai",
-    i18n: "o3",
-  },
-  {
     id: "gpt-4o",
     name: "GPT-4o",
     provider: "openai",
@@ -64,6 +58,24 @@ export const models: ModelMeta[] = [
     name: "GPT-5.5",
     provider: "openai",
     i18n: "gpt-5-5",
+  },
+  {
+    id: "gpt-5.6-luna",
+    name: "GPT-5.6 Luna",
+    provider: "openai",
+    i18n: "gpt-5-6-luna",
+  },
+  {
+    id: "gpt-5.6-terra",
+    name: "GPT-5.6 Terra",
+    provider: "openai",
+    i18n: "gpt-5-6-terra",
+  },
+  {
+    id: "gpt-5.6-sol",
+    name: "GPT-5.6 Sol",
+    provider: "openai",
+    i18n: "gpt-5-6-sol",
   },
   {
     id: "claude-haiku-4-5",

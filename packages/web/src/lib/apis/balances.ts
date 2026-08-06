@@ -8,6 +8,8 @@ export async function getBalances(): Promise<Balance[]> {
       used: 39,
       remaining: 1,
       limit: 40,
+      period_start: 0,
+      period_end: Date.now() / 1000 + 10 * 24 * 60 * 60,
       next_period_start: 0,
     },
     {
@@ -16,6 +18,8 @@ export async function getBalances(): Promise<Balance[]> {
       used: 300,
       remaining: 500,
       limit: 800,
+      period_start: 0,
+      period_end: Date.now() / 1000 + 10 * 24 * 60 * 60,
       next_period_start: 0,
     },
     {
@@ -24,6 +28,8 @@ export async function getBalances(): Promise<Balance[]> {
       used: 12.4,
       remaining: 20.6,
       limit: 40,
+      period_start: 0,
+      period_end: Date.now() / 1000 + 10 * 24 * 60 * 60,
       next_period_start: 0,
     },
   ];

@@ -32,6 +32,7 @@ function Feature({
 }
 
 function CheckoutInfo({ checkout }: { checkout?: Checkout }) {
+  const t = useTranslations();
   const locale = useLocale();
   if (!checkout) {
     return null;
@@ -40,16 +41,18 @@ function CheckoutInfo({ checkout }: { checkout?: Checkout }) {
   return (
     <>
       <p className="text-text-secondary text-sm">
-        Order Number: {checkout.order_id}
+        {t("payment.checkout.orderNumber")} {checkout.order_id}
       </p>
       {checkout.period_start > 0 && (
         <p className="text-text-secondary text-sm">
-          Start date: {stringifyDate(checkout.period_start, locale)}
+          {t("payment.checkout.orderStart")}{" "}
+          {stringifyDate(checkout.period_start, locale)}
         </p>
       )}
       {checkout.period_end > 0 && (
         <p className="text-text-secondary text-sm">
-          New expiry: {stringifyDate(checkout.period_end, locale)}
+          {t("payment.checkout.orderEnd")}{" "}
+          {stringifyDate(checkout.period_end, locale)}
         </p>
       )}
     </>
@@ -76,10 +79,10 @@ export default function PlanPage() {
   return (
     <div className="checkout-plan flex w-full flex-col rounded-[40px] px-7 py-6.5">
       <div className="flex items-center justify-between">
-        <p className="text-2xl">Pro plan</p>
+        <p className="text-2xl">{t("payment.checkout.proPlan")}</p>
         <CurrencySwitch />
       </div>
-      <p className="mt-6 text-base">Top features</p>
+      <p className="mt-6 text-base">{t("payment.checkout.features")}</p>
       <div className="mt-5 flex flex-col gap-3.5">
         <Feature Icon={InfinityIcon}>
           {t("pricing.benefits.basic")}
@@ -97,12 +100,14 @@ export default function PlanPage() {
       <Divider flexItem className="my-7.5" />
       <div className="flex flex-col gap-1.5">
         <p className="text-text-secondary text-sm">
-          {duration === "monthly" ? "One month plan" : "One year plan"}
+          {duration === "monthly"
+            ? t("payment.checkout.oneMonth")
+            : t("payment.checkout.oneYear")}
         </p>
         <CheckoutInfo checkout={checkout} />
       </div>
       <p className="mt-5 text-base">
-        Total: {stringifyPriceSymbol(price, currency)}
+        {t("payment.checkout.total")}: {stringifyPriceSymbol(price, currency)}
       </p>
     </div>
   );

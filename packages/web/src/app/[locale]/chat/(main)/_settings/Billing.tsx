@@ -23,7 +23,7 @@ function ProPlan({ subscription }: { subscription: Subscription }) {
   return (
     <>
       <div className="flex flex-col gap-2.5">
-        <span className="text-lg">{t(`profile.pro.plan`)}</span>
+        <span className="text-lg">{t(`plans.pro.plan`)}</span>
         <span className="text-xs">{duration}</span>
         <span className="text-text-secondary text-xs">
           {t("duration.expires")}
@@ -44,7 +44,7 @@ function FreePlan() {
 
   return (
     <>
-      <span className="text-lg">{t("profile.free.plan")}</span>
+      <span className="text-lg">{t("plans.free.plan")}</span>
       <div className="flex-1" />
       <Button size="small" className="py-2" href="/checkout">
         {t("profile.free.upgrade")}

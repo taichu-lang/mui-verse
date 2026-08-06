@@ -34,7 +34,7 @@ export function UiSection() {
           </span>
           <Image
             src={"/images/landing-ui-02.png"}
-            alt="ui-01"
+            alt="ui-02"
             width={264}
             height={432}
             className="mt-3"

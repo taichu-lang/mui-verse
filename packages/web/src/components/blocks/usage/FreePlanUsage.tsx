@@ -32,8 +32,7 @@ export function FreePlanUsage() {
             px: 0,
             py: 0,
             mt: "-10px",
-            width: "395px",
-            minHeight: "346px", // height is needed, due to UpgradeCard has conditional render.
+            width: "fit-content",
           }}
         >
           <UpgradeCard />
@@ -50,7 +49,7 @@ export function FreePlanUsage() {
           sx={{ width: "308px", px: "16px", py: "14px", mt: "-10px" }}
         >
           <div className="flex flex-col gap-4 p-0">
-            <p className="text-base">Free Plan</p>
+            <p className="text-base">{t("plans.free.plan")}</p>
             <Divider className="-my-2" />
             <CategoryUsage
               Icon={StandardIcon}

@@ -1,5 +1,6 @@
 import { QuestionCircleIcon } from "@/components/icons";
 import { useBenefit } from "@/hooks/useBenefit";
+import { stringifyDate } from "@/lib/time";
 import { Balance } from "@/lib/types/benefit";
 import { PlanCode } from "@/lib/types/enums";
 import {
@@ -8,7 +9,7 @@ import {
   PopoverTrigger,
 } from "@mui-verse/ui/components/navigation";
 import { Divider } from "@mui/material";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export function QuotaTip({
   balance,
@@ -18,6 +19,7 @@ export function QuotaTip({
   plan: PlanCode;
 }) {
   const t = useTranslations();
+  const locale = useLocale();
   const { basicQuota, advancedQuota, frontierQuota } = useBenefit();
 
   if (!balance) {
@@ -70,7 +72,11 @@ export function QuotaTip({
           </div>
           <Divider className="my-3.5" />
           <span className="text-text-secondary text-sm">
-            {t(`balance.${balance.benefit_code}.description`, { cycle })}
+            {plan === "free"
+              ? t(`balance.${balance.benefit_code}.freeTip`)
+              : t(`balance.${balance.benefit_code}.tip`, {
+                  expire: stringifyDate(balance.period_end, locale),
+                })}
           </span>
         </div>
       </PopoverContent>

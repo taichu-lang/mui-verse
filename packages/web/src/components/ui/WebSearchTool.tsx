@@ -2,10 +2,12 @@ import { useAuth } from "@/auth/auth";
 import { CheckIcon, QuestionCircleIcon } from "@/components/icons";
 import { useBenefit } from "@/hooks/useBenefit";
 import { stringifyPrice } from "@/lib/types/currency";
+import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import {
   Dialog,
   DialogProvider,
   DialogTrigger,
+  useDialogContext,
 } from "@mui-verse/ui/components/feedback";
 import { Switch } from "@mui-verse/ui/components/inputs";
 import {
@@ -14,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@mui-verse/ui/components/navigation";
 import { DialogContent } from "@mui/material";
-import { GlobeIcon } from "lucide-react";
+import { GlobeIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "./Button";
@@ -42,6 +44,7 @@ function WhyWebSearch() {
 function UpgradeCard() {
   const currency = "RUB";
   const t = useTranslations();
+  const { setOpen } = useDialogContext();
   const { discountPercent, monthPrice, yearPrice } = useBenefit();
   const discount = discountPercent(currency);
   const month = monthPrice(currency);
@@ -51,6 +54,13 @@ function UpgradeCard() {
 
   return (
     <div className="flex w-fit flex-col items-center bg-linear-to-b from-[#F2FFFB] to-white px-7.5 pt-9.5 pb-5">
+      <IconGhostButton
+        className="absolute top-3 right-3"
+        onClick={() => setOpen(false)}
+      >
+        <XIcon className="h-4.5 w-4.5" strokeWidth={1.2} />
+      </IconGhostButton>
+
       {/* The width of Card would be same as the benefits, not the title. Use `w-0` to ensure */}
       {/*`w-fit` worked in the Card.*/}
       <p className="w-0 min-w-full text-center text-xl font-medium wrap-break-word">

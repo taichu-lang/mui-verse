@@ -3,6 +3,7 @@
 import { CheckIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { useBenefit } from "@/hooks/useBenefit";
+import { stringifyPrice } from "@/lib/types/currency";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -50,24 +51,29 @@ function BenefitList() {
 }
 
 export function UpgradeCard() {
+  const currency = "RUB";
   const t = useTranslations();
   const { discountPercent, monthPrice, yearPrice } = useBenefit();
-  const discount = discountPercent("RUB");
-  const month = monthPrice("RUB");
-  const year = yearPrice("RUB");
+  const discount = discountPercent(currency);
+  const month = monthPrice(currency);
+  const year = yearPrice(currency);
 
   return (
-    <div className="flex w-full flex-col items-center bg-linear-to-b from-[#F2FFFB] to-white px-7.5 pt-4.5 pb-5">
-      <p className="text-base">{t("chat.textarea.upgradeTip", { discount })}</p>
+    <div className="flex w-fit flex-col items-center bg-linear-to-b from-[#F2FFFB] to-white px-7.5 pt-4.5 pb-5">
+      {/* The width of Card would be same as the benefits, not the title. Use `w-0` to ensure */}
+      {/*`w-fit` worked in the Card.*/}
+      <p className="w-0 min-w-full text-center text-base">
+        {t("chat.textarea.upgradeTip", { discount })}
+      </p>
       <div className="mt-3 flex items-baseline gap-4.5">
         <p className="text-primary-500">
           <span className="text-2xl font-semibold">
-            ${(year / 12).toFixed(1)}
+            {stringifyPrice(year / 12, currency)}
           </span>
-          <span className="text-sm">/{t("duration.mo")}</span>
+          <span className="text-sm">/{t("duration.month")}</span>
         </p>
         <p className="text-text-secondary text-sm font-semibold line-through">
-          ${month}/{t("duration.mo")}
+          {stringifyPrice(month, currency)}/{t("duration.month")}
         </p>
       </div>
       <BenefitList />

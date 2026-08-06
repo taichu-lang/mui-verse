@@ -9,6 +9,7 @@ export async function getBenefits(): Promise<Benefit[]> {
         { type: "model", id: "gpt-4.1-nano" },
         { type: "model", id: "gpt-5.4-nano" },
         { type: "model", id: "gpt-5.4-mini" },
+        { type: "model", id: "gpt-5.6-luna" },
         { type: "model", id: "gemini-3-flash-preview" },
         { type: "model", id: "claude-haiku-4-5" },
       ],
@@ -17,10 +18,10 @@ export async function getBenefits(): Promise<Benefit[]> {
       id: 2,
       code: "advanced_chat",
       resources: [
-        { type: "model", id: "o3" },
         { type: "model", id: "gpt-4o" },
         { type: "model", id: "gpt-5.4" },
         { type: "model", id: "gpt-5.3-codex" },
+        { type: "model", id: "gpt-5.6-terra" },
         { type: "model", id: "gemini-3.1-pro-preview" },
         { type: "model", id: "claude-sonnet-4-6" },
         { type: "model", id: "claude-sonnet-4-5" },
@@ -31,6 +32,7 @@ export async function getBenefits(): Promise<Benefit[]> {
       code: "frontier_chat",
       resources: [
         { type: "model", id: "gpt-5.5" },
+        { type: "model", id: "gpt-5.6-sol" },
         { type: "model", id: "claude-opus-4-7" },
         { type: "model", id: "claude-opus-4-6" },
         { type: "model", id: "claude-opus-4-5" },
