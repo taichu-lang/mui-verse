@@ -179,7 +179,13 @@ export function PopoverTrigger({
   const { onOpen, onClose } = usePopover();
   return extendHover(
     children,
-    (e) => onOpen(e.currentTarget),
-    () => onClose(),
+    (e) => {
+      onOpen(e.currentTarget);
+      e.preventDefault();
+    },
+    (e) => {
+      onClose();
+      e.preventDefault();
+    },
   );
 }

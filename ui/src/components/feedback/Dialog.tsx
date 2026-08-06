@@ -149,7 +149,10 @@ export function DialogTrigger({
   children: React.ReactElement<TriggerProps>;
 }) {
   const { setOpen } = useDialogContext();
-  const trigger = extendClickable(children, () => setOpen(true));
+  const trigger = extendClickable(children, (e) => {
+    setOpen(true);
+    e.preventDefault();
+  });
 
   return trigger;
 }
