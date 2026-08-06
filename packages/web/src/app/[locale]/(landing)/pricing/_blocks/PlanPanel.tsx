@@ -9,7 +9,7 @@ import {
 import { CurrencySwitch } from "@/components/ui/CurrencySwitch";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
-import { stringifyPrice } from "@/lib/types/currency";
+import { stringifyPriceSymbol } from "@/lib/types/currency";
 import { PlanCode } from "@/lib/types/enums";
 import { useTabContext } from "@mui-verse/ui/components/navigation";
 import { cn } from "@mui-verse/ui/utils/cn";
@@ -17,7 +17,7 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { FreePlanButton, ProPlanButton } from "./Actions";
 
-function Header({ plan, price }: { plan: PlanCode; price: string }) {
+function Header({ plan, price }: { plan: PlanCode; price: number }) {
   const Icon = plan === "free" ? FreeTierIcon : ProTierIcon;
   const t = useTranslations();
   const { currency } = useCheckout();
@@ -41,9 +41,11 @@ function Header({ plan, price }: { plan: PlanCode; price: string }) {
       </div>
       <div className="mt-4.5 flex items-baseline gap-1">
         <span className="text-[32px] leading-9.5 font-medium">
-          {stringifyPrice(price, currency)}
+          {stringifyPriceSymbol(price, currency)}
         </span>
-        <span className="text-text-secondary text-sm">/{t("duration.mo")}</span>
+        <span className="text-text-secondary text-sm">
+          /{t("duration.month")}
+        </span>
       </div>
       <p className="text-text-secondary mt-2.5 text-sm">
         {t(`pricing.${plan}.description`)}
@@ -81,7 +83,7 @@ export function FreePanel() {
 
   return (
     <div className="flex w-full flex-col rounded-[20px] bg-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
-      <Header plan="free" price={"0"} />
+      <Header plan="free" price={0} />
       <FreePlanButton className="mt-3.5 font-medium" />
       <div className="mt-7.5 flex flex-col gap-3.25">
         <Feature
@@ -131,12 +133,12 @@ export function ProPanel() {
 
   const price = useMemo(() => {
     if (value === "monthly") {
-      return monthPrice(currency)?.toFixed(1);
+      return monthPrice(currency);
     }
 
     const year = yearPrice(currency);
     if (year) {
-      return (year / 12).toFixed(1);
+      return year / 12;
     }
 
     return undefined;
@@ -148,7 +150,7 @@ export function ProPanel() {
 
   return (
     <div className="flex w-full flex-col rounded-[20px] bg-linear-to-b from-[#F2FFFB] to-white px-6.5 pt-5 pb-7.5 shadow-[--mui-shadow-border]">
-      <Header plan="pro" price={price || ""} />
+      <Header plan="pro" price={price || 0} />
       <ProPlanButton className="mt-3.5" />
       <div className="mt-7.5 flex flex-col gap-3.25">
         <Feature

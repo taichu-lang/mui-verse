@@ -2,12 +2,13 @@
 
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
+import { stringifyPrice } from "@/lib/types/currency";
 import { PillTab, useTabContext } from "@mui-verse/ui/components/navigation";
+import { cn } from "@mui-verse/ui/utils/cn";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { FreePlanButton, ProPlanButton } from "./Actions";
 import { MonthLabel, PlanTabs, YearLabel } from "./PlanTab";
-import { useTranslations } from "next-intl";
-import { cn } from "@mui-verse/ui/utils/cn";
 
 export function FeatureHeader() {
   const t = useTranslations();
@@ -17,12 +18,12 @@ export function FeatureHeader() {
 
   const price = useMemo(() => {
     if (value === "monthly") {
-      return monthPrice(currency)?.toFixed(1);
+      return monthPrice(currency);
     }
 
     const year = yearPrice(currency);
     if (year) {
-      return (year / 12).toFixed(1);
+      return year / 12;
     }
 
     return undefined;
@@ -53,14 +54,14 @@ export function FeatureHeader() {
       <div className="col-span-1 flex flex-col gap-2.5">
         <p className="text-2xl">{t("pricing.free.title")}</p>
         <span className="text-text-secondary text-base">
-          {currency} 0/{t("duration.mo")}
+          {stringifyPrice(0, currency)}/{t("duration.month")}
         </span>
         <FreePlanButton className="w-fit" />
       </div>
       <div className="col-span-1 flex flex-col gap-2.5">
         <p className="text-2xl">{t("pricing.pro.title")}</p>
         <span className="text-text-secondary text-base">
-          {currency} {price}/{t("duration.mo")}
+          {stringifyPrice(price || 0, currency)}/{t("duration.month")}
         </span>
         <ProPlanButton className="w-fit" />
       </div>

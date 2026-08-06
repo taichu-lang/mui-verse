@@ -4,6 +4,7 @@ import { AuthZone } from "@/auth/AuthZone";
 import { useHistory } from "@/components/blocks/history/HistoryProvider";
 import { ModelBrandCard, ModelSelect } from "@/components/blocks/models";
 import { PlanUsage } from "@/components/blocks/usage/PlanUsage";
+import { WebSearchTool } from "@/components/ui/WebSearchTool";
 import { useConversation } from "@/hooks/useConversation";
 import { useRouter } from "@/i18n/navigation";
 import type {
@@ -17,13 +18,12 @@ import {
   Sender,
   useChat,
   useChatSession,
-  WebSearchTool,
 } from "@mui-verse/ui/components/chat";
+import { useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { MessagesPage } from "./lib";
 import { useLoadOlder } from "./useLoadOlder";
-import { useTranslations } from "next-intl";
 
 // event: meta
 interface MetaData {

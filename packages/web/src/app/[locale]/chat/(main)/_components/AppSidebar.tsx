@@ -25,7 +25,7 @@ function ScrollArea() {
 
   if (!hasAuthorization) {
     return (
-      <AuthZone>
+      <AuthZone className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <ModelAccordion />
       </AuthZone>
     );
@@ -82,7 +82,7 @@ export function AppSidebar() {
       </AuthZone>
       {collapsed || <div className="mt-5" />}
       <ScrollArea />
-      <SidebarFooter className={"flex-col pb-0"}>
+      <SidebarFooter className={"mt-5 flex-col pb-0"}>
         <UserProfileMenu />
       </SidebarFooter>
     </Sidebar>

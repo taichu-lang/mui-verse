@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import { SignCard } from "@/components/blocks/signin/SignCard";
 import { Title } from "@/components/blocks/signin/Title";
 import { Button } from "@/components/ui/Button";
@@ -22,8 +23,8 @@ import toast from "react-hot-toast";
 
 export default function ResetPassword() {
   const t = useTranslations();
-  const { token, action, email } = useChangePassword();
   const router = useRouter();
+  const { token, action } = useChangePassword();
 
   const [password, setPassword] = useState<string>("");
   const [confirmed, setConfirmed] = useState<string>("");
@@ -40,11 +41,13 @@ export default function ResetPassword() {
       return;
     }
 
+    const { logout } = useAuth.getState();
+
     try {
-      const res = await updatePassword(email, password, token);
+      const res = await updatePassword(password, token);
       if (res) {
         if (action === "reset") {
-          // TODO(Leo): logout
+          await logout();
           router.replace("/signin");
         } else {
           router.replace("/chat");

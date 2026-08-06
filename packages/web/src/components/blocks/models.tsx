@@ -42,9 +42,9 @@ export function ModelMenuItem({ model }: { model: Model }) {
     }
 
     if (model.pinned) {
-      await unPinModel(session.id, model.id);
+      await unPinModel(model.id);
     } else {
-      await addPinnedModel(session.id, model.id);
+      await addPinnedModel(model.id);
     }
 
     history.refreshModels();
@@ -105,9 +105,9 @@ function DropDownModelMenu({
     }
 
     if (model.pinned) {
-      await unPinModel(session.id, model.id);
+      await unPinModel(model.id);
     } else {
-      await addPinnedModel(session.id, model.id);
+      await addPinnedModel(model.id);
     }
 
     onRefresh();

@@ -80,6 +80,11 @@ function UserProfile() {
   const firstLetter = userName[0].toUpperCase();
   const plan = session.subscription.plan_code;
 
+  const handleLogout = async () => {
+    const { logout } = useAuth.getState();
+    await logout();
+  };
+
   const Content = () => {
     return (
       <DropdownMenuContent sx={{ width: "260px", py: "6px" }}>
@@ -105,7 +110,10 @@ function UserProfile() {
           {t("chat.sidebar.help")}
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-1.5" />
-        <MenuItem className="text-error-500 hover:bg-error-200">
+        <MenuItem
+          className="text-error-500 hover:bg-error-200"
+          onClick={handleLogout}
+        >
           <SignOutIcon />
           {t("chat.sidebar.signout")}
         </MenuItem>

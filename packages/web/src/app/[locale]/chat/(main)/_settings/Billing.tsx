@@ -7,9 +7,9 @@ import { Order } from "@/lib/types/order";
 import { Subscription } from "@/lib/types/profile";
 import { InfiniteScrollView } from "@mui-verse/ui/components/data";
 import { TabMenuPanel } from "@mui-verse/ui/layout/TabMenu";
+import { cn } from "@mui-verse/ui/utils/cn";
 import { useLocale, useTranslations } from "next-intl";
 import { DataSeparator } from "./DataList";
-import { cn } from "@mui-verse/ui/utils/cn";
 
 function ProPlan({ subscription }: { subscription: Subscription }) {
   const t = useTranslations();
@@ -79,8 +79,7 @@ function OrderListView() {
                 {stringifyDate(item.created_at, locale)}
               </span>
               <span className="text-text-secondary col-span-2 text-start text-sm">
-                {item.currency}{" "}
-                {stringifyPrice(item.amount.toString(), item.currency)}
+                {stringifyPrice(item.amount, item.currency)}
               </span>
               <div className="col-span-2 flex justify-end">
                 <span

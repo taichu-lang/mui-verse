@@ -33,13 +33,20 @@ export interface Subscription {
   period_end: number;
 }
 
-export interface UserProfile {
+export interface User {
   id: number;
   name: string;
   email: string;
   auth: AuthToken;
+}
+
+export interface UserProfile extends User {
   auth_methods: AuthMethod[];
   subscription: Subscription;
+}
+
+export interface SignResponse extends ApiResponse {
+  data: User;
 }
 
 export interface UserProfileResponse extends ApiResponse {

@@ -10,7 +10,7 @@ import { CurrencySwitch } from "@/components/ui/CurrencySwitch";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
 import { stringifyDate } from "@/lib/time";
-import { stringifyPrice } from "@/lib/types/currency";
+import { stringifyPriceSymbol } from "@/lib/types/currency";
 import { Checkout } from "@/lib/types/order";
 import { Divider } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
@@ -102,7 +102,7 @@ export default function PlanPage() {
         <CheckoutInfo checkout={checkout} />
       </div>
       <p className="mt-5 text-base">
-        Total: {stringifyPrice(price.toString(), currency)}
+        Total: {stringifyPriceSymbol(price, currency)}
       </p>
     </div>
   );

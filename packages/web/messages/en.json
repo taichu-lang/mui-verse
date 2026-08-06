@@ -168,7 +168,7 @@
         "a": "Frontier models like GPT-5.4 Pro and Claude Opus deliver top-tier performance for more complex, demanding tasks. Because token usage varies significantly with conversation length and complexity, these models are billed with credits based on actual usage."
       },
       "search": {
-        "q": "Why it's necessary to enable web search",
+        "q": "Why it's necessary to enable web search?",
         "a": "AI is not a continuously updated information database. It relies on its existing knowledge and reasoning capabilities, which means it may not always have the latest information about news, policies, product updates, market trends, and other rapidly changing topics.\n\nWith Web Search enabled, AI can access up-to-date external information sources and provide more accurate responses based on the latest and most relevant information."
       }
     }
@@ -245,7 +245,15 @@
       "upgrade": "Upgrade",
       "upgradeTip": "Get {discount} off the Pro annual plan",
       "upgradeBtn": "Upgrade now",
-      "planLink": "View all plans & features"
+      "planLink": "View all plans & features",
+      "search": "Web search"
+    },
+    "search": {
+      "title": "Upgrade to the Pro plan to unlock web search",
+      "realtime": "Real-time answers, not outdated ones",
+      "accuracy": "Fewer hallucinations, more accuracy",
+      "source": "Cited sources you can verify",
+      "knowledge": "Access knowledge beyond the model's training"
     }
   },
   "balance": {

@@ -193,7 +193,7 @@ export function useBenefit() {
     }
 
     try {
-      const preference = await getPreference(session.id);
+      const preference = await getPreference();
       const pinned = preference.pinned_models;
       const pinIdxMap = new Map<string, number>();
       pinned.forEach((id, index) => pinIdxMap.set(id, index));

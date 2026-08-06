@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+// update user's password
 export async function POST(request: NextRequest) {
   const serverUrl = process.env.SERVER_URL;
   if (!serverUrl) {

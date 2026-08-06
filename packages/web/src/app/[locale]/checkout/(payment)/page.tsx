@@ -3,7 +3,7 @@
 import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
 import { createOrder } from "@/lib/apis/order";
-import { stringifyPrice } from "@/lib/types/currency";
+import { stringifyPriceSymbol } from "@/lib/types/currency";
 import { PlanDuration } from "@/lib/types/enums";
 import {
   PaymentMethodProvider,
@@ -30,12 +30,8 @@ function PlanRadio({ duration }: { duration: PlanDuration }) {
   const year = yearPrice(currency) || 0;
   const discount = discountPercent(currency);
 
-  const perMonth = (year / 12).toFixed(1);
   const title = duration === "monthly" ? "One month plan" : "One year plan";
-  const price =
-    duration === "monthly"
-      ? stringifyPrice(month.toString(), currency)
-      : stringifyPrice(perMonth, currency);
+  const price = duration === "monthly" ? month : year / 12;
 
   return (
     <div
@@ -58,7 +54,7 @@ function PlanRadio({ duration }: { duration: PlanDuration }) {
         )}
       </div>
       <span className="text-text-secondary text-sm">
-        {currency} {price}/mo
+        {stringifyPriceSymbol(price, currency)}/mo
       </span>
     </div>
   );

@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 export function PasswordCard({ email }: { email: string }) {
   const t = useTranslations();
   const router = useRouter();
-  const { session } = useAuth();
+  const session = useAuth((s) => s.session);
   const [password, setPassword] = useState<string | null>(null);
   const passwordRef = useRef<InputControlRef>(null);
 
@@ -33,7 +33,7 @@ export function PasswordCard({ email }: { email: string }) {
     }
 
     try {
-      await updatePassword(session.email, password, session.token);
+      await updatePassword(password, session.token);
       router.replace("/chat");
     } catch {
       toast.error(t("error.network"));
