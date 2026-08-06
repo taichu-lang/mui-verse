@@ -10,12 +10,12 @@ export function extendClickable(
 ) {
   return cloneElement(element, {
     onClick: (e) => {
-      element.props.onClick?.(e);
+      onClick(e);
       if (e.defaultPrevented) {
         return;
       }
 
-      onClick(e);
+      element.props.onClick?.(e);
     },
   });
 }
@@ -28,24 +28,24 @@ export type HoverProps = {
 export function extendHover(
   element: React.ReactElement<HoverProps>,
   onEnter: (e: React.MouseEvent<HTMLElement>) => void,
-  onLevel?: (e: React.MouseEvent<HTMLElement>) => void,
+  onLevel: (e: React.MouseEvent<HTMLElement>) => void,
 ) {
   return cloneElement(element, {
     onMouseEnter: (e) => {
-      element.props.onMouseEnter?.(e);
+      onEnter(e);
       if (e.defaultPrevented) {
         return;
       }
 
-      onEnter(e);
+      element.props.onMouseEnter?.(e);
     },
     onMouseLeave: (e) => {
-      element.props.onMouseLeave?.(e);
+      onLevel(e);
       if (e.defaultPrevented) {
         return;
       }
 
-      onLevel?.(e);
+      element.props.onMouseLeave?.(e);
     },
   });
 }

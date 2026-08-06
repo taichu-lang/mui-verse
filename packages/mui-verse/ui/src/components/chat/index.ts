@@ -12,4 +12,3 @@ export {
 export { ChatSessionProvider, useChatSession } from "./ChatSessionContext";
 export { Sender } from "./Sender";
 export type { Message, MessageRole } from "./types";
-export { WebSearchTool } from "./WebSearchTool";
