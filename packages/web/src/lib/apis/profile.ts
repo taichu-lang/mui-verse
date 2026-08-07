@@ -24,6 +24,16 @@ export async function getUserProfile(): Promise<UserProfileResponse> {
     method: "GET",
   });
   const response = (await client.json()) as UserProfileResponse;
+  if (response.code === 0) {
+    const profile = response.data;
+    const { setSession } = useAuth.getState();
+    await setSession({
+      ...profile,
+      token: profile.auth.token,
+      expires_at: profile.auth.expires_in + Date.now() / 1000,
+    });
+  }
+
   return response;
 }
 
@@ -46,8 +56,8 @@ async function sign(request: SigninRequest): Promise<number> {
     auth_methods: [],
     subscription: {
       plan_code: "free",
-      period_start: 0,
-      period_end: 0,
+      started_at: 0,
+      expires_at: 0,
     },
     token: user.auth.token,
     expires_at: user.auth.expires_in + Date.now() / 1000,
@@ -59,13 +69,6 @@ async function sign(request: SigninRequest): Promise<number> {
     await logout();
     return profileResponse.code;
   }
-
-  const profile = profileResponse.data;
-  await setSession({
-    ...profile,
-    token: profile.auth.token,
-    expires_at: profile.auth.expires_in + Date.now() / 1000,
-  });
 
   return 0;
 }

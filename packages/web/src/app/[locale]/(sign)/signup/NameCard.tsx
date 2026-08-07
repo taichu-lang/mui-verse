@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/Button";
 import { updateUser } from "@/lib/apis/profile";
 import { Input } from "@mui-verse/ui/components/inputs";
 import { Divider } from "@mui/material";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 export function NameCard({ onSwitch }: { onSwitch: () => void }) {
+  const t = useTranslations();
   const router = useRouter();
   const { session } = useAuth();
   const [name, setName] = useState<string | null>(null);
@@ -28,7 +30,7 @@ export function NameCard({ onSwitch }: { onSwitch: () => void }) {
     try {
       await updateUser({ name });
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
       return;
     }
 
@@ -43,7 +45,7 @@ export function NameCard({ onSwitch }: { onSwitch: () => void }) {
     try {
       await updateUser({ name });
     } catch {
-      toast.error("network error");
+      toast.error(t("error.network"));
       return;
     }
 

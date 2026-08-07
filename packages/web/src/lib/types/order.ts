@@ -7,34 +7,44 @@ import { ApiResponse } from "./api";
 import { CurrencyCode } from "./currency";
 import { PlanCode, PlanDuration } from "./enums";
 
-export type OrderStatus = "pending" | "success" | "failed";
+export type OrderStatusEnum = "pending" | "success" | "failed";
 
 export interface CheckoutRequest {
   plan_code: PlanCode;
-  plan_duration: PlanDuration;
+  period_type: PlanDuration;
   currency: CurrencyCode;
   method: PaymentMethodType;
   provider: PaymentProviderType;
 }
 
 export interface Checkout extends PaymentResponse {
-  period_start: number;
-  period_end: number;
-  status: OrderStatus;
+  subscription_start_at: number;
+  subscription_end_at: number;
 }
 
 export interface CheckoutResponse extends ApiResponse {
   data: Checkout;
 }
 
-export interface Order {
-  id: number;
+export interface OrderStatus {
   order_id: string;
+  status: OrderStatusEnum;
+}
+
+export interface Order extends OrderStatus {
+  id: number;
   payment_id: string;
   plan_code: PlanCode;
   plan_duration: PlanDuration;
   currency: CurrencyCode;
   amount: number;
-  status: OrderStatus;
   created_at: number;
+}
+
+export interface OrderStatusResponse extends ApiResponse {
+  data: OrderStatus;
+}
+
+export interface OrderPageResponse extends ApiResponse {
+  data: Order[];
 }

@@ -15,7 +15,7 @@ export async function getCreditUsages(
       items: [
         {
           id: 15,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -28,7 +28,7 @@ export async function getCreditUsages(
         },
         {
           id: 14,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -41,7 +41,7 @@ export async function getCreditUsages(
         },
         {
           id: 13,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -54,7 +54,7 @@ export async function getCreditUsages(
         },
         {
           id: 12,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -67,7 +67,7 @@ export async function getCreditUsages(
         },
         {
           id: 11,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -80,7 +80,7 @@ export async function getCreditUsages(
         },
         {
           id: 10,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -93,7 +93,7 @@ export async function getCreditUsages(
         },
         {
           id: 9,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -106,7 +106,7 @@ export async function getCreditUsages(
         },
         {
           id: 8,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -119,7 +119,7 @@ export async function getCreditUsages(
         },
         {
           id: 7,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -132,7 +132,7 @@ export async function getCreditUsages(
         },
         {
           id: 6,
-          benefit_code: "frontier_chat",
+          benefit_code: "frontier_models",
           resource_type: "model",
           resource_id: "claude-opus-4-7",
           unit: "token",
@@ -154,7 +154,7 @@ export async function getCreditUsages(
     items: [
       {
         id: 5,
-        benefit_code: "frontier_chat",
+        benefit_code: "frontier_models",
         resource_type: "model",
         resource_id: "claude-opus-4-7",
         unit: "token",
@@ -167,7 +167,7 @@ export async function getCreditUsages(
       },
       {
         id: 4,
-        benefit_code: "frontier_chat",
+        benefit_code: "frontier_models",
         resource_type: "model",
         resource_id: "claude-opus-4-7",
         unit: "token",
@@ -180,7 +180,7 @@ export async function getCreditUsages(
       },
       {
         id: 3,
-        benefit_code: "frontier_chat",
+        benefit_code: "frontier_models",
         resource_type: "model",
         resource_id: "claude-opus-4-7",
         unit: "token",
@@ -193,7 +193,7 @@ export async function getCreditUsages(
       },
       {
         id: 2,
-        benefit_code: "frontier_chat",
+        benefit_code: "frontier_models",
         resource_type: "model",
         resource_id: "claude-opus-4-7",
         unit: "token",
@@ -206,7 +206,7 @@ export async function getCreditUsages(
       },
       {
         id: 1,
-        benefit_code: "frontier_chat",
+        benefit_code: "frontier_models",
         unit: "token",
         amount: 3000,
         change_type: "increment",

@@ -4,6 +4,9 @@ import {
   CheckoutRequest,
   CheckoutResponse,
   Order,
+  OrderPageResponse,
+  OrderStatusEnum,
+  OrderStatusResponse,
 } from "@/lib/types/order";
 
 export async function createOrder(
@@ -16,59 +19,51 @@ export async function createOrder(
     body: JSON.stringify(request),
   });
   const response = (await client.json()) as CheckoutResponse;
-  // if (response.code !== 0) {
-  //   return null;
-  // }
+  if (response.code !== 0) {
+    return null;
+  }
 
-  // const order = response.data;
-  // if (!order.external) {
-  //   return null;
-  // }
+  const order = response.data;
+  if (!order.external) {
+    return null;
+  }
 
-  return {
-    order_id: "001",
-    payment_id: "001",
-    type: "external",
-    external: {
-      checkout_url: "https://example.com/checkout",
-    },
-    period_start: Date.now() / 1000,
-    period_end: Date.now() / 1000 + 3600000,
-    status: "pending",
-  };
+  return order;
 }
 
-export async function getOrder(orderID: string): Promise<Order | null> {
-  return {
-    id: 1,
-    order_id: "001",
-    payment_id: "001",
-    status: "pending",
-    plan_code: "pro",
-    plan_duration: "monthly",
-    created_at: Date.now() / 1000,
-    currency: "RUB",
-    amount: 123,
-  };
+async function getOrderStatus(
+  orderID: string,
+): Promise<OrderStatusEnum | null> {
+  try {
+    const client = await fetch(`/api/orders/status?order_id=${orderID}`, {
+      method: "GET",
+    });
+    const response = (await client.json()) as OrderStatusResponse;
+    if (response.code === 0) {
+      return response.data.status;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 export async function checkOrder(
   orderID: string,
   abort: AbortController,
-): Promise<Order | null> {
+): Promise<OrderStatusEnum | null> {
   if (abort.signal.aborted) {
     alert("abort");
     return null;
   }
 
-  console.log("check order >>>>");
-
-  const order = await getOrder(orderID);
-  if (order && order.status !== "pending") {
-    return order;
+  const status = await getOrderStatus(orderID);
+  if (status !== "pending") {
+    return status;
   }
 
-  const interval = order ? 2000 : 5000;
+  const interval = status ? 2000 : 5000;
   await new Promise<void>((resolve) => {
     const timer = setTimeout(resolve, interval);
     abort.signal.addEventListener(
@@ -89,40 +84,17 @@ export async function getOrders(
   limit: number,
   signal?: AbortSignal,
 ): Promise<Order[]> {
-  const orders: Order[] = [];
-  orders.push({
-    id: from + 1,
-    order_id: "001",
-    plan_code: "pro",
-    plan_duration: "monthly",
-    currency: "RUB",
-    amount: 123,
-    status: "pending",
-    created_at: Date.now() / 1000,
-    payment_id: "001",
-  });
-  orders.push({
-    id: from + 2,
-    order_id: "001",
-    plan_code: "pro",
-    plan_duration: "monthly",
-    currency: "RUB",
-    amount: 233,
-    status: "success",
-    created_at: Date.now() / 1000,
-    payment_id: "001",
-  });
-  orders.push({
-    id: from + 3,
-    order_id: "001",
-    plan_code: "pro",
-    plan_duration: "monthly",
-    currency: "USD",
-    amount: 12,
-    status: "failed",
-    created_at: Date.now() / 1000,
-    payment_id: "001",
-  });
-
-  return orders;
+  try {
+    const client = await fetch(`/api/orders?from=${from}&limit=${limit}`, {
+      method: "GET",
+      signal,
+    });
+    const response = (await client.json()) as OrderPageResponse;
+    if (response.code === 0) {
+      return response.data;
+    }
+    return [];
+  } catch {
+    return [];
+  }
 }

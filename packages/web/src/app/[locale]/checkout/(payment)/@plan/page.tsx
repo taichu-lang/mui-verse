@@ -43,16 +43,16 @@ function CheckoutInfo({ checkout }: { checkout?: Checkout }) {
       <p className="text-text-secondary text-sm">
         {t("payment.checkout.orderNumber")} {checkout.order_id}
       </p>
-      {checkout.period_start > 0 && (
+      {checkout.subscription_start_at > 0 && (
         <p className="text-text-secondary text-sm">
           {t("payment.checkout.orderStart")}{" "}
-          {stringifyDate(checkout.period_start, locale)}
+          {stringifyDate(checkout.subscription_start_at, locale)}
         </p>
       )}
-      {checkout.period_end > 0 && (
+      {checkout.subscription_end_at > 0 && (
         <p className="text-text-secondary text-sm">
           {t("payment.checkout.orderEnd")}{" "}
-          {stringifyDate(checkout.period_end, locale)}
+          {stringifyDate(checkout.subscription_end_at, locale)}
         </p>
       )}
     </>

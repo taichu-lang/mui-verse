@@ -1,15 +1,18 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import { checkOrder } from "@/lib/apis/order";
-import { OrderStatus } from "@/lib/types/order";
+import { getUserProfile } from "@/lib/apis/profile";
+import { OrderStatusEnum } from "@/lib/types/order";
 import { SuccessPage, WaitPage } from "@mui-verse/payment/result";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CheckoutResultPage() {
+  const router = useRouter();
   const search = useSearchParams();
   const orderID = search.get("order_id");
-  const [orderStatus, setOrderStatus] = useState<OrderStatus>("pending");
+  const [orderStatus, setOrderStatus] = useState<OrderStatusEnum>("pending");
 
   useEffect(() => {
     if (!orderID) {
@@ -17,9 +20,9 @@ export default function CheckoutResultPage() {
     }
 
     const abort = new AbortController();
-    checkOrder(orderID, abort).then((order) => {
-      if (order) {
-        setOrderStatus(order.status);
+    checkOrder(orderID, abort).then((status) => {
+      if (status) {
+        setOrderStatus(status);
       }
     });
 
@@ -32,6 +35,15 @@ export default function CheckoutResultPage() {
     return null;
   }
 
+  const onPaymentSuccess = async () => {
+    const { session } = useAuth.getState();
+    if (session) {
+      await getUserProfile();
+    }
+
+    router.replace("/chat");
+  };
+
   switch (orderStatus) {
     case "pending":
       return <WaitPage />;
@@ -40,6 +52,6 @@ export default function CheckoutResultPage() {
       return null;
 
     case "success":
-      return <SuccessPage />;
+      return <SuccessPage onClick={onPaymentSuccess} />;
   }
 }

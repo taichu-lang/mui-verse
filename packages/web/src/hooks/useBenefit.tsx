@@ -45,12 +45,14 @@ export function useBenefit() {
         return 0;
       }
 
-      const monthly = pro.prices.monthly;
-      if (!monthly) {
-        return 0;
+      const amount = pro.prices.find(
+        (p) => p.currency === currency,
+      )?.monthly_cents;
+      if (amount) {
+        return amount / 100;
       }
 
-      return monthly.find((p) => p.currency === currency)?.amount || 0;
+      return 0;
     },
     [plans],
   );
@@ -62,12 +64,14 @@ export function useBenefit() {
         return 0;
       }
 
-      const yearly = pro.prices.yearly;
-      if (!yearly) {
-        return 0;
+      const amount = pro.prices.find(
+        (p) => p.currency === currency,
+      )?.yearly_cents;
+      if (amount) {
+        return amount / 100;
       }
 
-      return yearly.find((p) => p.currency === currency)?.amount || 0;
+      return 0;
     },
     [plans],
   );
@@ -94,7 +98,7 @@ export function useBenefit() {
         return { quota: "", cycle: "" };
       }
 
-      const benefit = plan.benefits.find((b) => b.code === "standard_chat");
+      const benefit = plan.benefits.find((b) => b.code === "basic_models");
       if (!benefit) {
         return { quota: "", cycle: "" };
       }
@@ -122,7 +126,7 @@ export function useBenefit() {
       return { quota: "", cycle: "" };
     }
 
-    const benefit = plan.benefits.find((b) => b.code === "advanced_chat");
+    const benefit = plan.benefits.find((b) => b.code === "advanced_models");
     if (!benefit) {
       return { quota: "", cycle: "" };
     }
@@ -148,7 +152,7 @@ export function useBenefit() {
       return { quota: "", cycle: "" };
     }
 
-    const benefit = plan.benefits.find((b) => b.code === "frontier_chat");
+    const benefit = plan.benefits.find((b) => b.code === "frontier_models");
     if (!benefit) {
       return { quota: "", cycle: "" };
     }

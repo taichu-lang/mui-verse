@@ -1,10 +1,10 @@
+import { ApiResponse } from "./api";
 import { CurrencyCode } from "./currency";
 import {
   BenefitCode,
   BillingCycle,
   BillingUnit,
   PlanCode,
-  PlanDuration,
   ResourceType,
 } from "./enums";
 
@@ -32,7 +32,8 @@ export interface Balance {
 
 export interface Price {
   currency: CurrencyCode;
-  amount: number;
+  monthly_cents: number;
+  yearly_cents: number;
 }
 
 export interface PlanBenefit {
@@ -44,7 +45,7 @@ export interface PlanBenefit {
 
 export interface Plan {
   code: PlanCode;
-  prices: Record<PlanDuration, Price[]>;
+  prices: Price[];
   benefits: PlanBenefit[];
 }
 
@@ -53,4 +54,16 @@ export function getPlanBenefit(
   plan?: Plan,
 ): PlanBenefit | undefined {
   return plan?.benefits.find((b) => b.code === code);
+}
+
+export interface BenefitsResponse extends ApiResponse {
+  data: Benefit[];
+}
+
+export interface PlansResponse extends ApiResponse {
+  data: Plan[];
+}
+
+export interface BalancesResponse extends ApiResponse {
+  data: Balance[];
 }

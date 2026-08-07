@@ -44,7 +44,7 @@ export function PasswordCard({
   const handleSubmit = async () => {
     try {
       const response = await signinWithPassword(email, password);
-      switch (response.code) {
+      switch (response) {
         case 0:
           router.replace("/chat");
           break;

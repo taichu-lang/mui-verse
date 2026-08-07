@@ -49,9 +49,9 @@ export function useBalance() {
     }
   }, [session, setBalances, t]);
 
-  const standard = balances.find((b) => b.benefit_code === "standard_chat");
-  const advanced = balances.find((b) => b.benefit_code === "advanced_chat");
-  const frontier = balances.find((b) => b.benefit_code === "frontier_chat");
+  const standard = balances.find((b) => b.benefit_code === "basic_models");
+  const advanced = balances.find((b) => b.benefit_code === "advanced_models");
+  const frontier = balances.find((b) => b.benefit_code === "frontier_models");
 
   return {
     getBalances,

@@ -29,8 +29,8 @@ export interface AuthToken {
 export interface Subscription {
   plan_code: PlanCode;
   period?: PlanDuration;
-  period_start: number;
-  period_end: number;
+  started_at: number;
+  expires_at: number;
 }
 
 export interface User {

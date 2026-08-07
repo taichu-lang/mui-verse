@@ -91,7 +91,7 @@ export function VerificationCode({
 
     try {
       const response = await signinWithCode(email, code);
-      if (response.code === apiCodeCredentialError) {
+      if (response === apiCodeCredentialError) {
         setError(true);
       } else {
         onLogin();

@@ -7,6 +7,7 @@ import { PlanUsage } from "@/components/blocks/usage/PlanUsage";
 import { WebSearchTool } from "@/components/ui/WebSearchTool";
 import { useConversation } from "@/hooks/useConversation";
 import { useRouter } from "@/i18n/navigation";
+import { Balance } from "@/lib/types/benefit";
 import type {
   ChatRequest,
   Conversation as ConversationMeta,
@@ -90,6 +91,10 @@ function SenderArea() {
     stopStreaming();
   };
 
+  const onBalance = (data: string) => {
+    const balance = JSON.parse(data) as Balance;
+  };
+
   const sendMessage = async (text: string, controller: AbortController) => {
     if (!conversationId) {
       return;
@@ -127,6 +132,10 @@ function SenderArea() {
 
           case "title":
             onTitleGen(ev.data);
+            break;
+
+          case "balance":
+            onBalance(ev.data);
             break;
 
           case "done":

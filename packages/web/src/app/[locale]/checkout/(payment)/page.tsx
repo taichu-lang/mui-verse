@@ -107,7 +107,7 @@ export default function CheckoutPage() {
         method,
         provider,
         plan_code: "pro",
-        plan_duration: duration,
+        period_type: duration,
         currency,
       },
       locale,

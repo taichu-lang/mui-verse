@@ -201,15 +201,15 @@
     },
     "credits": "credits",
     "features": "Plan features",
-    "standard_chat": {
+    "basic_models": {
       "title": "Basic models",
       "description": "Basic models consume Standard queries. Each request a user sends consumes one Standard query."
     },
-    "advanced_chat": {
+    "advanced_models": {
       "title": "Advanced models",
       "description": "Advanced models consume Advanced queries. Each request a user sends consumes one Advanced query."
     },
-    "frontier_chat": {
+    "frontier_models": {
       "title": "Frontier models",
       "description": "Frontier model usage is billed in Credits, not per query — the amount consumed depends on the size of each query and its context length."
     },
@@ -256,23 +256,23 @@
     }
   },
   "balance": {
-    "standard_chat": {
+    "basic_models": {
       "title": "Standard queries",
       "quotaLabel": "Available {cycle} queries",
       "tip": "Standard queries are used for basic models such as Claude Haiku 4.5 or GPT-5.4 mini. Queries will reset on {expire}.",
       "freeTip": "Standard queries are used for basic models such as Claude Haiku 4.5 or GPT-5.4 mini. Queries reset daily.",
       "availableLabel": "Available standard queries"
     },
-    "advanced_chat": {
+    "advanced_models": {
       "title": "Advanced queries",
       "quotaLabel": "Available {cycle} queries",
-      "description": "Advanced queries are used for advanced models such as Claude Sonnet 4.6 or GPT-5.3-Codex. Queries will reset on {expire}.",
+      "tip": "Advanced queries are used for advanced models such as Claude Sonnet 4.6 or GPT-5.3-Codex. Queries will reset on {expire}.",
       "availableLabel": "Available advanced queries"
     },
-    "frontier_chat": {
+    "frontier_models": {
       "title": "Credits",
       "quotaLabel": "Available {cycle} credits",
-      "description": "Credits are used for frontier models such as Claude Opus 4.7 or GPT-5.5. Credits will reset on {expire}.",
+      "tip": "Credits are used for frontier models such as Claude Opus 4.7 or GPT-5.5. Credits will reset on {expire}.",
       "availableLabel": "Available credits"
     }
   },

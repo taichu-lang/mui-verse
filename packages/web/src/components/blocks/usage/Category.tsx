@@ -28,17 +28,17 @@ export function QuotaTip({
 
   const getCycle = () => {
     switch (balance.benefit_code) {
-      case "standard_chat": {
+      case "basic_models": {
         const { cycle } = basicQuota(plan);
         return cycle;
       }
 
-      case "advanced_chat": {
+      case "advanced_models": {
         const { cycle } = advancedQuota();
         return cycle;
       }
 
-      case "frontier_chat": {
+      case "frontier_models": {
         const { cycle } = frontierQuota();
         return cycle;
       }

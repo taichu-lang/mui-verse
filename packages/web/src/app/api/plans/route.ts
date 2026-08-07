@@ -1,15 +1,15 @@
 "server-only";
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const serverUrl = process.env.SERVER_URL;
   if (!serverUrl) {
     console.log("server url is required.");
     return NextResponse.error();
   }
 
-  const url = new URL(`${serverUrl}/v1/plans`);
+  const url = new URL(`${serverUrl}/v1/subscriptions/plans`);
   const response = await fetch(url, {
     method: "GET",
   });

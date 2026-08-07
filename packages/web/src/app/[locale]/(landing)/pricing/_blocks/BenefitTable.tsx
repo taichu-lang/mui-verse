@@ -29,27 +29,27 @@ export function BenefitTable({ benefit }: { benefit: Benefit }) {
 
   const stringifyFreeQuota = () => {
     switch (benefit.code) {
-      case "standard_chat":
+      case "basic_models":
         const { quota } = basicQuota("free");
         return quota;
-      case "advanced_chat":
+      case "advanced_models":
         return 0;
-      case "frontier_chat":
+      case "frontier_models":
         return 0;
     }
   };
 
   const stringifyProQuota = () => {
     switch (benefit.code) {
-      case "standard_chat": {
+      case "basic_models": {
         const { quota } = basicQuota("pro");
         return quota;
       }
-      case "advanced_chat": {
+      case "advanced_models": {
         const { quota } = advancedQuota();
         return quota;
       }
-      case "frontier_chat": {
+      case "frontier_models": {
         const { quota } = frontierQuota();
         return quota;
       }

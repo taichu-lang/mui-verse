@@ -28,12 +28,12 @@ function ProPlan({ subscription }: { subscription: Subscription }) {
         <span className="text-text-secondary text-xs">
           {t("duration.expires")}
           {": "}
-          {stringifyDate(subscription.period_end, locale)}
+          {stringifyDate(subscription.expires_at, locale)}
         </span>
       </div>
       <div className="flex-1" />
       <Button size="small" className="py-2" href="/checkout">
-        {t("profile.pro.upgrade")}
+        {t("plans.pro.upgrade")}
       </Button>
     </>
   );
@@ -47,7 +47,7 @@ function FreePlan() {
       <span className="text-lg">{t("plans.free.plan")}</span>
       <div className="flex-1" />
       <Button size="small" className="py-2" href="/checkout">
-        {t("profile.free.upgrade")}
+        {t("plans.free.upgrade")}
       </Button>
     </>
   );
