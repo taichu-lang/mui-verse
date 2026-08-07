@@ -11,6 +11,7 @@ import { useBenefit } from "@/hooks/useBenefit";
 import { useCheckout } from "@/hooks/useCheckout";
 import { stringifyDate } from "@/lib/time";
 import { stringifyPriceSymbol } from "@/lib/types/currency";
+import { PlanDuration } from "@/lib/types/enums";
 import { Checkout } from "@/lib/types/order";
 import { Divider } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
@@ -31,7 +32,26 @@ function Feature({
   );
 }
 
-function CheckoutInfo({ checkout }: { checkout?: Checkout }) {
+function DataItem({ label, value }: { label: string; value: string }) {
+  return (
+    <>
+      <span className="text-text-secondary line-clamp-2 text-sm break-all">
+        {label}
+      </span>
+      <span className="text-text-primary line-clamp-2 text-sm break-all">
+        {value}
+      </span>
+    </>
+  );
+}
+
+function CheckoutInfo({
+  checkout,
+  duration,
+}: {
+  checkout?: Checkout;
+  duration: PlanDuration;
+}) {
   const t = useTranslations();
   const locale = useLocale();
   if (!checkout) {
@@ -39,23 +59,35 @@ function CheckoutInfo({ checkout }: { checkout?: Checkout }) {
   }
 
   return (
-    <>
-      <p className="text-text-secondary text-sm">
-        {t("payment.checkout.orderNumber")} {checkout.order_id}
-      </p>
+    <div className="grid grid-cols-[max-content_1fr] items-start gap-x-4 gap-y-1.5">
+      <DataItem
+        label={t("pricing.plan")}
+        value={
+          duration === "monthly"
+            ? t("duration.oneMonth")
+            : t("duration.oneYear")
+        }
+      />
+
+      <DataItem
+        label={t("payment.checkout.orderNumber")}
+        value={checkout.order_id}
+      />
+
       {checkout.subscription_start_at > 0 && (
-        <p className="text-text-secondary text-sm">
-          {t("payment.checkout.orderStart")}{" "}
-          {stringifyDate(checkout.subscription_start_at, locale)}
-        </p>
+        <DataItem
+          label={t("payment.checkout.orderStart")}
+          value={stringifyDate(checkout.subscription_start_at, locale)}
+        />
       )}
+
       {checkout.subscription_end_at > 0 && (
-        <p className="text-text-secondary text-sm">
-          {t("payment.checkout.orderEnd")}{" "}
-          {stringifyDate(checkout.subscription_end_at, locale)}
-        </p>
+        <DataItem
+          label={t("payment.checkout.orderEnd")}
+          value={stringifyDate(checkout.subscription_end_at, locale)}
+        />
       )}
-    </>
+    </div>
   );
 }
 
@@ -98,14 +130,7 @@ export default function PlanPage() {
         <Feature Icon={GlobeCheckIcon}>{t("pricing.benefits.search")}</Feature>
       </div>
       <Divider flexItem className="my-7.5" />
-      <div className="flex flex-col gap-1.5">
-        <p className="text-text-secondary text-sm">
-          {duration === "monthly"
-            ? t("payment.checkout.oneMonth")
-            : t("payment.checkout.oneYear")}
-        </p>
-        <CheckoutInfo checkout={checkout} />
-      </div>
+      <CheckoutInfo checkout={checkout} duration={duration} />
       <p className="mt-5 text-base">
         {t("payment.checkout.total")}: {stringifyPriceSymbol(price, currency)}
       </p>

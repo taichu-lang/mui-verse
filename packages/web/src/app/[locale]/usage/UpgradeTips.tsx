@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/auth/auth";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
 import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -37,13 +38,14 @@ function hide() {
 
 export function UpgradeTips() {
   const t = useTranslations();
+  const session = useAuth((s) => s.session);
   const hidden = useSyncExternalStore(
     subscribe,
     getSnapshot,
     getServerSnapshot,
   );
 
-  if (hidden) {
+  if (hidden || session?.subscription.plan_code !== "free") {
     return null;
   }
 

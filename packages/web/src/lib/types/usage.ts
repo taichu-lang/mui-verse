@@ -1,4 +1,6 @@
+import { ApiResponse } from "./api";
 import { BenefitCode, BillingUnit, ResourceType } from "./enums";
+import { Pagination } from "./pagination";
 
 export type UsageChangeType = "increment" | "decrement";
 
@@ -19,4 +21,8 @@ export interface Usage {
   change_type: UsageChangeType;
   created_at: number;
   metadata?: UsageMetadata;
+}
+
+export interface UsagePageResponse extends ApiResponse {
+  data: Pagination<Usage>;
 }

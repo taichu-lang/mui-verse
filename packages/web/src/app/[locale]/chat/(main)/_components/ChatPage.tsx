@@ -5,6 +5,7 @@ import { useHistory } from "@/components/blocks/history/HistoryProvider";
 import { ModelBrandCard, ModelSelect } from "@/components/blocks/models";
 import { PlanUsage } from "@/components/blocks/usage/PlanUsage";
 import { WebSearchTool } from "@/components/ui/WebSearchTool";
+import { useBalance } from "@/hooks/useBalance";
 import { useConversation } from "@/hooks/useConversation";
 import { useRouter } from "@/i18n/navigation";
 import { Balance } from "@/lib/types/benefit";
@@ -46,6 +47,7 @@ interface TitleData {
 
 function SenderArea() {
   const t = useTranslations();
+  const { updateBalance } = useBalance();
 
   // The id is set in the URL before the first send (generated in /chat/page.tsx
   // and pushed as /chat/<id>?n=1), so this is the single source of truth.
@@ -93,6 +95,7 @@ function SenderArea() {
 
   const onBalance = (data: string) => {
     const balance = JSON.parse(data) as Balance;
+    updateBalance(balance);
   };
 
   const sendMessage = async (text: string, controller: AbortController) => {
@@ -147,7 +150,7 @@ function SenderArea() {
         }
       },
       onclose() {
-        // Server side closes the connection unexpectedly.
+        // Server side closes the connection.
         stopStreaming();
       },
       onerror(err) {

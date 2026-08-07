@@ -46,8 +46,8 @@ export function useBenefit() {
       }
 
       const amount = pro.prices.find(
-        (p) => p.currency === currency,
-      )?.monthly_cents;
+        (p) => p.currency === currency && p.period_type === "monthly",
+      )?.amount;
       if (amount) {
         return amount / 100;
       }
@@ -65,8 +65,8 @@ export function useBenefit() {
       }
 
       const amount = pro.prices.find(
-        (p) => p.currency === currency,
-      )?.yearly_cents;
+        (p) => p.currency === currency && p.period_type === "yearly",
+      )?.amount;
       if (amount) {
         return amount / 100;
       }
@@ -172,7 +172,9 @@ export function useBenefit() {
     }
   }, [plans, t]);
 
-  const models = useMemo(() => {
+  // availableModels represents all the models that benefits support, it shall
+  // be static data.
+  const availableModels = useMemo(() => {
     const ms: Model[] = [];
 
     benefits.forEach((benefit) => {
@@ -190,10 +192,11 @@ export function useBenefit() {
     return ms;
   }, [benefits]);
 
-  const getModels = useCallback(async () => {
+  // getPreferredModels returns all the models based on user's preference.
+  const getPreferredModels = useCallback(async () => {
     const session = useAuth.getState().session;
     if (!session) {
-      return models;
+      return availableModels;
     }
 
     try {
@@ -202,7 +205,7 @@ export function useBenefit() {
       const pinIdxMap = new Map<string, number>();
       pinned.forEach((id, index) => pinIdxMap.set(id, index));
 
-      return models
+      return availableModels
         .map((model) => {
           if (pinIdxMap.has(model.id)) {
             return { ...model, pinned: true };
@@ -222,9 +225,9 @@ export function useBenefit() {
           return 0;
         });
     } catch {
-      return models;
+      return availableModels;
     }
-  }, [models]);
+  }, [availableModels]);
 
   return {
     loading,
@@ -236,6 +239,7 @@ export function useBenefit() {
     basicQuota,
     advancedQuota,
     frontierQuota,
-    getModels,
+    availableModels,
+    getPreferredModels,
   };
 }

@@ -35,11 +35,11 @@ function ScrollArea() {
     // Collapsed sidebar keeps the DropdownMenu-based entry points; the
     // virtualized list is only meaningful in the expanded layout.
     return (
-      <>
+      <div className="flex flex-1 flex-col">
         <ModelAccordion />
         <ChatHistoryDropdown pinned />
         <ChatHistoryDropdown />
-      </>
+      </div>
     );
   }
 

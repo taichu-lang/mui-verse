@@ -256,24 +256,37 @@
     }
   },
   "balance": {
+    "modelAvailable": "Available",
     "basic_models": {
       "title": "Standard queries",
       "quotaLabel": "Available {cycle} queries",
       "tip": "Standard queries are used for basic models such as Claude Haiku 4.5 or GPT-5.4 mini. Queries will reset on {expire}.",
       "freeTip": "Standard queries are used for basic models such as Claude Haiku 4.5 or GPT-5.4 mini. Queries reset daily.",
-      "availableLabel": "Available standard queries"
+      "availableLabel": "Available standard queries",
+      "modelUnavailable": {
+        "free": "No queries",
+        "plan": "Out of queries"
+      }
     },
     "advanced_models": {
       "title": "Advanced queries",
       "quotaLabel": "Available {cycle} queries",
       "tip": "Advanced queries are used for advanced models such as Claude Sonnet 4.6 or GPT-5.3-Codex. Queries will reset on {expire}.",
-      "availableLabel": "Available advanced queries"
+      "availableLabel": "Available advanced queries",
+      "modelUnavailable": {
+        "free": "No queries",
+        "plan": "Out of queries"
+      }
     },
     "frontier_models": {
       "title": "Credits",
       "quotaLabel": "Available {cycle} credits",
       "tip": "Credits are used for frontier models such as Claude Opus 4.7 or GPT-5.5. Credits will reset on {expire}.",
-      "availableLabel": "Available credits"
+      "availableLabel": "Available credits",
+      "modelUnavailable": {
+        "free": "No credits",
+        "plan": "Out of credits"
+      }
     }
   },
   "plans": {

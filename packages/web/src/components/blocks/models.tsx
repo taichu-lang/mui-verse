@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/auth/auth";
 import { ModelsIcon, PinnedIcon, PinnerIcon } from "@/components/icons";
+import { useBalance } from "@/hooks/useBalance";
 import { useBenefit } from "@/hooks/useBenefit";
 import { useConversationMutations } from "@/hooks/useConversationMutations";
 import { addPinnedModel, unPinModel } from "@/lib/apis/preference";
@@ -21,7 +22,7 @@ import {
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
 import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
 import { cn } from "@mui-verse/ui/utils/cn";
-import { Typography } from "@mui/material";
+import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useHistory } from "./history/HistoryProvider";
@@ -53,29 +54,32 @@ export function ModelMenuItem({ model }: { model: Model }) {
   const Icon = modelIcons[provider];
 
   return (
-    <MenuItem
-      actions={
-        <IconGhostButton
-          className={cn("h-full w-8 opacity-0 group-hover:opacity-100", {
-            "opacity-100": pinned,
-          })}
-          onClick={handlePin}
-        >
-          {pinned ? (
-            <PinnedIcon className="text-primary-500" />
-          ) : (
-            <PinnerIcon />
-          )}
-        </IconGhostButton>
-      }
-      onClick={switchModel}
-    >
-      {<Icon className="h-4.5 w-4.5" />}
-      {name}
-    </MenuItem>
+    <ModelAvailability model={model.id} placement="top-end">
+      <MenuItem
+        actions={
+          <IconGhostButton
+            className={cn("h-full w-8 opacity-0 group-hover:opacity-100", {
+              "opacity-100": pinned,
+            })}
+            onClick={handlePin}
+          >
+            {pinned ? (
+              <PinnedIcon className="text-primary-500" />
+            ) : (
+              <PinnerIcon />
+            )}
+          </IconGhostButton>
+        }
+        onClick={switchModel}
+      >
+        {<Icon className="h-4.5 w-4.5" />}
+        {name}
+      </MenuItem>
+    </ModelAvailability>
   );
 }
 
+// TODO(Leo): use ModelMenuItem instead?
 function DropDownModelMenu({
   model,
   onRefresh,
@@ -95,10 +99,6 @@ function DropDownModelMenu({
 
   const handlePinned = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-
-    if (!session) {
-      return;
-    }
 
     if (!session) {
       return;
@@ -141,11 +141,11 @@ export function ModelAccordion() {
   const t = useTranslations();
   const { collapsed } = useSidebar();
   const [models, setModels] = useState<Model[]>([]);
-  const { getModels } = useBenefit();
+  const { getPreferredModels } = useBenefit();
 
   const refresh = useCallback(() => {
-    getModels().then(setModels);
-  }, [getModels]);
+    getPreferredModels().then(setModels);
+  }, [getPreferredModels]);
 
   useEffect(() => {
     refresh();
@@ -157,7 +157,7 @@ export function ModelAccordion() {
         <DropdownMenuTrigger>
           <MenuButton title={t("chat.sidebar.models")} icon={<ModelsIcon />} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent sx={{ minWidth: "230px", px: "8px" }}>
+        <DropdownMenuContent sx={{ minWidth: "fit-content", px: "8px" }}>
           <p className="mb-2 ml-2.5 text-sm font-semibold">
             {t("chat.sidebar.models")}
           </p>
@@ -185,16 +185,16 @@ export function ModelAccordion() {
 export function ModelSelect() {
   const { model, setChat } = useChat();
   const { switchConversation } = useConversationMutations();
-  const { getModels } = useBenefit();
+  const { getPreferredModels } = useBenefit();
   const [models, setModels] = useState<Model[]>([]);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     startTransition(async () => {
-      const ms = await getModels();
+      const ms = await getPreferredModels();
       setModels(ms);
     });
-  }, [getModels, setModels]);
+  }, [getPreferredModels, setModels]);
 
   useEffect(() => {
     if (models.length === 0) {
@@ -233,15 +233,15 @@ export function ModelSelect() {
       </DropdownMenuTrigger>
       <DropdownMenuContent shadow="none">
         {models.map((m) => (
-          <DropdownMenuItem
-            key={m.id}
-            className="gap-2.5"
-            selected={model === m.id}
-            onClick={() => handleSwitch(m.id)}
-          >
-            {modelIcon(m)}
-            {m.name}
-          </DropdownMenuItem>
+          <ModelAvailability model={m.id} key={m.id}>
+            <DropdownMenuItem
+              selected={model === m.id}
+              onClick={() => handleSwitch(m.id)}
+            >
+              {modelIcon(m)}
+              {m.name}
+            </DropdownMenuItem>
+          </ModelAvailability>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
@@ -265,5 +265,56 @@ export function ModelBrandCard() {
       </div>
       <span className="text-sm">{t(`models.${selected.i18n}`)}</span>
     </div>
+  );
+}
+
+function ModelAvailability({
+  model,
+  children,
+  placement = "right",
+}: {
+  model: string;
+  children: React.ReactElement;
+  placement?: TooltipProps["placement"];
+}) {
+  const t = useTranslations();
+  const { standard, advanced, frontier } = useBalance();
+  const { availableModels } = useBenefit();
+  const session = useAuth((s) => s.session);
+
+  if (!session) {
+    return children;
+  }
+
+  const plan = session.subscription.plan_code;
+  const benefit = availableModels.find((m) => m.id === model);
+  if (!benefit) {
+    return children;
+  }
+
+  let remaining = 0;
+  switch (benefit.benefit_code) {
+    case "basic_models":
+      remaining = standard?.remaining || 0;
+      break;
+    case "advanced_models":
+      remaining = advanced?.remaining || 0;
+      break;
+    case "frontier_models":
+      remaining = frontier?.remaining || 0;
+      break;
+    default:
+      break;
+  }
+
+  const tip =
+    remaining > 0
+      ? t("balance.modelAvailable")
+      : t(`balance.modelUnavailable.${plan}`);
+
+  return (
+    <Tooltip title={tip} placement={placement}>
+      {children}
+    </Tooltip>
   );
 }

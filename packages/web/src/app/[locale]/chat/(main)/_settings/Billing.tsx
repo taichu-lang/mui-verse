@@ -16,7 +16,7 @@ function ProPlan({ subscription }: { subscription: Subscription }) {
   const locale = useLocale();
 
   const duration =
-    subscription.period === "monthly"
+    subscription.period_type === "monthly"
       ? t("duration.oneMonth")
       : t("duration.oneYear");
 

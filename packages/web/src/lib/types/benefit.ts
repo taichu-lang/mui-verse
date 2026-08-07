@@ -5,6 +5,7 @@ import {
   BillingCycle,
   BillingUnit,
   PlanCode,
+  PlanDuration,
   ResourceType,
 } from "./enums";
 
@@ -32,8 +33,9 @@ export interface Balance {
 
 export interface Price {
   currency: CurrencyCode;
-  monthly_cents: number;
-  yearly_cents: number;
+  period_type: PlanDuration;
+  // amount unit is cent.
+  amount: number;
 }
 
 export interface PlanBenefit {

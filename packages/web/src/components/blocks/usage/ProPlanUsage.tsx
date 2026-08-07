@@ -1,6 +1,7 @@
 import { AdvancedIcon, CreditIcon, StandardIcon } from "@/components/icons";
 import { useBalance } from "@/hooks/useBalance";
 import { IconGhostButton } from "@mui-verse/ui/components/buttons";
+import { useChat } from "@mui-verse/ui/components/chat";
 import {
   Popover,
   PopoverContent,
@@ -9,6 +10,39 @@ import {
 import { Divider } from "@mui/material";
 import { CategoryUsage, QuotaTip } from "./Category";
 
+function RemainingTrigger() {
+  const { model } = useChat();
+  const { getModelBalance, standard } = useBalance();
+  const balance = model ? getModelBalance(model) : standard;
+
+  if (!balance) {
+    return null;
+  }
+
+  const icon = () => {
+    switch (balance.benefit_code) {
+      case "basic_models":
+        return <StandardIcon />;
+
+      case "advanced_models":
+        return <AdvancedIcon />;
+
+      case "frontier_models":
+        return <CreditIcon />;
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      {icon()}
+      <span className="text-text-secondary text-sm">{balance.remaining}</span>
+    </>
+  );
+}
+
 export function ProPlanUsage() {
   const { standard, advanced, frontier } = useBalance();
 
@@ -16,10 +50,7 @@ export function ProPlanUsage() {
     <Popover align="center" side="top">
       <PopoverTrigger>
         <IconGhostButton className="hover:bg-action-hover gap-1.5 rounded-full px-2 py-1">
-          <CreditIcon />
-          <span className="text-text-secondary text-sm">
-            {frontier?.remaining || 0}
-          </span>
+          <RemainingTrigger />
         </IconGhostButton>
       </PopoverTrigger>
       <PopoverContent

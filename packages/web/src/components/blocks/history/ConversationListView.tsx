@@ -21,7 +21,7 @@ export function ConversationListView() {
   const t = useTranslations();
   const ref = useRef<InfiniteScrollViewHandle>(null);
   const { setScrollRef } = useHistory();
-  const { getModels, loading } = useBenefit();
+  const { getPreferredModels, loading } = useBenefit();
 
   useEffect(() => {
     if (ref.current) {
@@ -45,7 +45,7 @@ export function ConversationListView() {
             return model.id;
           },
           fetch: async () => {
-            return await getModels();
+            return await getPreferredModels();
           },
           collapsible: true,
           marginBottom: 24,

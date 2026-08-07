@@ -15,6 +15,7 @@ export default function LandingPage() {
       <CapabilitiesSection />
       <UiSection />
       <FaqSection />
+      {/* Add a divider between lading page content and footer */}
       <Divider flexItem />
     </>
   );

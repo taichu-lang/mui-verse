@@ -42,6 +42,9 @@ export function QuotaTip({
         const { cycle } = frontierQuota();
         return cycle;
       }
+
+      default:
+        return "";
     }
   };
 
