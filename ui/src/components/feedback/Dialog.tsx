@@ -130,9 +130,9 @@ export function DialogTitle({
   return (
     <MuiDialogTitle
       className={cn(
-        "flex items-center",
+        "flex items-center justify-between",
         {
-          "shadow-(--mui-shadow-border)": useSeparator,
+          "shadow-(--mui-shadow-border-y)": useSeparator,
         },
         className,
       )}
@@ -159,11 +159,13 @@ export function DialogActions({
   cancel,
   submit,
   onSubmit,
+  variant = "primary",
 }: {
   fullWidth?: boolean;
   cancel?: string;
   submit: string;
   onSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  variant?: "primary" | "error";
 }) {
   const { setOpen } = useDialogContext();
 
@@ -187,13 +189,17 @@ export function DialogActions({
         {cancel && (
           <Button
             variant="outlined"
-            className="rounded-lg py-1.75"
+            className="text-text-primary rounded-lg py-1.75"
             onClick={handleCancel}
           >
             {cancel}
           </Button>
         )}
-        <Button onClick={handleSubmit} className="rounded-lg py-1.75">
+        <Button
+          onClick={handleSubmit}
+          className="rounded-lg py-1.75"
+          color={variant}
+        >
           {submit}
         </Button>
       </div>
@@ -203,11 +209,15 @@ export function DialogActions({
   return (
     <div className="mx-6 mb-2 flex items-center justify-end gap-2">
       {cancel && (
-        <Button variant="outlined" className="py-1.75" onClick={handleCancel}>
+        <Button
+          variant="outlined"
+          className="text-text-primary py-1.75"
+          onClick={handleCancel}
+        >
           {cancel}
         </Button>
       )}
-      <Button onClick={handleSubmit} className="py-1.75">
+      <Button onClick={handleSubmit} className="py-1.75" color={variant}>
         {submit}
       </Button>
     </div>

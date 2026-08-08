@@ -15,12 +15,18 @@ export {
 } from "./InputControl";
 export { NumberField, type NumberFieldProps } from "./NumberField";
 export { PasswordField } from "./PasswordField";
-export { DropdownSelect, DropdownSelectOption, Select } from "./Select";
+export {
+  DropdownSelect,
+  DropdownSelectOption,
+  Select,
+  type SelectHandle,
+} from "./Select";
 export { Switch, type SwitchProps, type SwitchVariant } from "./Switch";
 export {
   Input,
   InputGroup,
   TextField,
+  type InputHandle,
   type InputProps,
   type TextFieldProps,
 } from "./TextField";
