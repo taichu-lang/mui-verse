@@ -59,6 +59,9 @@
     0 8px 18px rgb(0 0 0 / 0.35);
 
   --mui-shadow-border: inset 0 0 0 1px var(--mui-palette-divider);
+  --mui-shadow-border-y:
+    inset 0 1px 0 0 var(--mui-palette-divider),
+    inset 0 -1px 0 0 var(--mui-palette-divider);
 }
 
 [data-mui-color-scheme="light"] {
@@ -98,6 +101,9 @@
       - inset 1px 0 0 0 => left border
   */
   --mui-shadow-border: inset 0 0 0 1px var(--mui-palette-divider);
+  --mui-shadow-border-y:
+    inset 0 1px 0 0 var(--mui-palette-divider),
+    inset 0 -1px 0 0 var(--mui-palette-divider);
 }
 
 @theme inline {

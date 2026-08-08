@@ -11,7 +11,7 @@ import {
   TextFieldProps as MuiTextProps,
 } from "@mui/material";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useRef, useState } from "react";
 
 // Refer to ValidityState.
 //
@@ -235,7 +235,12 @@ export type InputProps = Omit<InputBaseProps, "value"> & {
   variant?: "default" | "outlined";
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
+  ref?: React.Ref<InputHandle>;
 };
+
+export interface InputHandle {
+  reset: () => void;
+}
 
 export function Input({
   defaultValue,
@@ -251,6 +256,7 @@ export function Input({
   autoCorrect = "off",
   spellCheck = "false",
   error = false,
+  ref,
   ...props
 }: InputProps) {
   const [value, setValue] = useState<string>((defaultValue as string) ?? "");
@@ -264,6 +270,14 @@ export function Input({
     outlined:
       "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
   };
+
+  const reset = useCallback(() => {
+    const value = (defaultValue as string) ?? "";
+    setValue(value);
+    onValueChange?.(value);
+  }, [defaultValue, onValueChange]);
+
+  useImperativeHandle(ref, () => ({ reset }));
 
   const buildEndIcon = () => {
     if (endIcon) {
