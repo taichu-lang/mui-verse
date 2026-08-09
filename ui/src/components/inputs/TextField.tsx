@@ -232,6 +232,7 @@ export function TextField(props: TextFieldProps) {
 
 export type InputProps = Omit<InputBaseProps, "value"> & {
   onValueChange?: (value: string) => void;
+  onValueComplete?: (value: string) => void;
   variant?: "default" | "outlined";
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
@@ -245,6 +246,7 @@ export interface InputHandle {
 export function Input({
   defaultValue,
   onValueChange,
+  onValueComplete,
   size = "small",
   variant = "outlined",
   type: defaultType = "text",
@@ -275,7 +277,8 @@ export function Input({
     const value = (defaultValue as string) ?? "";
     setValue(value);
     onValueChange?.(value);
-  }, [defaultValue, onValueChange]);
+    onValueComplete?.(value);
+  }, [defaultValue, onValueChange, onValueComplete]);
 
   useImperativeHandle(ref, () => ({ reset }));
 
@@ -310,6 +313,10 @@ export function Input({
     if (!isComposingRef.current) {
       onValueChange?.(v);
     }
+  };
+
+  const handleBlur = () => {
+    onValueComplete?.(value);
   };
 
   // IME composition (e.g. Chinese Pinyin, Japanese Kana, Korean Hangul) fires
@@ -351,6 +358,7 @@ export function Input({
         className,
       )}
       onChange={handleChange}
+      onBlur={handleBlur}
       onCompositionStart={handleCompositionStart}
       onCompositionEnd={handleCompositionEnd}
       startAdornment={

@@ -1,4 +1,5 @@
 export { ClipboardButton } from "./ClipboardButton";
+export { DatePicker } from "./DatePicker";
 export { FileUpload } from "./FileUpload";
 export { FormControlLabel } from "./FormControlLabel";
 export { InlineEditInput } from "./InlineEditInput";
@@ -20,6 +21,7 @@ export {
   DropdownSelectOption,
   Select,
   type SelectHandle,
+  type SelectProps,
 } from "./Select";
 export { Switch, type SwitchProps, type SwitchVariant } from "./Switch";
 export {

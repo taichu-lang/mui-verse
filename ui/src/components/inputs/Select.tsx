@@ -33,7 +33,10 @@ export interface SelectHandle {
   reset: () => void;
 }
 
-interface SelectProps<T> extends Omit<MuiSelectProps<T>, "value" | "onChange"> {
+export interface SelectProps<T> extends Omit<
+  MuiSelectProps<T>,
+  "value" | "onChange"
+> {
   ref?: React.Ref<SelectHandle>;
   onValueChange?: (value: T | "") => void;
 }
