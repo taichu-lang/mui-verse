@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   allowedDevOrigins: ["192.168.*.*"],
+  output: "standalone",
 };
 
 const withLocale = createNextIntlPlugin();

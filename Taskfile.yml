@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+tasks:
+  clean:
+    cmds:
+      - rm -rf packages/web/.next
+      - rm -rf app
+
+  package:
+    cmds:
+      - bun install
+      - bun run build
+      - cp -r packages/web/.next/standalone app/
+      - cp -r packages/web/.next/static app/packages/web/.next
+      - cp -r packages/web/public app/packages/web
+    deps:
+      - clean
+
+  docker:
+    cmds:
+      - docker build -t adonia/anna-web:0.1 -f ci/Dockerfile . --no-cache
+      - docker save -o anna.tar adonia/anna-web:0.1
+      - rm -rf anna.tar
+
+    deps:
+      - package

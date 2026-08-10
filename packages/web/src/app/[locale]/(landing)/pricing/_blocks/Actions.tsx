@@ -8,7 +8,7 @@ export function FreePlanButton({ className }: { className?: string }) {
   const t = useTranslations();
   const { session } = useAuth();
   const title =
-    session?.plan_code === "pro"
+    session?.subscription.plan_code === "pro"
       ? t("pricing.free.actionPro")
       : t("pricing.free.actionFree");
 
@@ -30,7 +30,7 @@ export function ProPlanButton({ className }: { className?: string }) {
   const t = useTranslations();
   const { session } = useAuth();
   const title =
-    session?.plan_code === "pro"
+    session?.subscription.plan_code === "pro"
       ? t("pricing.pro.actionPro")
       : t("pricing.pro.actionFree");
 
