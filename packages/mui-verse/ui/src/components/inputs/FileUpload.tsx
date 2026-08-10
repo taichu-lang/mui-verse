@@ -1,16 +1,17 @@
 "use client";
 
-import { CloudUploadIcon, XIcon } from "lucide-react";
-import { useRef, useState } from "react";
 import { cn } from "@mui-verse/ui/utils/cn";
-import Image from "next/image";
 import { IconButton } from "@mui/material";
+import { CloudUploadIcon, XIcon } from "lucide-react";
+import Image from "next/image";
+import { useRef, useState } from "react";
 
 export interface FileUploadProps {
   url?: string;
   Icon?: React.ElementType;
   label?: React.ReactNode;
   accept?: string[];
+  variant?: "circular" | "rounded";
   className?: string;
 }
 
@@ -32,6 +33,7 @@ export function FileUpload({
   Icon = CloudUploadIcon,
   label,
   accept = ["image/png", "image/jpeg", "image/jpg", "image/webp"],
+  variant = "rounded",
   className,
 }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,14 +54,17 @@ export function FileUpload({
   };
 
   return (
-    <div className={className}>
+    <div className={cn("bg-gray-50 hover:bg-gray-100", className)}>
       {preview ? (
         <div className="relative h-full w-full">
           <Image
             fill
             src={preview}
             alt="Preview"
-            className="h-full w-full rounded-xl object-cover"
+            className={cn("h-full w-full object-cover", {
+              "rounded-xl": variant === "rounded",
+              "rounded-full": variant === "circular",
+            })}
           />
           <DeleteButton onClick={handleRemove} />{" "}
         </div>
@@ -68,7 +73,11 @@ export function FileUpload({
           <div
             className={cn(
               "flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2",
-              "rounded-xl bg-gray-50 shadow-(--mui-shadow-border) hover:bg-gray-100",
+              "shadow-(--mui-shadow-border)",
+              {
+                "rounded-xl": variant === "rounded",
+                "rounded-full": variant === "circular",
+              },
             )}
             onClick={() => inputRef.current?.click()}
           >
