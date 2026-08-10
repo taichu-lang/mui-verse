@@ -1,4 +1,3 @@
-export { ClipboardButton } from "./ClipboardButton";
 export { DatePicker } from "./DatePicker";
 export { FileUpload } from "./FileUpload";
 export { FormControlLabel } from "./FormControlLabel";

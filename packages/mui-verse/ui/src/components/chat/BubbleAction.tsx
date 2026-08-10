@@ -1,13 +1,22 @@
-import { IconGhostButton } from "@mui-verse/ui/components/buttons";
-import { CopyIcon } from "@mui-verse/ui/components/icons";
+import { ClipboardButton } from "@mui-verse/ui/components/buttons";
+import { copyToClipboard } from "@mui-verse/ui/utils/clipboard";
 import { cn } from "@mui-verse/ui/utils/cn";
+import { useBubble } from "./BubbleContext";
 import { MessageRole } from "./types";
 
 export function BubbleCopyAction() {
+  const { content } = useBubble();
+
+  const handleCopy = async () => {
+    await copyToClipboard(content);
+  };
+
   return (
-    <IconGhostButton className="hover:bg-action-hover h-8 w-8">
-      <CopyIcon />
-    </IconGhostButton>
+    <ClipboardButton
+      variant="ghost"
+      className="hover:bg-action-hover h-8 w-8"
+      onClick={handleCopy}
+    />
   );
 }
 

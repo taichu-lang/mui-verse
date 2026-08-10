@@ -45,17 +45,27 @@ export interface ChatSessionValue {
   // The state during `first chunk` ~ `message done` or `interrupted`.
   streaming: boolean;
 
+  // The current streaming message, if any. Once the message is done, it will
+  // be moved to `messages`.
+  streamingMessage: Message | null;
+
+  // Messages of completed turns.
   messages: Message[];
+
   // Pagination — only the historically-loaded prefix has ids; the tail (an
   // in-flight user/assistant pair) is id-less. `messages[0]` is always the
   // cursor source, and it is only ever a hydrated or prepended history row.
   hasMoreOlder: boolean;
   loadingOlder: boolean;
 
-  stopStreaming: (interrupted?: boolean) => void;
+  // The streaming might be stopped in two cases:
+  //
+  // - User interrupted. In this case, `message` is null.
+  // - This turn is completed, `message` is the completed message of this turn.
+  //
+  stopStreaming: (interrupted?: boolean, message?: Message) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
-  replaceMessage: (message: Message) => void;
   hydrate: (messages: Message[], hasMoreOlder: boolean) => void;
   prependOlder: (messages: Message[], hasMoreOlder: boolean) => void;
   setLoadingOlder: (loading: boolean) => void;
@@ -65,6 +75,7 @@ const createChatSessionStore = () =>
   createStore<ChatSessionValue>()((set, get) => ({
     pending: false,
     streaming: false,
+    streamingMessage: null,
     messages: [],
     hasMoreOlder: false,
     loadingOlder: false,
@@ -76,42 +87,36 @@ const createChatSessionStore = () =>
     // can not get the balance after abort the connection, as there is a time
     // delay between the aborting and usage calculation in the server side. The
     // balance should be updated after the next turn.
-    stopStreaming: (interrupted?: boolean) =>
+    stopStreaming: (interrupted?: boolean, message?: Message) =>
       set((state) => {
-        if (!interrupted) {
-          return { streaming: false, pending: false };
-        }
-
-        const lastMessage = state.messages[state.messages.length - 1];
-        if (!lastMessage) {
-          return { streaming: false, pending: false };
+        const streamingMessage = state.streamingMessage;
+        if (!streamingMessage) {
+          return {};
         }
 
         return {
           streaming: false,
           pending: false,
           messages: [
-            ...state.messages.slice(0, -1),
-            { ...lastMessage, interrupted: true },
+            ...state.messages,
+            message || { ...streamingMessage, interrupted: interrupted },
           ],
+          streamingMessage: null,
         };
       }),
     addUserMessage: (message: Message, assistantMessageID: string) =>
       set({
-        messages: [
-          ...get().messages,
-          message,
-          {
-            message_id: assistantMessageID,
-            role: "assistant",
-            content: "",
-          },
-        ],
+        messages: [...get().messages, message],
+        streamingMessage: {
+          message_id: assistantMessageID,
+          role: "assistant",
+          content: "",
+        },
         pending: true,
       }),
     onStream: (message_id: string, chunk: string) =>
       set((state) => {
-        const lastMessage = state.messages[state.messages.length - 1];
+        const lastMessage = state.streamingMessage;
         if (
           !lastMessage ||
           lastMessage.role !== "assistant" ||
@@ -122,19 +127,13 @@ const createChatSessionStore = () =>
         }
 
         return {
-          messages: [
-            ...state.messages.slice(0, -1),
-            { ...lastMessage, content: lastMessage.content + chunk },
-          ],
+          streamingMessage: {
+            ...lastMessage,
+            content: lastMessage.content + chunk,
+          },
           streaming: true,
         };
       }),
-    replaceMessage: (message: Message) =>
-      set((state) => ({
-        messages: state.messages.map((m) =>
-          m.message_id === message.message_id ? message : m,
-        ),
-      })),
     hydrate: (messages: Message[], hasMoreOlder: boolean) => {
       if (get().messages.length > 0) return;
       set({ messages, hasMoreOlder, loadingOlder: false });

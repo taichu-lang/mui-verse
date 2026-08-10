@@ -1,5 +1,6 @@
 "use client";
 
+import { extendClickable, TriggerProps } from "@mui-verse/ui/utils/click";
 import { cn } from "@mui-verse/ui/utils/cn";
 import {
   MenuItem as MuiMenuItem,
@@ -35,7 +36,7 @@ export type MenuItemProps<C extends React.ElementType = "li"> = Omit<
 > & {
   component?: C;
   variant?: Variant;
-  actions?: React.ReactNode;
+  actions?: React.ReactElement<TriggerProps>;
 };
 
 type Preset = {
@@ -66,17 +67,9 @@ const presets: Record<Variant, Preset> = {
   },
 };
 
-// When `actions` is provided we need the row's padding to move to an inner
-// wrapper so the trailing action slot can sit flush at the edge. When
-// `actions` is NOT provided we leave padding on the row itself, so the
-// MUI-injected DOM (Select's cloned value, ListItemIcon > child selectors,
-// etc.) sees the exact same shape as a plain MuiMenuItem.
 const StyledMenuItem = styled(MuiMenuItem, {
-  shouldForwardProp: (prop) => prop !== "variant" && prop !== "hasActions",
-})<{ variant?: Variant; hasActions?: boolean }>(({
-  variant = "sm",
-  hasActions = false,
-}) => {
+  shouldForwardProp: (prop) => prop !== "variant",
+})<{ variant?: Variant }>(({ variant = "sm" }) => {
   const preset = presets[variant];
 
   return {
@@ -94,22 +87,6 @@ const StyledMenuItem = styled(MuiMenuItem, {
     height: "unset",
     color: "var(--mui-palette-text-primary)",
     flexShrink: 0,
-
-    ...(hasActions && {
-      "& .VerseMenuItem-content": {
-        flex: 1,
-        minWidth: 0,
-        display: "flex",
-        alignItems: "center",
-      },
-      "& .VerseMenuItem-actions": {
-        padding: 0,
-        margin: 0,
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-      },
-    }),
 
     "&.Mui-selected": {
       backgroundColor: "var(--mui-palette-action-hover)",
@@ -135,50 +112,20 @@ export function MenuItem<C extends React.ElementType = "li">({
   className,
   ...props
 }: MenuItemProps<C>) {
-  // `StyledMenuItem` is `styled(MuiMenuItem)` and its type is narrowed to the
-  // default `<li>` root — but at runtime MUI's `MenuItem` handles the
-  // `component` prop and forwards everything to whatever element the caller
-  // chose. Cast so TS accepts the spread while preserving the polymorphic
-  // typing on the outer `MenuItem`.
-  // const passthrough = rest as MuiMenuItemProps;
+  const actionElement = actions
+    ? extendClickable(actions, (e) => {
+        e.stopPropagation();
+      })
+    : null;
 
-  if (actions === undefined) {
-    return (
-      <StyledMenuItem
-        variant={variant}
-        className={cn("gap-2.5", className)}
-        {...props}
-      >
-        {children}
-      </StyledMenuItem>
-    );
-  }
-
-  const preset = presets[variant];
-
-  // Note that actions can not be children of MenuItem, as MenuItem could be rendered
-  // as any element based on its component prop. Meanwhile, actions could be any
-  // element. Ex: if component of MenuItem is `a`, actions is button, it will be issue
-  // of accessibility.
   return (
-    <div
-      className={cn(
-        "group hover:bg-action-hover flex w-full items-center",
-        className,
-      )}
-      style={{
-        borderRadius: preset["radius"],
-      }}
+    <StyledMenuItem
+      variant={variant}
+      className={cn("group relative gap-2.5", className)}
+      {...props}
     >
-      <StyledMenuItem
-        variant={variant}
-        hasActions
-        {...props}
-        className="flex-1 gap-2.5"
-      >
-        {children}
-      </StyledMenuItem>
-      {actions}
-    </div>
+      {children}
+      {actionElement && <div className="absolute right-0">{actionElement}</div>}
+    </StyledMenuItem>
   );
 }
