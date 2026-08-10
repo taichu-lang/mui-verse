@@ -9,7 +9,11 @@ import {
   MenuItem,
   Side,
 } from "@mui-verse/ui/components/navigation";
-import { Select as MuiSelect, SelectProps } from "@mui/material";
+import {
+  Select as MuiSelect,
+  SelectProps as MuiSelectProps,
+  SelectChangeEvent,
+} from "@mui/material";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
   Children,
@@ -17,6 +21,7 @@ import {
   isValidElement,
   useCallback,
   useContext,
+  useImperativeHandle,
   useState,
 } from "react";
 
@@ -24,7 +29,26 @@ interface SelectPreset {
   padding: string;
 }
 
-export function Select<T>({ sx, size = "small", ...props }: SelectProps<T>) {
+export interface SelectHandle {
+  reset: () => void;
+}
+
+export interface SelectProps<T> extends Omit<
+  MuiSelectProps<T>,
+  "value" | "onChange"
+> {
+  ref?: React.Ref<SelectHandle>;
+  onValueChange?: (value: T | "") => void;
+}
+
+export function Select<T>({
+  sx,
+  size = "small",
+  defaultValue,
+  onValueChange,
+  ref,
+  ...props
+}: SelectProps<T>) {
   const presets: Record<string, SelectPreset> = {
     small: {
       // pt and pb are different, to enable text in center vertically.
@@ -41,8 +65,28 @@ export function Select<T>({ sx, size = "small", ...props }: SelectProps<T>) {
     medium: "4px",
   };
 
+  const [value, setValue] = useState<T | "">(defaultValue ?? "");
+
+  const handleChange = (e: SelectChangeEvent<T>) => {
+    const value = e.target.value as T | "";
+    setValue(value);
+    onValueChange?.(value);
+  };
+
+  const reset = useCallback(() => {
+    const value = defaultValue ?? "";
+    setValue(value);
+    onValueChange?.(value);
+  }, [defaultValue, onValueChange]);
+
+  useImperativeHandle(ref, () => ({
+    reset,
+  }));
+
   return (
     <MuiSelect
+      value={value}
+      onChange={handleChange}
       IconComponent={ChevronsUpDownIcon}
       sx={{
         ".MuiSelect-icon": {

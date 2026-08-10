@@ -25,11 +25,17 @@ export function FormControlLabel({
       display: "inline-flex",
       flexDirection: "row-reverse",
       alignItems: "center",
+      ".MuiFormControlLabel-label": {
+        flexShrink: 0,
+      },
     },
     end: {
       display: "inline-flex",
       flexDirection: "row",
       alignItems: "center",
+      ".MuiFormControlLabel-label": {
+        flexShrink: 0,
+      },
     },
     "bottom-start": {
       display: "flex",

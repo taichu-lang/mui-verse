@@ -13,6 +13,7 @@ export function Sender({
   onSend,
   className,
   inputClassName,
+  placeholder,
 }: {
   minRows?: number;
   maxRows?: number;
@@ -20,6 +21,7 @@ export function Sender({
   onSend: (text: string, controller: AbortController) => Promise<void>;
   className?: string;
   inputClassName?: string;
+  placeholder?: string;
 }) {
   const { pending, stopStreaming, streaming } = useChatSession();
   const [text, setText] = useState<string>("");
@@ -64,7 +66,7 @@ export function Sender({
           multiline
           minRows={minRows}
           maxRows={maxRows}
-          placeholder="Ask anything"
+          placeholder={placeholder}
           fullWidth
           className={cn(inputClassName)}
           value={text}
