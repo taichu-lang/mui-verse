@@ -227,6 +227,15 @@ export function DropdownMenuContent({
           },
         },
       }}
+      // React synthetic events bubble along the React tree, not the DOM tree.
+      // Even though MUI's Menu portals its Backdrop / Paper into document.body,
+      // clicks inside them still bubble up to whatever ancestor rendered this
+      // <DropdownMenu>. When the dropdown lives inside a clickable row (e.g. a
+      // MenuItem with its own onClick), clicking the backdrop to dismiss the
+      // menu — or clicking any item inside it — would otherwise fire that
+      // ancestor handler. Stop propagation here so the dropdown is a
+      // self-contained interaction surface for its consumers.
+      onClick={(e) => e.stopPropagation()}
       {...props}
     >
       {children}

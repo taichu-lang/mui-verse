@@ -3,9 +3,9 @@
 import { StreamingIcon } from "@mui-verse/ui/components/icons";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Bubble } from "./Bubble";
-import { useChatSession } from "./ChatSessionContext";
+import { Bubble, BubbleStreaming } from "./Bubble";
 import { useChatScrollContainer } from "./ChatScrollContext";
+import { useChatSession } from "./ChatSessionContext";
 
 export function Conversation({
   bubbleClassName,
@@ -138,7 +138,6 @@ export function Conversation({
         )}
         {virtualItems.map((vi) => {
           const message = messages[vi.index];
-          const isLast = vi.index === messages.length - 1;
           return (
             <div
               key={vi.key}
@@ -152,20 +151,14 @@ export function Conversation({
                 transform: `translateY(${vi.start}px)`,
               }}
             >
-              <Bubble
-                message={message}
-                className={bubbleClassName}
-                streaming={isLast ? pending : undefined}
-              />
+              <Bubble message={message} className={bubbleClassName} />
             </div>
           );
         })}
       </div>
-      {pending && <StreamingIcon />}
-      <div
+      <BubbleStreaming
         ref={endRef}
-        aria-hidden
-        className="h-0 scroll-mb-(--chat-sender-offset,0px)"
+        className="scroll-mb-(--chat-sender-offset,0px)"
       />
     </div>
   );
