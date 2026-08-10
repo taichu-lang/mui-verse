@@ -12,7 +12,8 @@ import {
   MenuItem,
 } from "@mui-verse/ui/components/navigation";
 import { MenuButton } from "@mui-verse/ui/layout/MenuButton";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
   ChatAction,
@@ -20,7 +21,6 @@ import {
   ConversationTitleEditor,
   useConversationOps,
 } from "./ConversationOps";
-import { useTranslations } from "next-intl";
 
 const MAX_ITEMS_IN_DROPDOWN = 8;
 
@@ -33,6 +33,7 @@ export function ChatMenuRow({
 }: {
   includingIcon?: boolean;
 }) {
+  const router = useRouter();
   const { target, editMode } = useConversationOps();
 
   // useConversation is used for chat page, i.e., transfer conversation from
@@ -42,14 +43,15 @@ export function ChatMenuRow({
   const uri = `/chat/${target.conversation_id}`;
 
   const handleClick = () => {
+    // We can not use `Link` in MenuItem, because the click event on `actions`
+    // can not be stopped propagation to `a` element.
+    router.replace(uri);
     setConversation(target);
   };
 
   return (
     <MenuItem
       actions={<ChatAction />}
-      component={Link}
-      href={uri}
       onClick={handleClick}
       selected={pathname === uri}
       className="mb-0.5"

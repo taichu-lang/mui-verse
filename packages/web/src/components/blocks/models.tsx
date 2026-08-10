@@ -54,13 +54,16 @@ export function ModelMenuItem({ model }: { model: Model }) {
   const Icon = modelIcons[provider];
 
   return (
-    <ModelAvailability model={model.id} placement="top-end">
+    <ModelAvailability model={model.id}>
       <MenuItem
         actions={
           <IconGhostButton
-            className={cn("h-full w-8 opacity-0 group-hover:opacity-100", {
-              "opacity-100": pinned,
-            })}
+            className={cn(
+              "h-8 w-8 cursor-context-menu opacity-0 group-hover:opacity-100",
+              {
+                "opacity-100": pinned,
+              },
+            )}
             onClick={handlePin}
           >
             {pinned ? (
@@ -310,7 +313,7 @@ function ModelAvailability({
   const tip =
     remaining > 0
       ? t("balance.modelAvailable")
-      : t(`balance.modelUnavailable.${plan}`);
+      : t(`balance.${benefit.benefit_code}.modelUnavailable.${plan}`);
 
   return (
     <Tooltip title={tip} placement={placement}>

@@ -26,6 +26,7 @@
 @utility chat-sender-input {
   font-size: var(--text-base);
   line-height: 22px;
+  letter-spacing: 0;
 }
 
 @utility card-shadow {

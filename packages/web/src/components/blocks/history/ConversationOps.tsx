@@ -125,7 +125,7 @@ export function ChatAction() {
   return (
     <DropdownMenu side="right" align="start">
       <DropdownMenuTrigger>
-        <IconGhostButton className="hidden h-8 w-8 group-hover:flex">
+        <IconGhostButton className="hidden h-8 w-8 cursor-context-menu group-hover:flex">
           <EllipsisIcon className="h-4 w-4" />
         </IconGhostButton>
       </DropdownMenuTrigger>

@@ -55,8 +55,7 @@ function SenderArea() {
   const conversationId = params.slug;
 
   const router = useRouter();
-  const { addUserMessage, onStream, replaceMessage, stopStreaming } =
-    useChatSession();
+  const { addUserMessage, onStream, stopStreaming } = useChatSession();
   const { model, enableWebSearch, setChat } = useChat();
   const { setConversation } = useConversation();
   const history = useHistory();
@@ -89,8 +88,7 @@ function SenderArea() {
     // We get the final message includes annotations, we need to
     // replace the message to enable rendering properly.
     const payload = JSON.parse(data) as Message;
-    replaceMessage(payload);
-    stopStreaming();
+    stopStreaming(false, payload);
   };
 
   const onBalance = (data: string) => {

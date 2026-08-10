@@ -1,9 +1,12 @@
 import { ChevronRightIcon } from "@/components/icons";
-import { CopyIcon } from "@mui-verse/ui/components/icons";
+import { ClipboardButton } from "@mui-verse/ui/components/buttons";
 import { MenuItem } from "@mui-verse/ui/components/navigation";
 import { TabMenuPanel } from "@mui-verse/ui/layout/TabMenu";
-import { DataItem, DataSeparator } from "./DataList";
+import { copyToClipboard } from "@mui-verse/ui/utils/clipboard";
 import { useTranslations } from "next-intl";
+import { DataItem, DataSeparator } from "./DataList";
+
+const email = "support@platovpn.com";
 
 export function Help() {
   const t = useTranslations();
@@ -13,8 +16,11 @@ export function Help() {
       <div className="flex flex-col">
         <DataItem label={t("footer.contact")}>
           <MenuItem selected>
-            support@platovpn.com
-            <CopyIcon />
+            {email}
+            <ClipboardButton
+              onClick={() => copyToClipboard(email)}
+              variant="ghost"
+            />
           </MenuItem>
         </DataItem>
         <DataSeparator />
