@@ -1,0 +1,147 @@
+# DropdownMenu
+
+基于 MUI Menu 封装的下拉菜单组件，采用复合组件模式，风格对齐 Radix UI。
+
+## 引入
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@mui-verse/ui/components/DropdownMenu";
+```
+
+## 基础用法
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger>
+    <Button>打开菜单</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem onClick={() => console.log("编辑")}>编辑</DropdownMenuItem>
+    <DropdownMenuItem>复制</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>删除</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## 弹出方向与对齐
+
+通过 `side` 和 `align` 控制菜单弹出的位置。
+
+```tsx
+<DropdownMenu side="right" align="start">
+  <DropdownMenuTrigger>
+    <IconButton>
+      <MoreVertical />
+    </IconButton>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>选项一</DropdownMenuItem>
+    <DropdownMenuItem>选项二</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+| 属性 | 可选值 | 默认值 |
+| --- | --- | --- |
+| `side` | `top` `right` `bottom` `left` | `bottom` |
+| `align` | `start` `center` `end` | `center` |
+
+## 带图标的菜单项
+
+`DropdownMenuItem` 内部使用 flex 布局，直接放入图标即可。
+
+```tsx
+import { Pencil, Copy, Trash2 } from "lucide-react";
+
+<DropdownMenu>
+  <DropdownMenuTrigger>
+    <Button variant="outlined">操作</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>
+      <Pencil size={16} /> 编辑
+    </DropdownMenuItem>
+    <DropdownMenuItem>
+      <Copy size={16} /> 复制
+    </DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>
+      <Trash2 size={16} /> 删除
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## 点击后不关闭菜单
+
+将 `closeOnClick` 设为 `false`，点击该项后菜单保持打开。
+
+```tsx
+<DropdownMenuItem closeOnClick={false} onClick={() => toggle()}>
+  启用通知
+</DropdownMenuItem>
+```
+
+## 监听打开/关闭
+
+```tsx
+<DropdownMenu onOpenChange={(open) => console.log("菜单状态:", open)}>
+  {/* ... */}
+</DropdownMenu>
+```
+
+## 自定义 Content 样式
+
+`DropdownMenuContent` 接受 `sx` 属性，会合并到 Paper 上。
+
+```tsx
+<DropdownMenuContent sx={{ minWidth: 240 }}>
+  {/* ... */}
+</DropdownMenuContent>
+```
+
+同时支持所有 MUI `Menu` 的 props（除 `open`、`anchorEl`、`onClose` 由内部管理）。
+
+## API
+
+### DropdownMenu
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `defaultOpen` | `boolean` | `false` | 初始是否展开 |
+| `onOpenChange` | `(open: boolean) => void` | - | 打开/关闭时的回调 |
+| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | 弹出方向 |
+| `align` | `"start" \| "center" \| "end"` | `"center"` | 对齐方式 |
+
+### DropdownMenuTrigger
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `children` | `ReactElement` | 触发器元素 |
+
+### DropdownMenuContent
+
+继承 MUI `MenuProps`（排除 `open`、`anchorEl`、`onClose`）。
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `sx` | `SxProps` | 自定义 Paper 样式 |
+
+### DropdownMenuItem
+
+继承 MUI `MenuItemProps`。
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `closeOnClick` | `boolean` | `true` | 点击后是否关闭菜单 |
+
+### DropdownMenuSeparator
+
+无额外属性，渲染一条分割线。

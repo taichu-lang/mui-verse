@@ -3,26 +3,22 @@
 version: "3"
 
 tasks:
-  clean:
+  build-example:
     cmds:
-      - rm -rf packages/web/.next
-      - rm -rf app
+      - bun run --cwd examples build
 
-  package:
+  package-example:
     cmds:
-      - bun install
-      - bun run build
-      - cp -r packages/web/.next/standalone app/
-      - cp -r packages/web/.next/static app/packages/web/.next
-      - cp -r packages/web/public app/packages/web
-    deps:
-      - clean
-
-  docker:
-    cmds:
-      - docker build -t adonia/anna-web:0.1 -f ci/Dockerfile . --no-cache
-      - docker save -o anna.tar adonia/anna-web:0.1
-      - rm -rf anna.tar
+      - cp -r examples/.next/standalone/ .example-release
+      - cp -r examples/.next/static .example-release/examples/.next/static
+      # - cp -r examples/public .example-release/examples/
 
     deps:
-      - package
+      - build-example
+
+  clean-all:
+    cmds:
+      - rm -rf examples/node_modules examples/.next
+      - rm -rf payment/node_modules
+      - rm -rf ui/node_modules
+      - rm -rf bun.lock node_modules

@@ -1,15 +1,3 @@
 {
-  "tailwindCSS.experimental.configFile": "packages/mui-verse/ui/src/verse.css",
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
-  "cSpell.words": [
-    "dukpay",
-    "overscan",
-    "partialize",
-    "PREFS",
-    "recents",
-    "Swipeable",
-    "Yoomoney"
-  ]
+  "cSpell.words": ["Airwallex", "dukpay"]
 }
