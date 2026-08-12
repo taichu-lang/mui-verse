@@ -180,8 +180,10 @@ export function BubbleStreaming({
     <div
       ref={ref}
       data-role="assistant"
+      // Use `pb-10` rather than `mb-10`, as the component might be rendered
+      // in a relative container.
       className={cn(
-        "mb-10 flex min-h-0 w-full flex-col justify-start gap-5",
+        "flex min-h-0 w-full flex-col justify-start gap-5 pb-10",
         className,
       )}
     >

@@ -69,6 +69,18 @@ export interface ChatSessionValue {
   hydrate: (messages: Message[], hasMoreOlder: boolean) => void;
   prependOlder: (messages: Message[], hasMoreOlder: boolean) => void;
   setLoadingOlder: (loading: boolean) => void;
+
+  // Prepend older messages based on the cursor of messages[0]. Only writes
+  // the messages array; pagination flags are the caller's concern.
+  prepend: (messages: Message[]) => void;
+
+  // Append newer messages based on the cursor of messages[messages.length - 1].
+  append: (messages: Message[]) => void;
+
+  // Replace the current messages array wholesale. Used when a mid-conversation
+  // entry (search-jump) needs to be re-anchored to the latest window after a
+  // new user turn, since blindly appending would leave a discontinuity.
+  reset: (messages: Message[]) => void;
 }
 
 const createChatSessionStore = () =>
@@ -145,6 +157,12 @@ const createChatSessionStore = () =>
         loadingOlder: false,
       }),
     setLoadingOlder: (loading: boolean) => set({ loadingOlder: loading }),
+
+    prepend: (messages: Message[]) =>
+      set((state) => ({ messages: [...messages, ...state.messages] })),
+    append: (messages: Message[]) =>
+      set((state) => ({ messages: [...state.messages, ...messages] })),
+    reset: (messages: Message[]) => set({ messages }),
   }));
 
 const ChatSessionContext = createContext<StoreApi<ChatSessionValue> | null>(
