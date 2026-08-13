@@ -52,12 +52,6 @@ export interface ChatSessionValue {
   // Messages of completed turns.
   messages: Message[];
 
-  // Pagination — only the historically-loaded prefix has ids; the tail (an
-  // in-flight user/assistant pair) is id-less. `messages[0]` is always the
-  // cursor source, and it is only ever a hydrated or prepended history row.
-  hasMoreOlder: boolean;
-  loadingOlder: boolean;
-
   // The streaming might be stopped in two cases:
   //
   // - User interrupted. In this case, `message` is null.
@@ -66,9 +60,9 @@ export interface ChatSessionValue {
   stopStreaming: (interrupted?: boolean, message?: Message) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
-  hydrate: (messages: Message[], hasMoreOlder: boolean) => void;
-  prependOlder: (messages: Message[], hasMoreOlder: boolean) => void;
-  setLoadingOlder: (loading: boolean) => void;
+
+  // Append messages only once.
+  hydrate: (messages: Message[]) => void;
 
   // Prepend older messages based on the cursor of messages[0]. Only writes
   // the messages array; pagination flags are the caller's concern.
@@ -116,6 +110,7 @@ const createChatSessionStore = () =>
           streamingMessage: null,
         };
       }),
+
     addUserMessage: (message: Message, assistantMessageID: string) =>
       set({
         messages: [...get().messages, message],
@@ -126,6 +121,7 @@ const createChatSessionStore = () =>
         },
         pending: true,
       }),
+
     onStream: (message_id: string, chunk: string) =>
       set((state) => {
         const lastMessage = state.streamingMessage;
@@ -146,22 +142,18 @@ const createChatSessionStore = () =>
           streaming: true,
         };
       }),
-    hydrate: (messages: Message[], hasMoreOlder: boolean) => {
+
+    hydrate: (messages: Message[]) => {
       if (get().messages.length > 0) return;
-      set({ messages, hasMoreOlder, loadingOlder: false });
+      set({ messages });
     },
-    prependOlder: (messages: Message[], hasMoreOlder: boolean) =>
-      set({
-        messages: [...messages, ...get().messages],
-        hasMoreOlder,
-        loadingOlder: false,
-      }),
-    setLoadingOlder: (loading: boolean) => set({ loadingOlder: loading }),
 
     prepend: (messages: Message[]) =>
       set((state) => ({ messages: [...messages, ...state.messages] })),
+
     append: (messages: Message[]) =>
       set((state) => ({ messages: [...state.messages, ...messages] })),
+
     reset: (messages: Message[]) => set({ messages }),
   }));
 

@@ -14,6 +14,7 @@ export function Sender({
   className,
   inputClassName,
   placeholder,
+  available = true,
 }: {
   minRows?: number;
   maxRows?: number;
@@ -22,13 +23,15 @@ export function Sender({
   className?: string;
   inputClassName?: string;
   placeholder?: string;
+  available?: boolean; // Enable user to customize, e.g.: based on quota balance.
 }) {
   const { pending, stopStreaming, streaming } = useChatSession();
   const [text, setText] = useState<string>("");
   const abortCtrlRef = useRef<AbortController>(null);
+  const disabled = !available || !text || pending;
 
   const handleSend = async () => {
-    if (!text.trim() || pending) {
+    if (disabled) {
       return;
     }
 
@@ -105,7 +108,7 @@ export function Sender({
           <Button
             className="h-8 w-8 min-w-0 rounded-lg p-0"
             onClick={handleSend}
-            disabled={!text || pending}
+            disabled={disabled}
           >
             <ArrowUpIcon className="h-4 w-4" />
           </Button>

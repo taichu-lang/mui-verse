@@ -378,7 +378,7 @@ export function ChatListView({
   );
 
   return (
-    <div className="flex h-full flex-col" ref={messageAreaRef}>
+    <div className="flex flex-1 flex-col" ref={messageAreaRef}>
       <div
         style={{
           height: `${totalSize}px`,
