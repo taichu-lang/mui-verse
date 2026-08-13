@@ -19,9 +19,9 @@ import { createJSONStorage, persist } from "zustand/middleware";
  * switching conversations touches this store.
  *
  * Persistence: `persist` writes to localStorage under `chat.prefs`. A hard
- * reload restores the last model and web-search choice; only `model` and
- * `enableWebSearch` are persisted (see `partialize`), functions and any
- * future runtime-only fields are re-initialized from the creator.
+ * reload restores the last model and web-search choice; only `model` is
+ * persisted (see `partialize`), functions and any future runtime-only fields
+ * are re-initialized from the creator.
  *
  * Not for connection-scoped state: anything describing the currently-open
  * conversation's message stream — loaded messages, streaming flags,
@@ -31,7 +31,6 @@ import { createJSONStorage, persist } from "zustand/middleware";
  */
 interface ChatState {
   model: string;
-  enableWebSearch: boolean;
 }
 
 export interface ChatValue extends ChatState {
@@ -42,7 +41,6 @@ export const useChat = create<ChatValue>()(
   persist(
     (set) => ({
       model: "",
-      enableWebSearch: false,
       setChat: (patch) => set(patch),
     }),
     {
@@ -50,7 +48,6 @@ export const useChat = create<ChatValue>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         model: state.model,
-        enableWebSearch: state.enableWebSearch,
       }),
     },
   ),
