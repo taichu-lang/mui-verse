@@ -268,9 +268,9 @@ export function Input({
   const classes = {
     small: "text-sm leading-4.5 py-2.25 px-3",
     medium: "text-sm leading-4.5 py-3.25 px-4",
-    default: "hover:ring-text-primary text-sm leading-4.5",
+    default: "text-sm leading-4.5",
     outlined:
-      "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
+      "ring-gray-200 ring-1 ring-inset hover:ring-primary-500 focus-within:ring-primary-500",
   };
 
   const reset = useCallback(() => {
@@ -373,6 +373,12 @@ export function Input({
       autoComplete={autoComplete}
       autoCorrect={autoCorrect}
       spellCheck={spellCheck}
+      sx={{
+        "& .MuiInputBase-input:-webkit-autofill, & .MuiInputBase-input:-webkit-autofill:hover, & .MuiInputBase-input:-webkit-autofill:focus":
+          {
+            WebkitBoxShadow: `0 0 0 100px var(--color-gray-200) inset !important`,
+          },
+      }}
     />
   );
 }

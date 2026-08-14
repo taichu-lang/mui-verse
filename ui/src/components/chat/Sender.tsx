@@ -109,6 +109,12 @@ export function Sender({
             className="h-8 w-8 min-w-0 rounded-lg p-0"
             onClick={handleSend}
             disabled={disabled}
+            sx={{
+              "&.Mui-disabled": {
+                bgcolor: "primary.200",
+                color: "white",
+              },
+            }}
           >
             <ArrowUpIcon className="h-4 w-4" />
           </Button>
