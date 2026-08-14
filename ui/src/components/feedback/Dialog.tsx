@@ -72,6 +72,7 @@ export function DefaultDialog({
 }: MuiDialogProps) {
   return (
     <MuiDialog
+      disableAutoFocus
       fullWidth={fullWidth}
       maxWidth={maxWidth}
       slotProps={{

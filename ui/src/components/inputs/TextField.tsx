@@ -233,7 +233,7 @@ export function TextField(props: TextFieldProps) {
 export type InputProps = Omit<InputBaseProps, "value"> & {
   onValueChange?: (value: string) => void;
   onValueComplete?: (value: string) => void;
-  variant?: "default" | "outlined";
+  variant?: "default" | "outlined" | "filled";
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   ref?: React.Ref<InputHandle>;
@@ -259,6 +259,7 @@ export function Input({
   spellCheck = "false",
   error = false,
   ref,
+  sx,
   ...props
 }: InputProps) {
   const [value, setValue] = useState<string>((defaultValue as string) ?? "");
@@ -268,10 +269,24 @@ export function Input({
   const classes = {
     small: "text-sm leading-4.5 py-2.25 px-3",
     medium: "text-sm leading-4.5 py-3.25 px-4",
-    default: "text-sm leading-4.5",
+    default:
+      "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
     outlined:
-      "ring-gray-200 ring-1 ring-inset hover:ring-primary-500 focus-within:ring-primary-500",
-  };
+      "ring-divider ring-1 ring-inset hover:ring-primary-500 focus-within:ring-primary-500",
+    filled:
+      "bg-gray-200 ring-gray-200 ring-1 ring-inset hover:ring-primary-500 focus-within:ring-primary-500",
+  } as const;
+
+  const styles = {
+    default: {},
+    outlined: {},
+    filled: {
+      "& .MuiInputBase-input:-webkit-autofill, & .MuiInputBase-input:-webkit-autofill:hover, & .MuiInputBase-input:-webkit-autofill:focus":
+        {
+          WebkitBoxShadow: `0 0 0 100px var(--color-gray-200) inset !important`,
+        },
+    },
+  } as const;
 
   const reset = useCallback(() => {
     const value = (defaultValue as string) ?? "";
@@ -374,10 +389,8 @@ export function Input({
       autoCorrect={autoCorrect}
       spellCheck={spellCheck}
       sx={{
-        "& .MuiInputBase-input:-webkit-autofill, & .MuiInputBase-input:-webkit-autofill:hover, & .MuiInputBase-input:-webkit-autofill:focus":
-          {
-            WebkitBoxShadow: `0 0 0 100px var(--color-gray-200) inset !important`,
-          },
+        ...styles[variant],
+        ...sx,
       }}
     />
   );

@@ -159,7 +159,7 @@ export function FormInput(props: InputControlInputProps) {
     <BaseInput
       {...props}
       onValueChange={handleValueChange}
-      onBlur={handleBlur}
+      onValueComplete={handleBlur}
       error={hasError}
     />
   );
