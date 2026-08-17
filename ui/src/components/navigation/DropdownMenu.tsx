@@ -14,8 +14,8 @@ interface DropdownMenuContextValue {
   open: boolean;
   anchorEl: HTMLElement | null;
   setAnchorEl: (el: HTMLElement | null) => void;
-  onOpen: (el: HTMLElement) => void;
-  onClose: () => void;
+  setOpen: (el: HTMLElement) => void;
+  close: () => void;
   side: Side;
   align: Align;
 }
@@ -61,27 +61,27 @@ export function DropdownMenu({
   align = "center",
   children,
 }: DropdownMenuProps) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpenState] = useState(defaultOpen);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const onOpen = useCallback(
+  const setOpen = useCallback(
     (el: HTMLElement) => {
       setAnchorEl(el);
-      setOpen(true);
+      setOpenState(true);
       onOpenChange?.(true);
     },
     [onOpenChange],
   );
 
-  const onClose = useCallback(() => {
+  const close = useCallback(() => {
     setAnchorEl(null);
-    setOpen(false);
+    setOpenState(false);
     onOpenChange?.(false);
   }, [onOpenChange]);
 
   return (
     <DropdownMenuContext.Provider
-      value={{ open, anchorEl, setAnchorEl, onOpen, onClose, side, align }}
+      value={{ open, anchorEl, setAnchorEl, setOpen, close, side, align }}
     >
       {children}
     </DropdownMenuContext.Provider>
@@ -95,11 +95,11 @@ export interface DropdownMenuTriggerProps {
 }
 
 export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
-  const { onOpen } = useDropdownMenu();
+  const { setOpen } = useDropdownMenu();
 
   const trigger = extendClickable(children, (e) => {
     e.stopPropagation();
-    onOpen(e.currentTarget);
+    setOpen(e.currentTarget);
   });
 
   return trigger;
@@ -185,7 +185,7 @@ export function DropdownMenuContent({
   sx,
   ...props
 }: DropdownMenuContentProps) {
-  const { open, anchorEl, onClose, side, align } = useDropdownMenu();
+  const { open, anchorEl, close, side, align } = useDropdownMenu();
   const shadows: Record<ShadowLevel, string> = {
     none: "var(--mui-shadow-border)",
     xs: "var(--mui-shadow-border), var(--mui-shadow-surface-xs)",
@@ -202,7 +202,7 @@ export function DropdownMenuContent({
       autoFocus={false}
       open={open}
       anchorEl={anchorEl}
-      onClose={onClose}
+      onClose={close}
       anchorOrigin={AnchorOriginMap[side][align]}
       transformOrigin={TransformOriginMap[side][align]}
       // MUI Popover keeps the menu at least `marginThreshold` px (default 16)
@@ -262,7 +262,7 @@ export function DropdownMenuItem<C extends React.ElementType = "li">({
   onClick,
   ...props
 }: DropdownMenuItemProps<C>) {
-  const { onClose } = useDropdownMenu();
+  const { close } = useDropdownMenu();
 
   // The `onClick` we receive is typed against `C`'s DOM node, but internally
   // we hand it to a non-polymorphic `MenuItem`. Wrap once and cast at the
@@ -270,7 +270,7 @@ export function DropdownMenuItem<C extends React.ElementType = "li">({
   // through regardless of the root element.
   const handleClick: React.MouseEventHandler = (e) => {
     (onClick as React.MouseEventHandler | undefined)?.(e);
-    if (closeOnClick) onClose();
+    if (closeOnClick) close();
   };
 
   return (
