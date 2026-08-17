@@ -1,7 +1,10 @@
 import { BankCardIcon } from "@mui-verse/payment/icons/BankCard";
 import { ChevronRightIcon } from "@mui-verse/payment/icons/ChevronRight";
+import { MasterCardIcon } from "@mui-verse/payment/icons/MasterCard";
+import { VisaIcon } from "@mui-verse/payment/icons/Visa";
 import { YoomoneyIcon } from "@mui-verse/payment/icons/Yoomoney";
 import {
+  CurrencyCode,
   PaymentMethodType,
   PaymentProviderType,
 } from "@mui-verse/payment/types";
@@ -25,7 +28,7 @@ type onSwitchFunc = (
   provider: PaymentProviderType,
 ) => Promise<void>;
 
-const metaMap: Record<PaymentMethodType, MethodMeta> = {
+const rubMethodsMap: Record<PaymentMethodType, MethodMeta> = {
   card: {
     Icon: BankCardIcon,
     provider: "dukpay",
@@ -36,22 +39,51 @@ const metaMap: Record<PaymentMethodType, MethodMeta> = {
   },
 };
 
-export function getPaymentProvider(
+const usdMethodsMap: Partial<Record<PaymentMethodType, MethodMeta>> = {
+  card: {
+    Icon: () => (
+      <div className="flex items-center gap-1">
+        <VisaIcon />
+        <MasterCardIcon />
+      </div>
+    ),
+    provider: "airwallex",
+  },
+};
+
+export function getMethodMeta(
   method: PaymentMethodType,
-): PaymentProviderType {
-  return metaMap[method].provider;
+  currency: CurrencyCode,
+): MethodMeta {
+  switch (currency) {
+    case "RUB":
+      return rubMethodsMap[method];
+
+    case "USD":
+      const meta = usdMethodsMap[method];
+      if (meta) {
+        return meta;
+      }
+
+      throw new Error(`Unsupported method ${method} for USD.`);
+
+    default:
+      throw new Error(`Unsupported currency ${currency}`);
+  }
 }
 
 export function PaymentMethod({
   method,
+  currency,
   title,
   className,
 }: {
   method: PaymentMethodType;
+  currency: CurrencyCode;
   title: string;
   className?: string;
 }) {
-  const Icon = metaMap[method].Icon;
+  const { Icon, provider } = getMethodMeta(method, currency);
   const {
     method: selected,
     setMethod,
@@ -69,7 +101,7 @@ export function PaymentMethod({
     if (onSwitch.current) {
       setLoading(true);
       try {
-        await onSwitch.current?.(method, metaMap[method].provider);
+        await onSwitch.current?.(method, provider);
       } finally {
         setLoading(false);
       }
@@ -124,12 +156,14 @@ export function usePaymentMethod() {
 }
 
 export function PaymentMethodProvider({
+  currency = "RUB",
   methods,
   renderTitle,
   children,
   className,
   onSwitch,
 }: {
+  currency?: CurrencyCode;
   methods: PaymentMethodType[];
   renderTitle: (method: PaymentMethodType) => string;
   children?: React.ReactNode;
@@ -169,6 +203,7 @@ export function PaymentMethodProvider({
         {methods.map((method) => (
           <PaymentMethod
             key={method}
+            currency={currency}
             method={method}
             title={renderTitle(method)}
           />
