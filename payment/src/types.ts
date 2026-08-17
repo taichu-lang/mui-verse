@@ -1,5 +1,11 @@
+export type CurrencyCode = "RUB" | "USD";
 export type PaymentProviderType = "dukpay" | "airwallex";
 export type PaymentMethodType = "card" | "yoomoney";
+
+export const CurrencySymbols: Record<CurrencyCode, string> = {
+  USD: "$",
+  RUB: "₽",
+};
 
 export interface PaymentRequest {
   amount: number;
