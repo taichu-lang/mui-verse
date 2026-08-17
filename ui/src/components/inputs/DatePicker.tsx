@@ -1,9 +1,11 @@
+"use client";
+
+import { cn } from "@mui-verse/ui/utils/cn";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker as MuiDatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
-import { cn } from "../../utils/cn";
 
 export function DatePicker({
   value,

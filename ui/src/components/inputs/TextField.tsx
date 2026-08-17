@@ -269,8 +269,7 @@ export function Input({
   const classes = {
     small: "text-sm leading-4.5 py-2.25 px-3",
     medium: "text-sm leading-4.5 py-3.25 px-4",
-    default:
-      "ring-divider ring-1 ring-inset hover:ring-text-primary focus-within:ring-text-primary",
+    default: "",
     outlined:
       "ring-divider ring-1 ring-inset hover:ring-primary-500 focus-within:ring-primary-500",
     filled:
@@ -407,7 +406,7 @@ export function InputGroup({
     <div
       className={cn(
         "flex w-full items-center rounded-[10px]",
-        "ring-divider hover:ring-text-primary focus-within:ring-text-primary ring-1 ring-inset",
+        "ring-divider hover:ring-primary-500 focus-within:ring-primary-500 ring-1 ring-inset",
         {
           "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
             error,
