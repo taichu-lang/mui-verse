@@ -28,7 +28,7 @@ type onSwitchFunc = (
   provider: PaymentProviderType,
 ) => Promise<void>;
 
-const rubMethodsMap: Record<PaymentMethodType, MethodMeta> = {
+const rubMethodsMap: Partial<Record<PaymentMethodType, MethodMeta>> = {
   card: {
     Icon: BankCardIcon,
     provider: "dukpay",
@@ -56,16 +56,23 @@ export function getMethodMeta(
   currency: CurrencyCode,
 ): MethodMeta {
   switch (currency) {
-    case "RUB":
-      return rubMethodsMap[method];
+    case "RUB": {
+      const meta = rubMethodsMap[method];
+      if (meta) {
+        return meta;
+      }
 
-    case "USD":
+      throw new Error(`Unsupported method ${method} for RUB.`);
+    }
+
+    case "USD": {
       const meta = usdMethodsMap[method];
       if (meta) {
         return meta;
       }
 
       throw new Error(`Unsupported method ${method} for USD.`);
+    }
 
     default:
       throw new Error(`Unsupported currency ${currency}`);

@@ -9,6 +9,7 @@ export interface Message {
   content: string;
   annotations?: MessageAnnotation[];
   interrupted?: boolean;
+  hasError?: boolean;
 }
 
 export interface MessageAnnotation {
