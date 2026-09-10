@@ -117,8 +117,13 @@ function BubbleUser({ className }: { className?: string }) {
   );
 }
 
+function BubbleAssistantError() {
+  const { renderAssistantError } = useChatSession();
+  return renderAssistantError ? renderAssistantError() : null;
+}
+
 function BubbleAssistant({ className }: { className?: string }) {
-  const { content, annotations, interrupted } = useBubble();
+  const { content, annotations, interrupted, hasError } = useBubble();
 
   return (
     <div
@@ -128,15 +133,24 @@ function BubbleAssistant({ className }: { className?: string }) {
         className,
       )}
     >
-      <Markdown>{content}</Markdown>
-      <BubbleActions role="assistant">
-        <BubbleCopyAction />
-        <AnnotationAvatarGroup annotations={annotations} className="ml-2.5" />
-      </BubbleActions>
-      {interrupted && (
-        <p className="text-text-secondary text-sm">
-          This message has been stopped.
-        </p>
+      {hasError ? (
+        <BubbleAssistantError />
+      ) : (
+        <>
+          <Markdown>{content}</Markdown>
+          <BubbleActions role="assistant">
+            <BubbleCopyAction />
+            <AnnotationAvatarGroup
+              annotations={annotations}
+              className="ml-2.5"
+            />
+          </BubbleActions>
+          {interrupted && (
+            <p className="text-text-secondary text-sm">
+              This message has been stopped.
+            </p>
+          )}
+        </>
       )}
     </div>
   );

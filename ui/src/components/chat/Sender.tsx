@@ -3,8 +3,17 @@
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Button, InputBase } from "@mui/material";
 import { ArrowUpIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useImperativeHandle, useRef, useState } from "react";
 import { useChatSession } from "./ChatSessionContext";
+
+type SendMessageFunc = (
+  text: string,
+  controller: AbortController,
+) => Promise<void>;
+
+export interface SenderHandler {
+  resend: (text: string) => Promise<void>;
+}
 
 export function Sender({
   minRows = 3,
@@ -15,15 +24,17 @@ export function Sender({
   inputClassName,
   placeholder,
   available = true,
+  ref,
 }: {
   minRows?: number;
   maxRows?: number;
   children?: React.ReactNode;
-  onSend: (text: string, controller: AbortController) => Promise<void>;
+  onSend: SendMessageFunc;
   className?: string;
   inputClassName?: string;
   placeholder?: string;
   available?: boolean; // Enable user to customize, e.g.: based on quota balance.
+  ref?: React.Ref<SenderHandler>;
 }) {
   const { pending, stopStreaming, streaming } = useChatSession();
   const [text, setText] = useState<string>("");
@@ -42,10 +53,16 @@ export function Sender({
     await onSend(text, abortCtrlRef.current);
   };
 
+  const handleResend = async (text: string) => {
+    const controller = new AbortController();
+    abortCtrlRef.current = controller;
+    await onSend(text, abortCtrlRef.current);
+  };
+
   const handleAbort = () => {
     if (abortCtrlRef.current) {
       abortCtrlRef.current.abort();
-      stopStreaming(true);
+      stopStreaming("interrupted");
     }
   };
 
@@ -56,6 +73,10 @@ export function Sender({
       await handleSend();
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    resend: handleResend,
+  }));
 
   return (
     <div

@@ -4,6 +4,10 @@ import { createContext, useContext, useState } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 import { Message } from "./types";
 
+type RenderAssistantErrorFunc = () => React.ReactNode;
+
+type StopReason = "interrupted" | "error" | "done";
+
 /**
  * Connection-scoped state for one open conversation.
  *
@@ -52,14 +56,24 @@ export interface ChatSessionValue {
   // Messages of completed turns.
   messages: Message[];
 
-  // The streaming might be stopped in two cases:
+  // Internal field, not state.
+  renderAssistantError: RenderAssistantErrorFunc | null;
+
+  // The streaming might be stopped in three cases:
   //
   // - User interrupted. In this case, `message` is null.
   // - This turn is completed, `message` is the completed message of this turn.
+  // - Something error, ex: the connection is closed.
   //
-  stopStreaming: (interrupted?: boolean, message?: Message) => void;
+  stopStreaming: (reason?: StopReason, message?: Message) => void;
   addUserMessage: (message: Message, assistantMessageID: string) => void;
   onStream: (message_id: string, chunk: string) => void;
+
+  resend: () => Message | null;
+
+  registerRenderAssistantError: (
+    handler: RenderAssistantErrorFunc | null,
+  ) => void;
 
   // Append messages only once.
   hydrate: (messages: Message[]) => void;
@@ -85,6 +99,7 @@ const createChatSessionStore = () =>
     messages: [],
     hasMoreOlder: false,
     loadingOlder: false,
+    renderAssistantError: null,
 
     // Client uses AbortController to interrupt the streaming. Once the
     // AbortController is aborted, client drops the connection, which means
@@ -93,20 +108,30 @@ const createChatSessionStore = () =>
     // can not get the balance after abort the connection, as there is a time
     // delay between the aborting and usage calculation in the server side. The
     // balance should be updated after the next turn.
-    stopStreaming: (interrupted?: boolean, message?: Message) =>
+    stopStreaming: (reason?: StopReason, message?: Message) =>
       set((state) => {
         const streamingMessage = state.streamingMessage;
         if (!streamingMessage) {
           return {};
         }
 
+        switch (reason) {
+          case "interrupted":
+            streamingMessage.interrupted = true;
+            break;
+
+          case "error":
+            streamingMessage.hasError = true;
+            break;
+
+          default:
+            break;
+        }
+
         return {
           streaming: false,
           pending: false,
-          messages: [
-            ...state.messages,
-            message || { ...streamingMessage, interrupted: interrupted },
-          ],
+          messages: [...state.messages, message || { ...streamingMessage }],
           streamingMessage: null,
         };
       }),
@@ -142,6 +167,31 @@ const createChatSessionStore = () =>
           streaming: true,
         };
       }),
+
+    resend: () => {
+      if (get().pending) {
+        return null;
+      }
+
+      const messages = get().messages;
+      if (messages.length < 2) {
+        return null;
+      }
+
+      const userMessage = messages[messages.length - 2];
+      if (userMessage.role !== "user") {
+        return null;
+      }
+
+      set({ messages: messages.slice(0, messages.length - 2) });
+      return userMessage;
+    },
+
+    registerRenderAssistantError: (
+      handler: RenderAssistantErrorFunc | null,
+    ) => {
+      set({ renderAssistantError: handler });
+    },
 
     hydrate: (messages: Message[]) => {
       if (get().messages.length > 0) return;
