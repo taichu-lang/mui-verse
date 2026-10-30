@@ -1,0 +1,127 @@
+# AppSidebar
+
+基于 MUI Drawer 封装的侧栏原语，用复合组件模式组合出业务侧栏（例如 `base-ui` 的 `AppSidebar`）。同一套组件支持两类布局：
+
+- **Web 布局**：侧栏占满 viewport 高度（顶到底），右侧从上到下放 toolbar 与 main
+- **Desktop 布局**：顶部是 titlebar，下方为 `[sidebar | main]` 横向布局，此时侧栏高度受父容器约束而非 viewport
+
+切换由 `Sidebar` 的 `inline` prop 控制。
+
+## 引入
+
+```tsx
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarToggle,
+  MenuList,
+} from "@mui-verse/ui/layout/Sidebar";
+import { useSidebar } from "@mui-verse/ui/layout/useSidebar";
+```
+
+## 基础用法
+
+`Sidebar` 内部用 MUI `Drawer` 渲染，桌面端为 `persistent`、移动端自动切换为 `temporary`。折叠状态由 `useSidebar` 提供的全局 store 管理。
+
+```tsx
+<Sidebar>
+  <SidebarHeader>
+    <Logo />
+    <SidebarToggle />
+  </SidebarHeader>
+  <MenuList>
+    <Menu href="/" icon={<Home className="h-4 w-4" />} title="首页" />
+    <Menu href="/tasks" icon={<CheckSquare className="h-4 w-4" />} title="任务" />
+  </MenuList>
+  <SidebarFooter>
+    <ThemeToggle />
+  </SidebarFooter>
+</Sidebar>
+```
+
+## Web 布局（默认）
+
+不传 `inline` 时，Drawer Paper 走默认的 `position: fixed`，侧栏从 viewport 顶部贯穿到底部。右侧容器内部自行排布 toolbar + main。
+
+```tsx
+<div className="flex h-full w-full overflow-hidden">
+  <AppSidebar />
+  <div className="h-full flex-1 shrink-0 overflow-y-auto">
+    <AppNavbar />
+    <main>{/* 页面内容 */}</main>
+  </div>
+</div>
+```
+
+## Desktop 布局（inline）
+
+桌面端通常顶部已有 titlebar（例如 Tauri 原生窗口标题栏），侧栏不应越过 titlebar。给 `Sidebar` 传 `inline`，Drawer Paper 改为 `position: relative; height: 100%`，回到正常文档流，由父容器决定高度。
+
+```tsx
+<div className="flex h-full w-full flex-col overflow-hidden">
+  <Titlebar />
+  <div className="flex w-full flex-1 overflow-hidden">
+    <AppSidebar inline />
+    <main className="flex-1 overflow-y-auto">{/* 页面内容 */}</main>
+  </div>
+</div>
+```
+
+> `inline` 只影响非 mobile 的持久态。移动端始终走 `temporary` 浮层，覆盖在内容之上，不受此 prop 影响。
+
+## 折叠态
+
+折叠时 `Sidebar` 自身宽度收为 `0`。业务侧栏通常会在折叠态另渲染一个浮动展开按钮（`SidebarToggle`），例如：
+
+```tsx
+const { collapsed } = useSidebar();
+
+if (collapsed) {
+  return (
+    <div className="relative w-0">
+      <Fab className="absolute left-0 top-3 ...">
+        <SidebarToggle />
+      </Fab>
+    </div>
+  );
+}
+
+return <Sidebar inline={inline}>{/* ... */}</Sidebar>;
+```
+
+## API
+
+### Sidebar
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `inline` | `boolean` | `false` | 是否内联进父容器。`true` 时 Paper 使用 `position: relative` 并占满父容器高度；适用于上方有 titlebar 等元素的桌面布局。仅在非 mobile 生效 |
+| `children` | `ReactNode` | - | 侧栏内容，通常为 `SidebarHeader` / `MenuList` / `SidebarFooter` 组合 |
+
+### SidebarHeader / SidebarFooter
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `className` | `string` | 自定义样式 |
+| `children` | `ReactNode` | 内容 |
+
+### SidebarToggle
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `variant` | `"contained" \| "text"` | `"text"` | 按钮样式，`text` 使用 `IconTextButton`，`contained` 使用 MUI `IconButton` |
+| `className` | `string` | - | 自定义样式 |
+
+### MenuList
+
+简单 flex 容器，垂直排列菜单项并支持纵向滚动。无额外属性。
+
+### useSidebar
+
+全局 store，提供折叠状态。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `collapsed` | `boolean` | 是否折叠 |
+| `toggleCollapsed` | `() => void` | 切换折叠 |

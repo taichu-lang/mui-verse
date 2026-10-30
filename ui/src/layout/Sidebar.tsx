@@ -1,21 +1,46 @@
 "use client";
 
+import {
+  IconGhostButton,
+  IconTextButton,
+} from "@mui-verse/ui/components/buttons";
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
 import { cn } from "@mui-verse/ui/utils/cn";
 import { Drawer, IconButton, useTheme } from "@mui/material";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { useSidebar } from "./useSidebar";
+import { useInitSidebar, useSidebar } from "./useSidebar";
 
-export function Sidebar({ children }: { children: React.ReactNode }) {
+export function Sidebar({
+  children,
+  inline = false,
+  className,
+}: {
+  children: React.ReactNode;
+  inline?: boolean;
+  className?: string;
+}) {
+  useInitSidebar();
+
   const { collapsed, toggleCollapsed } = useSidebar();
   const isMobile = useMobile();
   const theme = useTheme();
 
-  const width = isMobile ? "80vw" : collapsed ? theme.spacing(8) : "16rem";
+  const desktopWidth = collapsed
+    ? "var(--sidebar-collapsed-width, 0px)"
+    : "var(--sidebar-width, 14rem)";
+  const paperWidth = isMobile
+    ? "var(--sidebar-mobile-width, 80vw)"
+    : desktopWidth;
+  const width = isMobile ? 0 : desktopWidth;
 
-  if (isMobile && collapsed) {
-    return <></>;
-  }
+  const useInline = inline && !isMobile;
+
+  const widthTransition = theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: collapsed
+      ? theme.transitions.duration.leavingScreen
+      : theme.transitions.duration.enteringScreen,
+  });
 
   return (
     <Drawer
@@ -23,37 +48,73 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       open={isMobile ? !collapsed : true}
       onClose={toggleCollapsed}
       sx={{
-        width: width,
+        width,
         flexShrink: 0,
+        ...(useInline && { height: "100%" }),
+        transition: widthTransition,
         "& .MuiDrawer-paper": {
-          width: width,
+          width: paperWidth,
           boxSizing: "border-box",
           border: 0,
           background: isMobile ? theme.palette.background.paper : "transparent",
+          transition: widthTransition,
+          ...(useInline && { position: "relative", height: "100%" }),
         },
       }}
       anchor={isMobile ? "right" : "left"}
     >
-      <div className="flex h-full flex-col gap-4 overflow-hidden px-2">
+      <div
+        className={cn(
+          "flex h-full flex-col gap-4 overflow-hidden px-2",
+          className,
+        )}
+      >
         {children}
       </div>
     </Drawer>
   );
 }
 
-export function SidebarToggle() {
+export function SidebarToggle({
+  className,
+  variant = "text",
+  icon,
+}: {
+  className?: string;
+  variant?: "contained" | "text" | "ghost";
+  icon?: React.ReactNode;
+}) {
   const { collapsed, toggleCollapsed } = useSidebar();
+  const comps: Record<string, React.ElementType> = {
+    contained: IconButton,
+    text: IconTextButton,
+    ghost: IconGhostButton,
+  };
+  const Comp = comps[variant];
 
   return (
-    <IconButton onClick={toggleCollapsed} sx={{ color: "text.primary" }}>
-      {collapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
-    </IconButton>
+    <Comp onClick={toggleCollapsed} className={className}>
+      {collapsed
+        ? (icon ?? <PanelLeftOpen size={18} />)
+        : (icon ?? <PanelLeftClose size={18} />)}
+    </Comp>
   );
 }
 
-export function SidebarHeader({ children }: { children: React.ReactNode }) {
+export function SidebarHeader({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex h-16 flex-col items-center justify-center">
+    <div
+      className={cn(
+        "h-navbar flex shrink-0 items-center justify-center",
+        className,
+      )}
+    >
       {children}
     </div>
   );
@@ -61,7 +122,7 @@ export function SidebarHeader({ children }: { children: React.ReactNode }) {
 
 export function MenuList({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-1 flex-col items-center gap-2 overflow-x-hidden overflow-y-auto">
+    <div className="flex w-full flex-col items-center gap-0.5 overflow-x-hidden overflow-y-auto">
       {children}
     </div>
   );

@@ -1,4 +1,6 @@
+import { cn } from "@mui-verse/ui/utils/cn";
 import { CircularProgress } from "@mui/material";
+import { LoaderIcon } from "lucide-react";
 
 export function Loading() {
   return (
@@ -6,4 +8,17 @@ export function Loading() {
       <CircularProgress size={20} />
     </div>
   );
+}
+
+export function Spinner({ className }: { className?: string }) {
+  return (
+    <LoaderIcon
+      strokeWidth={2.5}
+      className={cn("min-w-0 shrink-0", className)}
+    />
+  );
+}
+
+export function AnimatedSpinner() {
+  return <Spinner className="animate-spin" />;
 }

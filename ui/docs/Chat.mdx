@@ -1,0 +1,199 @@
+# Chat
+
+面向 AI 对话场景的一组复合组件，覆盖消息流展示（`Conversation` + `Bubble`）与输入区（`Sender`）。助手消息通过 [Streamdown](https://streamdown.ai) 流式渲染 Markdown，用户消息为纯文本气泡。
+
+## 引入
+
+```tsx
+import {
+  ConversationProvider,
+  Conversation,
+  Sender,
+  useConversationContext,
+} from "@mui-verse/ui/components/chat";
+```
+
+`Bubble` 组件本身不对外导出——它被 `Conversation` 内部消费，样式定制通过全局 CSS 完成（见下文《自定义 Markdown 样式》）。
+
+## 基础用法
+
+`ConversationProvider` 提供消息状态与流式控制，`Conversation` 渲染消息列表，`Sender` 负责输入与提交：
+
+```tsx
+<ConversationProvider>
+  <div className="flex h-full flex-col">
+    <div className="flex-1 overflow-y-auto px-4 py-6">
+      <Conversation />
+    </div>
+    <Sender onSubmit={(text) => {/* 调用 LLM */}} />
+  </div>
+</ConversationProvider>
+```
+
+## Bubble 设计说明
+
+`Bubble` 根据 `message.role` 分派到两种子组件：
+
+| Role | 渲染 | 说明 |
+| --- | --- | --- |
+| `user` | `BubbleUser` | 右对齐圆角气泡，`bg-action-hover` 背景，最大宽度 85%，纯文本 |
+| `assistant` | `BubbleAssistant` | 左对齐，`Streamdown` 渲染 Markdown，无背景色 |
+| `system` | — | 不渲染，交由业务层显式处理 |
+
+### 助手消息的 Markdown 渲染
+
+`BubbleAssistant` 用 `Streamdown` 的 `components` prop 把常见 Markdown 元素替换为 MUI `Typography`，确保标题层级、字重、行高与站点其他部分保持一致：
+
+| Markdown | MUI variant | HTML |
+| --- | --- | --- |
+| `#` (h1) | `h4` | `<h1>` |
+| `##` (h2) | `h5` | `<h2>` |
+| `###` (h3) | `h6` | `<h3>` |
+| `####` (h4) | `subtitle1` | `<h4>` |
+| `#####` (h5) | `subtitle2` | `<h5>` |
+| 段落 | `body1` | `<p>` |
+
+> 语义标签保持不变（`component="h1"` 等），仅字号/字重降级——因为对话流里的"h1"从视觉层级上更接近全站的 h4。
+
+每个被覆盖的元素都会带一个 `data-markdown="<tag>"` 属性，用于业务侧全局定制样式。
+
+### 为什么不用 Tailwind Typography 或 `prose`
+
+Streamdown 已把 Tailwind 工具类硬编码到默认渲染器上，且依赖 shadcn 设计令牌；`prose` 会与之互相打架。我们的做法是**替换渲染器**（用 MUI `Typography` 接管 Streamdown 的排版语义），再让业务侧通过属性选择器做局部覆盖，避免特异性大战。
+
+## 自定义 Markdown 样式
+
+由于 `verse.css` 在 `@layer utilities` 里承载所有 Tailwind 工具类，业务层写在**未分层（unlayered）**的 CSS 规则会自动压过它们——无需 `!important`，也不用改 mui-verse 的源码。
+
+### 用法
+
+在业务工程的 `globals.css` 里（`@import "@mui-verse/ui/verse.css"` 之后）追加：
+
+```css
+/* packages/web/src/app/globals.css */
+@import "@mui-verse/ui/verse.css";
+@source "../../node_modules/@mui-verse/ui/src";
+
+/* ↓ 不要包在 @layer 里 */
+[data-role="assistant"] [data-markdown="h1"] {
+  font-family: "Inter", ui-sans-serif, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+[data-role="assistant"] [data-markdown="h2"] {
+  font-family: "Inter", ui-sans-serif, sans-serif;
+  font-size: 1.625rem;
+  font-weight: 600;
+}
+
+[data-role="assistant"] [data-markdown="p"] {
+  font-family: "Source Serif 4", ui-serif, Georgia, serif;
+  line-height: 1.75;
+}
+```
+
+用 `[data-role="assistant"]` 前缀把作用域限定在助手气泡内，避免影响其他 Markdown 上下文。
+
+### 只想换字体族
+
+如果只调整字体，最省事的是改 Tailwind 主题变量，`font-sans` / `font-serif` / `font-mono` 全部同步：
+
+```css
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+}
+```
+
+### Streamdown 原生元素
+
+未被 mui-verse 覆盖的元素（列表、表格、代码块、引用块等）保留 Streamdown 默认渲染，携带 Streamdown 原生的 `data-streamdown="*"` 属性，可用同样方式定制：
+
+```css
+[data-role="assistant"] [data-streamdown="inline-code"] {
+  background: var(--mui-palette-action-hover);
+  padding: 0 0.25em;
+  border-radius: 4px;
+}
+
+[data-role="assistant"] [data-streamdown="blockquote"] {
+  border-left: 3px solid var(--mui-palette-divider);
+  padding-left: 1em;
+  color: var(--mui-palette-text-secondary);
+}
+```
+
+常见 `data-streamdown` 值：`heading-1`~`heading-6`、`ordered-list`、`unordered-list`、`list-item`、`blockquote`、`inline-code`、`code-block`、`link`、`strong`、`table`、`table-cell` 等。
+
+### 让 Tailwind 扫描 Streamdown 的类
+
+Streamdown 把默认样式（`mt-6`、`font-semibold`、`text-3xl` 等）作为字符串嵌在编译产物里，Tailwind 需要显式扫描这些文件才能生成对应工具类。`verse.css` 里已经加了：
+
+```css
+@source "../node_modules/streamdown/dist/*.js";
+```
+
+路径相对于 `verse.css` 自身。若业务侧另装了 `@streamdown/code`、`@streamdown/math`、`@streamdown/mermaid` 等插件包，需在业务的 CSS 中追加对应 `@source` 行。
+
+## Sender
+
+输入区组件，负责文本输入与提交。通过 `useConversationContext` 读取 `streaming` 状态，流式期间会切换为"停止"按钮。
+
+```tsx
+<Sender
+  onSubmit={async (text) => {
+    const { addUserMessage, onStream, stopStreaming } = ctx;
+    addUserMessage({ id: uuid(), role: "user", content: text }, uuid());
+    for await (const chunk of streamLLM(text)) {
+      onStream(chunk);
+    }
+    stopStreaming();
+  }}
+/>
+```
+
+## API
+
+### `ConversationProvider`
+
+包裹整个对话区，通过 Context 暴露消息状态。无 props。
+
+### `useConversationContext`
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `streaming` | `boolean` | 是否正在流式响应 |
+| `messages` | `Message[]` | 消息列表 |
+| `addUserMessage` | `(userMsg, assistantId) => void` | 追加用户消息，并预置一个空的助手消息占位 |
+| `onStream` | `(content: string) => void` | 全量替换最后一条助手消息的 content（配合流式增量拼接） |
+| `stopStreaming` | `(interrupted?: boolean) => void` | 结束流式 |
+
+### `Conversation`
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `bubbleClassName` | `string` | - | 透传给每个 `Bubble` 外层容器，用于统一调整间距、宽度约束等 |
+
+### `Message`
+
+```ts
+type MessageRole = "user" | "assistant" | "system";
+
+interface Message {
+  id: string;
+  role: MessageRole;
+  content: string;
+}
+```
+
+### 稳定的 DOM 数据属性
+
+以下属性作为**公共 API** 保持稳定，可放心用于 CSS 选择器：
+
+| 属性 | 出现位置 | 值 |
+| --- | --- | --- |
+| `data-role` | 每个 `Bubble` 最外层容器 | `"user"` \| `"assistant"` |
+| `data-markdown` | 被 mui-verse 覆盖的 Markdown 元素 | `"h1"` ~ `"h5"`、`"p"` |
+| `data-streamdown` | Streamdown 原生元素 | 见 Streamdown 文档 |

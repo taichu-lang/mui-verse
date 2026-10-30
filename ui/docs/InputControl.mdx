@@ -1,0 +1,231 @@
+# InputControl
+
+一组基于 Context 的表单输入原语，用于将 **输入框、标签、校验规则、错误反馈** 组合到一起。适合需要"多条校验规则同时展示 / 分别高亮"的场景（例如密码规则清单）。
+
+- `InputControl`：外层容器，管理 value / phase / 错误状态、注册校验规则、暴露 `check` 命令。
+- `InputLabel`：文本标签。
+- `FormInput`：与 `InputControl` 绑定的输入框，透传 `TextField/Input` 的所有能力。
+- `InputRule`：一条校验规则，配合 `fn` 判断是否通过；根据 `visible` 控制展示时机。
+- `useInputControl`：读取当前 `InputControl` 的状态，用于自定义子组件。
+
+## 引入
+
+```tsx
+import {
+  InputControl,
+  InputLabel,
+  FormInput,
+  InputRule,
+  useInputControl,
+  type InputControlRef,
+} from "@mui-verse/ui/components/inputs";
+```
+
+## 基础用法
+
+```tsx
+<InputControl onValueChange={setPassword}>
+  <InputLabel>Password</InputLabel>
+  <FormInput type="password" size="medium" />
+  <InputRule fn={(v) => v.length >= 8 && v.length <= 20} visible="always">
+    8 - 20 个字符
+  </InputRule>
+  <InputRule
+    fn={(v) => /[a-zA-Z]/.test(v) && /\d/.test(v)}
+    visible="always"
+  >
+    必须包含字母和数字
+  </InputRule>
+</InputControl>
+```
+
+行为：
+
+- 用户输入时（`onChange`）：清除错误、`phase` 恢复到 `idle`，`InputRule` 显示为默认的次要文字色。
+- 用户离焦时（`onBlur`）：运行所有规则，任意一条未通过则将 `hasError` 置为 `true`；未通过的 `InputRule` 变为 `error-500` 色。
+- `visible="always"` 的规则始终占位并展示；`visible="auto"` 则仅在校验失败时可见（默认）。
+
+## 校验时机与阶段
+
+`InputControl` 内部维护一个 `phase`：
+
+| phase | 触发时机 | 视觉效果 |
+| --- | --- | --- |
+| `idle` | 组件挂载后、或用户重新输入时 | 规则显示为次要文本色，`FormInput` 无错误态 |
+| `validating` | 用户离焦、或外部调用 `check()` 后 | 未通过的规则变红，`FormInput` 进入 `error` 状态 |
+
+这与 [`TextField`](./TextField.mdx) 的分阶段验证策略保持一致 —— 输入过程中不打断用户，离焦或提交时才展示错误。
+
+## 通过 ref 手动触发校验
+
+在表单提交等场景下，往往需要在用户尚未 blur 就立即触发校验（例如：点击"下一步"按钮时）。为此，`InputControl` 通过 `ref` 暴露了一个命令式的 `check` 方法：
+
+```ts
+export type InputControlRef = {
+  /** 运行所有已注册的规则，返回是否全部通过；同时更新错误态。 */
+  check: () => boolean;
+};
+```
+
+用法：
+
+```tsx
+import { useRef } from "react";
+import {
+  InputControl,
+  FormInput,
+  InputRule,
+  type InputControlRef,
+} from "@mui-verse/ui/components/inputs";
+
+function SignupStep() {
+  const passwordRef = useRef<InputControlRef>(null);
+
+  const handleNext = () => {
+    if (!passwordRef.current?.check()) {
+      // 校验未通过，规则已经变红，直接返回即可
+      return;
+    }
+    // 校验通过，继续下一步
+    goToNextStep();
+  };
+
+  return (
+    <>
+      <InputControl ref={passwordRef} onValueChange={setPassword}>
+        <InputLabel>Password</InputLabel>
+        <FormInput type="password" size="medium" />
+        <InputRule fn={(v) => v.length >= 8} visible="always">
+          至少 8 个字符
+        </InputRule>
+      </InputControl>
+
+      <Button onClick={handleNext}>下一步</Button>
+    </>
+  );
+}
+```
+
+要点：
+
+- `check()` 返回 `boolean`：`true` 表示全部规则通过，`false` 表示至少有一条未通过。
+- 调用后 `phase` 立即变为 `validating`，未通过的 `InputRule` 会即时变红，`FormInput` 进入 `error` 态。
+- 若配置了 `onError`，`check()` 未通过时会调用一次。
+- 由于组件遵循项目约定，`ref` 是普通 prop —— **不要**用 `forwardRef` 包裹。
+
+### 多字段一次性校验
+
+多个字段可以各自持有 ref，在提交时并行触发：
+
+```tsx
+const emailRef = useRef<InputControlRef>(null);
+const passwordRef = useRef<InputControlRef>(null);
+
+const handleSubmit = () => {
+  const okEmail = emailRef.current?.check() ?? false;
+  const okPassword = passwordRef.current?.check() ?? false;
+  // 注意：不要用短路 (&&)，否则第二个字段不会显示错误
+  if (!okEmail || !okPassword) return;
+  submit();
+};
+```
+
+> ⚠️ **不要用 `&&` 短路**。`a.check() && b.check()` 在 `a` 失败时不会执行 `b.check()`，导致 `b` 的错误不会被高亮。始终把每个 `check()` 的结果先落到局部变量。
+
+## API
+
+### InputControl Props
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `defaultValue` | `string` | 初始值，默认为空字符串。 |
+| `onValueChange` | `(value: string) => void` | 值变化回调（输入时同步触发）。 |
+| `onError` | `() => void` | 校验失败时触发一次（`onBlur` 或 `ref.check()`）。 |
+| `className` | `string` | 附加在外层 `<div>` 上。 |
+| `children` | `ReactNode` | 通常是 `InputLabel` / `FormInput` / `InputRule` 的组合。 |
+| `ref` | `Ref<InputControlRef>` | 命令式句柄，暴露 `check()` 方法。 |
+
+### InputControlRef
+
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| `check` | `() => boolean` | 运行所有已注册的规则并更新错误态。返回是否全部通过。 |
+
+### FormInput Props
+
+透传 `Input` 组件的全部 props，除以下由 `InputControl` 接管：
+
+- `value`、`defaultValue`
+- `onValueChange`、`onChange`、`onBlur`
+- `error`
+
+其他所有 `Input` 的属性（`type`、`size`、`placeholder`、`startIcon`、`endIcon` 等）均可正常使用。
+
+### InputRule Props
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `fn` | `(value: string) => boolean` | 返回 `true` 表示通过，`false` 表示未通过。 |
+| `visible` | `"auto" \| "always"` | `auto`（默认）：仅在校验失败时可见；`always`：始终占位并展示，未通过时变红。 |
+| `className` | `string` | 附加类名。 |
+| `children` | `ReactNode` | 规则说明文案。 |
+
+### useInputControl
+
+在 `InputControl` 内的子组件中读取当前状态：
+
+```ts
+const {
+  value,        // 当前值
+  phase,        // "idle" | "validating"
+  hasError,     // 布尔，是否处于错误态
+  registerRule, // (fn) => unregister，用于自定义规则组件
+  handleValueChange,
+  handleBlur,   // 与 ref.check() 等价，但无返回值
+} = useInputControl();
+```
+
+在 `InputControl` 外调用会抛出错误。
+
+## 最佳实践
+
+### ✅ 推荐：把提交前校验交给 `ref.check()`
+
+```tsx
+const ref = useRef<InputControlRef>(null);
+const onSubmit = () => {
+  if (!ref.current?.check()) return;
+  save();
+};
+```
+
+### ✅ 推荐：规则清单常驻可见（`visible="always"`）
+
+密码规则、用户名规则等属于"需求提示"，应始终展示；只在离焦或提交后变红：
+
+```tsx
+<InputRule fn={(v) => v.length >= 8} visible="always">
+  至少 8 个字符
+</InputRule>
+```
+
+### ❌ 避免：在 `onValueChange` 中做同步的重校验或异步请求
+
+`InputControl` 已经在离焦 / `check()` 时集中触发校验；无需在每次按键都重复运行完整规则或发起网络请求。
+
+### ❌ 避免：用 `&&` 短路多字段校验
+
+```tsx
+// 错误：password 校验不会执行，密码栏不会显示错误
+if (!(emailRef.current?.check() && passwordRef.current?.check())) return;
+
+// 正确：每个 check() 都要执行，再合并结果
+const okEmail = emailRef.current?.check() ?? false;
+const okPassword = passwordRef.current?.check() ?? false;
+if (!okEmail || !okPassword) return;
+```
+
+## 与 TextField 的关系
+
+- 单字段、单条错误信息：直接用 [`TextField`](./TextField.mdx) 更省事，它自带 `validator` API。
+- 单字段、多条规则清单，或需要外部命令式触发校验：用 `InputControl` + `InputRule`。

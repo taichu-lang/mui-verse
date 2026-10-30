@@ -1,0 +1,18 @@
+{
+  "v-payment": {
+    "success": {
+      "title": "Payment successful",
+      "description": "Your order is confirmed. Let's get started.",
+      "confirm": "Get started"
+    },
+    "wait": {
+      "title": "Please wait",
+      "description": "If you've made a payment, please stay on this page. Order confirmation may take 3–5 minutes."
+    },
+    "failed": {
+      "title": "Payment failed",
+      "description": "Your payment could not be completed. Please try again or contact your bank.",
+      "confirm": "Try again"
+    }
+  }
+}

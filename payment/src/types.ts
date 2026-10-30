@@ -1,11 +1,17 @@
-export type PaymentProviderType = "dukpay" | "airwallex";
-export type DukpayMethodType = "card" | "yoomoney";
-export type AirwallexMethodType = "card";
+export type CurrencyCode = "RUB" | "USD";
+export type PaymentProviderType = "dukpay" | "airwallex" | "tinkoff";
+export type PaymentMethodType =
+  "card" | "yoomoney" | "sbp" | "sberpay" | "tpay";
+
+export const CurrencySymbols: Record<CurrencyCode, string> = {
+  USD: "$",
+  RUB: "₽",
+};
 
 export interface PaymentRequest {
   amount: number;
   currency: string;
-  payment_method: DukpayMethodType | AirwallexMethodType;
+  payment_method: PaymentMethodType;
   payment_provider: PaymentProviderType;
 }
 

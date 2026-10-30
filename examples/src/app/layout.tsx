@@ -1,5 +1,5 @@
 import { Loading } from "@mui-verse/ui/components/effects";
-import { fontVariables, ThemeProvider } from "@mui-verse/ui/theme";
+import { ThemeProvider } from "@mui-verse/ui/theme";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import "./globals.css";
@@ -15,13 +15,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={fontVariables} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
           <div className="flex h-screen w-full">
-            <Suspense fallback={<Loading />}>
-              {children}
-            </Suspense>
+            <Suspense fallback={<Loading />}>{children}</Suspense>
           </div>
         </ThemeProvider>
       </body>

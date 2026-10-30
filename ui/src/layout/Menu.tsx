@@ -1,19 +1,12 @@
 "use client";
 
 import { useMobile } from "@mui-verse/ui/hooks/useMobile";
-import { useTheme } from "@mui-verse/ui/theme";
 import { cn } from "@mui-verse/ui/utils/cn";
-import {
-  Box,
-  CardActionArea,
-  Divider,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, CardActionArea, Divider, Stack, Typography } from "@mui/material";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
+import { MenuButton } from "./MenuButton";
 import { useSidebar } from "./useSidebar";
 
 export type MenuGroupProps = {
@@ -60,81 +53,89 @@ export const MenuGroup = (props: MenuGroupProps) => {
   );
 };
 
-export type MenuData = {
+export interface MenuProps {
   title: string;
-  icon: React.ReactNode;
-  href: string;
-};
+  icon?: React.ReactNode;
+  href?: string;
+  controlled?: {
+    onClick?: () => void;
+    active: boolean;
+  };
+  actions?: React.ReactNode;
+  showTips?: boolean;
+}
 
-function DesktopMenu({ title, icon, href }: MenuData) {
-  const path = usePathname();
+export function DesktopMenu({
+  title,
+  icon,
+  href,
+  controlled,
+  actions,
+  showTips = true,
+}: MenuProps) {
   const router = useRouter();
-  const isActive = path === href || path.startsWith(`${href}/`);
+  const path = usePathname();
 
-  const { isDark } = useTheme();
-  const { collapsed } = useSidebar();
+  const isActive = controlled ? controlled.active : path === href;
+  const handleClick = () => {
+    if (controlled) {
+      controlled.onClick?.();
+      return;
+    }
 
-  const classes = {
-    active: isDark ? "bg-gray-50" : "bg-gray-950 text-gray-50",
-    inactive: "hover:bg-gray-A700 hover:text-gray-50",
+    if (href) {
+      router.push(href);
+    }
   };
 
   return (
-    <Tooltip title={title} placement="right">
-      <CardActionArea
-        className={cn(
-          "rounded-lg",
-          isActive ? classes.active : classes.inactive,
-          collapsed ? "aspect-square" : "w-full px-3 py-2",
-        )}
-        onClick={() => {
-          router.push(href);
-        }}
-      >
-        {collapsed ? (
-          <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
-            {icon}
-            <Typography variant="caption" textAlign={"center"}>
-              {title}
-            </Typography>
-          </Box>
-        ) : (
-          <Box display={"flex"} alignItems={"center"} gap={1.5} px={2}>
-            {icon}
-            <Typography variant="body1">{title}</Typography>
-          </Box>
-        )}
-      </CardActionArea>
-    </Tooltip>
+    <MenuButton
+      title={title}
+      icon={icon}
+      actions={actions}
+      isActive={isActive}
+      onClick={handleClick}
+      showTips={showTips}
+    />
   );
 }
 
-function MobileMenu({ title, icon, href }: MenuData) {
-  const path = usePathname();
+export function MobileMenu({ title, icon, href, controlled }: MenuProps) {
   const router = useRouter();
-  const isActive = path === href || path.startsWith(`${href}/`);
+  const path = usePathname();
   const { setCollapsed } = useSidebar();
+
+  const isActive = controlled ? controlled.active : path === href;
+  const handleClick = () => {
+    if (controlled) {
+      controlled.onClick?.();
+      return;
+    }
+
+    if (href) {
+      router.push(href);
+    }
+    setCollapsed(true);
+  };
 
   return (
     <CardActionArea
+      data-active={isActive || undefined}
       className={cn(
-        "w-full rounded-lg px-3 py-2",
-        isActive && "bg-gray-950 text-white",
+        "flex h-8 w-full justify-start gap-2.5 rounded-lg px-2",
+        "data-active:bg-action-hover",
       )}
-      onClick={() => {
-        router.push(href);
-        setCollapsed(true);
-      }}
+      onClick={handleClick}
     >
-      <Box display="flex" alignItems="center" gap={1.5} px={2}>
-        {icon}
-        <Typography variant="body1">{title}</Typography>
-      </Box>
+      {icon}
+      <Typography variant="body2" className="leading-4.5">
+        {title}
+      </Typography>
     </CardActionArea>
   );
 }
 
-export function Menu(props: MenuData) {
+export function Menu(props: MenuProps) {
   const isMobile = useMobile();
   if (isMobile) {
     return <MobileMenu {...props} />;

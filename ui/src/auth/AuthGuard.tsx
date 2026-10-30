@@ -30,9 +30,9 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
 }: AuthGuardProps<T>) {
   const authStore = store() as AuthStore<T>;
   const {
+    session,
     isLoading,
     hasHydrated,
-    hasAuthorization,
     loadSession,
     _initializeCrossTabSync,
   } = authStore;
@@ -57,10 +57,10 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
   useEffect(() => {
     if (isLoading || !hasHydrated) return;
 
-    if (!hasAuthorization()) {
+    if (!session) {
       router.replace(redirectUrl);
     }
-  }, [hasAuthorization, isLoading, hasHydrated, router, redirectUrl]);
+  }, [session, isLoading, hasHydrated, router, redirectUrl]);
 
   // Loading state
   if (isLoading) {
@@ -68,7 +68,7 @@ export function AuthGuard<T extends BaseSession = BaseSession>({
   }
 
   // Not authenticated
-  if (!hasAuthorization()) {
+  if (!session) {
     return fallback;
   }
 
