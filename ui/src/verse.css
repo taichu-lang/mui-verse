@@ -602,8 +602,8 @@
 @layer components {
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
+    width: 4px;
+    height: 4px;
   }
 
   ::-webkit-scrollbar-track {
@@ -611,8 +611,8 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--mui-palette-action-hover);
-    border-radius: 3px;
+    background: var(--mui-palette-divider);
+    border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
