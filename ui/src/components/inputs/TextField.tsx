@@ -397,25 +397,44 @@ export function Input({
 
 export function InputGroup({
   children,
+  start,
+  end,
   error = false,
-  ...props
 }: {
   children: React.ReactNode;
-} & InputProps) {
+  start?: React.ReactNode;
+  end?: React.ReactNode;
+  error?: boolean;
+}) {
   return (
     <div
       className={cn(
         "flex w-full items-center rounded-[10px]",
-        "ring-divider hover:ring-primary-500 focus-within:ring-primary-500 ring-1 ring-inset",
+        "ring-divider hover:ring-primary-500 focus-within:ring-primary-500 ring-1",
         {
           "ring-error-500 hover:ring-error-500 focus-within:ring-error-500":
             error,
         },
       )}
     >
+      {/* Using `self-stretch` to make sure the start/end element stretch the full height of container */}
+      {start && (
+        <>
+          <div className="bg-action-hover flex items-center self-stretch rounded-l-[10px]">
+            {start}
+          </div>
+          <Divider flexItem orientation="vertical" />
+        </>
+      )}
       {children}
-      <Divider flexItem orientation="vertical" />
-      <Input {...props} variant="default" />
+      {end && (
+        <>
+          <Divider flexItem orientation="vertical" />
+          <div className="bg-action-hover flex items-center self-stretch rounded-r-[10px]">
+            {end}
+          </div>
+        </>
+      )}
     </div>
   );
 }

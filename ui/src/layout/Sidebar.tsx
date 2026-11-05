@@ -120,9 +120,20 @@ export function SidebarHeader({
   );
 }
 
-export function MenuList({ children }: { children: React.ReactNode }) {
+export function MenuList({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex w-full flex-col items-center gap-0.5 overflow-x-hidden overflow-y-auto">
+    <div
+      className={cn(
+        "flex w-full flex-col items-center gap-0.5 overflow-x-hidden overflow-y-auto",
+        className,
+      )}
+    >
       {children}
     </div>
   );
