@@ -37,9 +37,9 @@ export function ClipboardButton({
     <Tooltip title={copied ? "Copied!" : "Copy"}>
       <Comp size="small" onClick={handleCopy} className={className}>
         {copied ? (
-          <CheckIcon className="text-success-500 h-4 w-4" />
+          <CheckIcon className="text-success-500 size-3.5" />
         ) : (
-          <CopyIcon className="h-4 w-4" strokeWidth={1.2} />
+          <CopyIcon className="size-3.5" strokeWidth={1.2} />
         )}
       </Comp>
     </Tooltip>

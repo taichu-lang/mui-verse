@@ -17,3 +17,5 @@ export {
   type VirtualSectionListHandle,
   type VirtualSectionListProps,
 } from "./VirtualSectionList";
+export { Carousel } from "./Carousel";
+export type { CarouselProps, CarouselIndicatorVariant } from "./Carousel";

@@ -1,35 +1,26 @@
-import { cn } from "@mui-verse/ui/utils/cn";
-
-export function YoomoneyIcon({ className }: { className?: string }) {
+export function YoomoneyIcon() {
   return (
     <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={cn("min-w-0 shrink-0", className)}
     >
-      <circle cx="12" cy="12" r="12" fill="#8B3FFD" />
-      <rect
-        x="4.28577"
-        y="4.28516"
-        width="15.4286"
-        height="15.4286"
-        fill="url(#pattern0_1756_15736)"
-      />
+      <circle cx="14" cy="14" r="14" fill="#8B3FFD" />
+      <rect x="5" y="5" width="18" height="18" fill="url(#pattern0_181_8155)" />
       <defs>
         <pattern
-          id="pattern0_1756_15736"
+          id="pattern0_181_8155"
           patternContentUnits="objectBoundingBox"
           width="1"
           height="1"
         >
-          <use xlinkHref="#image0_1756_15736" transform="scale(0.005)" />
+          <use xlinkHref="#image0_181_8155" transform="scale(0.005)" />
         </pattern>
         <image
-          id="image0_1756_15736"
+          id="image0_181_8155"
           width="200"
           height="200"
           preserveAspectRatio="none"

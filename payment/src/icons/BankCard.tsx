@@ -1,38 +1,29 @@
-import { cn } from "@mui-verse/ui/utils/cn";
-
-export function BankCardIcon({ className }: { className?: string }) {
+export function BankCardIcon() {
   return (
     <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={cn("min-w-0 shrink-0", className)}
     >
-      <circle cx="12" cy="12" r="12" fill="#018554" />
-      <rect
-        x="2.57141"
-        y="9.42969"
-        width="19.7143"
-        height="6"
-        fill="url(#pattern0_1756_15727)"
-      />
+      <circle cx="14" cy="14" r="14" fill="#018554" />
+      <rect x="3" y="11" width="23" height="7" fill="url(#pattern0_189_228)" />
       <defs>
         <pattern
-          id="pattern0_1756_15727"
+          id="pattern0_189_228"
           patternContentUnits="objectBoundingBox"
           width="1"
           height="1"
         >
           <use
-            xlinkHref="#image0_1756_15727"
+            xlinkHref="#image0_189_228"
             transform="matrix(0.000643004 0 0 0.00210438 -0.117284 -0.636364)"
           />
         </pattern>
         <image
-          id="image0_1756_15727"
+          id="image0_189_228"
           width="1920"
           height="1080"
           preserveAspectRatio="none"
